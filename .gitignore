@@ -1,0 +1,54 @@
+# ===== KEEP ONLY =====
+# Explicitly track these (use git add -f if needed):
+# - CLAUDE.md
+# - commands/*.md
+# - settings.json (if it exists and has no secrets)
+# - .mcp.json or similar MCP configs (review first!)
+
+# ===== EXCLUDE EVERYTHING ELSE =====
+
+# Session/debug state
+debug/
+todos/
+projects/
+statsig/
+ide/
+
+# Plugins (nested git repos)
+plugins/
+
+# Credentials and secrets
+credentials.json
+*.key
+*.pem
+*.token
+auth/
+oauth/
+
+# Logs and cache
+*.log
+*.cache
+cache/
+sessions/
+conversations/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.swp
+*~
+
+# Any JSON with UUIDs (likely state files)
+*-agent-*.json
+
+
+# Other
+file-history/
+history*
+paste-cache/
+plans/
+shell-snapshots/
+stats-cache.json
