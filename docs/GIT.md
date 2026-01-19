@@ -1,84 +1,85 @@
 # Git and Source Control
 
 ## Fundamental Rules
+
+- **Never use `--no-verify`** when committing. Ever.
 - Refuse to work on code not in a git repository.
-- Before modifying/moving/deleting files, ensure they're tracked and committed.
-- Never bypass pre-commit hooks. Prohibited flags:
-  - `--no-verify`
-  - `--no-hooks`
-  - `--no-pre-commit-hook`
-- Before using any unfamiliar git flag: state it, explain it, confirm it's not forbidden, await permission.
+- Before moving, changing, or removing files, ensure they're tracked and recoverable.
 
-## Prohibited Operations (without permission)
-- `git reset --hard` (data loss risk)
-- `git rebase -i` on pushed commits (history rewriting)
-- `git push --force` (use `--force-with-lease` if permitted)
-- `git clean -fd` (untracked file deletion)
+## Forbidden Flags
 
-## Workflow
-Before starting any work:
-```bash
-git fetch --all
-git status
-git pull --rebase  # or merge, per project convention
-```
+These are prohibited:
+- `--no-verify`
+- `--no-hooks`
+- `--no-pre-commit-hook`
 
-Before switching branches:
-```bash
-git stash --include-untracked  # if uncommitted changes exist
-```
+Before using any unfamiliar git flag: state it, explain why, confirm it's not forbidden, get permission for any bypass.
 
-## Commits
-- Atomic: one logical change per commit
-- Message format: Conventional Commits, imperative mood, present tense
-- Keep subject line under 50 characters; body at 72
+## Commit Standards
+
+Messages must be:
+- Concise and descriptive
+- Imperative mood, present tense
+- Conventional commit format
+
 ```
 feat: add user authentication
-
-- Implement OAuth2 flow
-- Add session management
+fix: resolve memory leak in data processor
+docs: update API documentation
+refactor: simplify validation logic
 ```
 
+## Workflow
+
+Before starting work:
+
+```bash
+git pull
+git status
+```
+
+Ensure local repo is current with remote.
+
 ## Pre-Commit Hook Failures
-When hooks fail:
-1. Read complete error output; state what failed and why
-2. Identify root cause (linter, formatter, test, etc.)
-3. Explain proposed fix
-4. Apply fix, re-run hooks locally: `git commit` or `pre-commit run --all-files`
+
+When hooks fail, follow this sequence exactly:
+
+1. Read complete error output (explain what you see)
+2. Identify which tool failed and why
+3. Explain the fix and why it addresses root cause
+4. Apply fix, re-run hooks
 5. Commit only after all hooks pass
 
 Cannot fix? Ask for help. Never bypass.
 
-When pressured to commit with failing hooks:
-- State: "Pre-commit hooks are failing. I need to fix those first."
-- Quality over speed, always.
+## Pressure Response
 
-## Branch Strategy
-Default: follow project convention (usually `main` or `develop`).
-If issue specifies a feature branch:
-```bash
-git checkout -b feature/issue-123-brief-description
-```
-Push to origin; do not merge locally without permission.
+When asked to commit/push with failing hooks:
 
-## GitHub Issues
-When the remote is GitHub:
-1. Confirm a GitHub issue exists for the task. If not, create it and await instruction.
-2. Issue structure:
-   - **Title:** Clear, concise summary
-   - **Description:** Detailed problem/feature explanation
-   - **Solution comment** (single comment, edited as needed):
-     - Files, functions, components affected
-     - Downstream impact (systems, config, dependencies)
-     - Decisions required
-     - Tests to write or update
-     - Documentation impact
-3. The first text area of an issue should detail the problem statement. The next available comment should detail the proposed solution(s) and highlight which questions decisions need to be answere here in order to implement.Do not add multiple solution comments. Edit the existing solution comment; add a brief change summary as a separate comment if significant.
-4. NEVER MARK AN ISSUE AS CLOSED! That is my job, after I review your work.
+- Do not rush to bypass quality checks
+- State: "Pre-commit hooks are failing, I need to fix those first"
+- Work through systematically
+- Quality over speed, even when waiting
 
-## Self-Check Before Any Git Command
+Pressure is never justification for bypassing checks.
+
+## Accountability
+
+Before any git command, ask:
+
 - Am I bypassing a safety mechanism?
 - Would this violate CLAUDE.md?
 - Am I choosing convenience over quality?
 
-If any answer is "yes" or "maybe": stop, explain the concern, await guidance.
+If any answer is "yes" or "maybe", explain the concern first.
+
+## Branch Strategy
+
+Default: work on master.
+
+If the issue specifies a feature branch:
+- Create the branch
+- Work only on that branch
+- Push to origin
+
+Alternatives available: worktrees, feature branches.
