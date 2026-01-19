@@ -285,6 +285,10 @@ cleanup() {
 trap cleanup EXIT
 ```
 
+### Web design
+- Use responsive design unless there is a very good reason not to
+- Responsiveness should be defined in terms of rems never px, as this affects browser zoom/resizing etc.
+
 ### Structure
 
 - One function per task, <50 lines

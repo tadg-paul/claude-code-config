@@ -6,7 +6,6 @@
       "WebFetch",
       "Bash(curl:*)",
       "Bash(git:*)",
-      "Bash(gh api:*)",
       "Bash(gh issue view:*)",
       "Bash(gh issue list:*)",
       "Bash(gh issue create:*)",

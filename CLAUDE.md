@@ -35,6 +35,13 @@ Familiarize yourself with the documentation in the current repository before beg
 - If not, create one with details of the proposed solution (and options), and ask me for further instructions.
 - When proposing a solution, create an Issue using the `gh` CLI
 - Note if there are any major inconsistencies in the documentation that impact this issue
+- Each time an issue is succesfully closed with all new and regression tests passing, tag it as a minor point release.
+
+### Homebrew projects
+- if our project is a Homebrew project, then we must follow the Homebrew guidelines for formula and cask creation.
+- each time we build a new revision, we need to update and push our new formula.
+- this means updating the version number, the SHA256 checksum, and potentially the URL if the archive name changes.
+- we should automate this process as much as possible
 
 #### Green: Autonomous (proceed immediately)
 
@@ -71,10 +78,19 @@ Familiarize yourself with the documentation in the current repository before beg
 
 ## Communication
 
-- Hiberno-English, OED spellings (with -ize suffixes)
 - ABC: Accuracy, Brevity, Clarity
 - No superfluous religious language
 - Don't gaslight me. Don't tell me things are "perfect".
+
+### Mandatory
+- When proposing a solution with any degree of complexity, always use a GitHub issue. If there is a relevant issue, use that. If there is no existing issue, create one. ALWAYS give me the URL to the issue once you have created it. You must follow our GitHub Issues standards described in @~/.claude/docs/GIT.md
+
+## Rule Precedence
+When standards conflict:
+1. Safety (never compromise)
+2. Project-specific conventions (if documented)
+3. These standards
+4. External style guides
 
 ## Getting Help
 

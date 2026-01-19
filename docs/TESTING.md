@@ -4,12 +4,13 @@
 
 We practice TDD:
 
-1. Write a failing test defining desired behaviour
+1. Write a failing test defining all desired behaviour
 2. Run test, confirm it fails as expected
 3. Write minimal code to pass
 4. Run test, confirm success
 5. Refactor while keeping tests green
 6. Repeat for each feature/bugfix
+7. Each new test must become part of our regression test pack, to be run after every subseqent change
 
 ## Policy
 
