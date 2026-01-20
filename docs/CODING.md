@@ -97,11 +97,11 @@ count+=1
 
 ### Environment
 
-Target Python 3.14.x. Respect `.python-version`. Assume pyenv installed.
+Target Python 3.12.x (or current stable). Respect `.python-version`. Assume pyenv installed.
 
 ```bash
 [ -d ".venv" ] && source .venv/bin/activate || {
-    pyenv local 3.14.x
+    pyenv local 3.12.x
     python3 -m venv .venv
     source .venv/bin/activate
 }
@@ -121,7 +121,14 @@ Target Python 3.14.x. Respect `.python-version`. Assume pyenv installed.
 
 ## Code Search and Modification
 
-**Use ast-grep (`sg`) exclusively** for code search/modification. No grep, ripgrep, ag, sed, or regex tools for code operations. AST-aware queries enable safe, language-aware transformations.
+**Use ast-grep (`sg`) for code transformations** — refactoring, renaming, structural changes. AST-aware queries enable safe, language-aware modifications.
+
+**grep/ripgrep/sed/awk are acceptable for:**
+- Searching log files, config files, plain text
+- Quick searches where you need the result, not a transformation
+- Non-code files (JSON, YAML, Markdown, etc.)
+
+**Never use grep/sed/awk to modify source code** — use `sg` for that.
 
 ---
 
@@ -299,10 +306,40 @@ trap cleanup EXIT
 
 ### Security
 
-- Never hardcode credentials or API keys
-- Validate all external input
-- Parameterised queries for databases
+#### Secrets Management
+
+Never hardcode credentials, API keys, or tokens. Use:
+
+- **Local development:** Environment variables via `.env` files (must be in `.gitignore`)
+- **CI/CD:** Platform secrets (GitHub Actions secrets, etc.)
+- **Production:** Secrets manager (1Password CLI, AWS Secrets Manager, etc.)
+
+Pre-commit hook recommended: `detect-secrets` or `gitleaks` to catch accidental commits.
+
+#### Input Validation
+
+Validate all external input at system boundaries:
+
+- **Prefer allowlists** over denylists — explicitly permit known-good values
+- **Set maximum lengths** — unbounded input enables DoS
+- **Validate encoding** — reject or sanitise non-UTF-8 where unexpected
+- **Prevent path traversal** — reject `../` in user-supplied filenames
+- **Parameterised queries always** — never concatenate SQL
+
+#### Permissions
+
 - Minimum required permissions for files and processes
+- Never `chmod 777` — use the least permissive mode that works
+- Run services as non-root where possible
+
+#### Docker
+
+When using containers:
+
+- Run as non-root user (`USER` directive)
+- Never use `--privileged` without explicit justification
+- Pin base image versions (not `:latest`)
+- Scan images for vulnerabilities (`docker scout`, `trivy`)
 
 ### Documentation
 
@@ -315,6 +352,14 @@ trap cleanup EXIT
 
 - ISO 8601 for dates/times
 - Clear, parseable formats
+
+### Logging
+
+- **Levels:** DEBUG (development detail), INFO (normal operation), WARN (recoverable issues), ERROR (failures requiring attention)
+- **Structured logging** for production — JSON format enables parsing
+- **Never log:** credentials, tokens, PII, full credit card numbers
+- **Always log:** request IDs/correlation IDs for tracing, operation context, error details
+- **Log to stderr** for CLI tools; use proper logging framework for services
 
 ## File Operations
 
@@ -344,6 +389,13 @@ For systemd, launchd, cron:
 - Prefer standard library
 - Document required versions
 - Avoid deprecated APIs
+
+### Dependency Security
+
+- **Audit regularly:** `npm audit`, `pip-audit`, `cargo audit`, `bundler-audit`
+- **Pin versions** in production; use ranges only in libraries
+- **Review new dependencies** before adding — check maintenance status, known vulnerabilities
+- **Update promptly** when security patches are released
 
 ## Model References
 

@@ -83,3 +83,23 @@ If the issue specifies a feature branch:
 - Push to origin
 
 Alternatives available: worktrees, feature branches.
+
+## Exception Process
+
+When a rule genuinely cannot be followed (not "is inconvenient"):
+
+1. **Document the situation** — what rule, why it can't be followed
+2. **Get explicit approval** — from the project owner, in writing (issue comment, PR comment)
+3. **Record the exception** — in the commit message or PR description
+4. **Set an expiry** — exceptions should be temporary; create a follow-up issue to resolve properly
+
+Format for commit messages with exceptions:
+```
+fix: emergency patch for production outage
+
+EXCEPTION: Skipping integration tests - test DB unavailable
+APPROVED BY: @owner in #123
+FOLLOW-UP: #124 to restore test coverage
+```
+
+Exceptions are not get-out-of-jail-free cards. They create technical debt that must be repaid.

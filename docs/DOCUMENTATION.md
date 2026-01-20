@@ -1,6 +1,17 @@
 # DOCUMENTATION STANDARDS
 
+## Versioning
+
+Internal standards documents (like these guidelines) should include a version header:
+
+```markdown
+<!-- Version: 1.2 | Last updated: 2026-01-20 -->
+```
+
+When making significant changes, increment the version and note what changed in a brief changelog at the end of the document.
+
 ## Process
+
 - Before devising any solution, make sure that you have read and digested the documentation for this project which may have changed since the last time you looked.
 - When changing any code, update the relevant documentation after (and not before).
 

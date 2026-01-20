@@ -87,7 +87,7 @@ Familiarize yourself with the documentation in the current repository before beg
 
 ### Usee Makefile
 - Use makefile for standard entry points to buid, test, install etc. so that any user can run e.g. `make install` without needing to unpack the idiosynchrocies of the language adn frameworks underneath.
-- `make release` shuould increase the version num (0.1 default if not specified). This is esp important if we are making the package available on homebrew or other pkg managers.
+- `make release` shuould increase the version number - if no version parameter is given, increment the current version by 0.1.
 
 ## Rule Precedence
 When standards conflict:
