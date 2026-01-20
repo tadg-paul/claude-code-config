@@ -114,6 +114,7 @@ Target Python 3.14.x. Respect `.python-version`. Assume pyenv installed.
 ## Code Commenting
 
 - **Comments are sacred.** Never remove unless provably false. Every code file starts with a 2-line ABOUTME comment explaining its purpose.
+  - The exception to this is "dead code" i.e. commented-out code
 - **Evergreen comments.** Describe code as it is, not how it evolved. No temporal context.
 - **No mocks.** Real data, real APIs. Always.
 - **Evergreen naming.** Never name things 'improved', 'new', 'enhanced', etc.
