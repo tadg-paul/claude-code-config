@@ -85,16 +85,19 @@
       "Bash(magick:*)",
       "Bash(hugo:*)"
     ],
+    "deny": [
+      "Bash(rm:*)",
+      "Bash(convert:*)"
+    ],
     "ask": [
       "Bash(rg:*)",
       "Bash(sudo:*)",
       "Bash(gh release create:*)",
       "Bash(gh gist create:*)",
       "Bash(gh workflow run:*)"
-    ],
-    "deny": [
-      "Bash(rm:*)",
-      "Bash(convert:*)"
     ]
+  },
+  "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true
   }
 }

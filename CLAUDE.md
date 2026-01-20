@@ -85,6 +85,10 @@ Familiarize yourself with the documentation in the current repository before beg
 ### Mandatory
 - When proposing a solution with any degree of complexity, always use a GitHub issue. If there is a relevant issue, use that. If there is no existing issue, create one. ALWAYS give me the URL to the issue once you have created it. You must follow our GitHub Issues standards described in @~/.claude/docs/GIT.md
 
+### Usee Makefile
+- Use makefile for standard entry points to buid, test, install etc. so that any user can run e.g. `make install` without needing to unpack the idiosynchrocies of the language adn frameworks underneath.
+- `make release` shuould increase the version num (0.1 default if not specified). This is esp important if we are making the package available on homebrew or other pkg managers.
+
 ## Rule Precedence
 When standards conflict:
 1. Safety (never compromise)
