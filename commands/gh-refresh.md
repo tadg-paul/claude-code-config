@@ -9,4 +9,5 @@ For each github issue number above, perform the following steps:
 - We do not want to litter the issue with multiple solutions, and we do not want to leave old solutions that have been superceded on the issue
   - If there is no solution documented in the issue, create a new comment with the solution.
   - Otherwise, edit the existing solution text in the issue to reflect the updated solution.
+  - If there are multiple options to addres the issue, list them all and make a recommenation.
 - Add a comment summarizing the changes made to the solution documented in the issue
