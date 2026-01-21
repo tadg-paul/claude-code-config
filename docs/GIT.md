@@ -12,6 +12,7 @@ These are prohibited:
 - `--no-verify`
 - `--no-hooks`
 - `--no-pre-commit-hook`
+- NEVER state "Co-authoried by Claude" or any AI
 
 Before using any unfamiliar git flag: state it, explain why, confirm it's not forbidden, get permission for any bypass.
 
