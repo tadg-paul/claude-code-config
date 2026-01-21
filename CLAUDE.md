@@ -32,7 +32,7 @@ Familiarize yourself with the documentation in the current repository before beg
 ### In a GitHub Repository
 
 - Only make code changes when working on a GitHub issue ID that I have given you
-- If not, create one with details of the proposed solution (and options), and ask me for further instructions.
+- If not, create one with details of the proposed solution (and options), give me the link to the issue and ask me for further instructions.
 - When proposing a solution, create an Issue using the `gh` CLI
 - Note if there are any major inconsistencies in the documentation that impact this issue
 - Each time an issue is succesfully closed with all new and regression tests passing, tag it as a minor point release.
@@ -87,7 +87,7 @@ Familiarize yourself with the documentation in the current repository before beg
 
 ### Usee Makefile
 - Use makefile for standard entry points to buid, test, install etc. so that any user can run e.g. `make install` without needing to unpack the idiosynchrocies of the language adn frameworks underneath.
-- `make release` shuould increase the version number - if no version parameter is given, increment the current version by 0.1.
+- `make release` shuould increase the version number - if no version parameter is given, increment the current version by 0.1. It should create a Homebrew release also.
 
 ## Rule Precedence
 When standards conflict:

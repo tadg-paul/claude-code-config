@@ -111,6 +111,7 @@
       "Bash(rm:*)",
       "Bash(convert:*)"
     ],
+    "defaultMode": "acceptEdits",
     "ask": [
       "Bash(sudo:*)",
       "Bash(gh release create:*)",
