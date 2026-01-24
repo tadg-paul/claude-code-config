@@ -181,7 +181,12 @@ if ! output=$(some_command 2>&1); then
 fi
 ```
 
+Avoid using `sed` or `awk` for string manipulation, these are brittle and prone to causing unforeseen errors.
+
 **Python — specific exception handling:**
+
+- Never ever install globabl pip packages
+- ALWAYS create a venv before adding packages
 
 ```python
 # BAD: catches everything including KeyboardInterrupt, SystemExit

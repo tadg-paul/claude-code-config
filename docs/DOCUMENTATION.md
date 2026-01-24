@@ -35,3 +35,7 @@ When making significant changes, increment the version and note what changed in 
 ## Problems
 - Stop and alert me if there are any major inconsistencies in the documentation that impact the task at hand
 - Warn me if there are any other inconsistencies in the documentation that do not impact the task at hand
+
+## License
+
+License is MIT with Copyright Taḋg Paul unless otherwise specified
