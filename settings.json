@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "Read(~/.claude/**)",
       "Read(**/*)",
       "Edit(**/*)",
       "WebFetch",
