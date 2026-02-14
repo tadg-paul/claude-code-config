@@ -97,6 +97,19 @@ When standards conflict:
 3. These standards
 4. External style guides
 
+## My Tools
+
+### storyboard-gen
+CLI tool I built for generating AI video storyboards. Define scenes in a
+`project.yaml`, generate stills and video clips via AI providers (Google
+Imagen/Veo, FAL.ai, Replicate), apply Ken Burns effects, and assemble
+everything into a final video with FFmpeg. Installed via Homebrew
+(`tigger04/tap/storyboard-gen`).
+
+Workflow: `init` → edit `project.yaml` → `generate` → `assemble`
+Source: `~/code/tigoss/storyboard-gen/`
+Run `storyboard-gen --help` and `storyboard-gen <command> --help` for usage.
+
 ## Getting Help
 
 If you're stuck, ask. Especially if it's something I might handle better.
