@@ -112,15 +112,16 @@
       "Bash(rm:*)",
       "Bash(convert:*)"
     ],
-    "defaultMode": "acceptEdits",
     "ask": [
       "Bash(sudo:*)",
       "Bash(gh release create:*)",
       "Bash(gh gist create:*)",
       "Bash(gh workflow run:*)"
-    ]
+    ],
+    "defaultMode": "acceptEdits"
   },
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }
