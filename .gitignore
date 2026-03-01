@@ -1,23 +1,44 @@
-# ===== KEEP ONLY =====
-# Explicitly track these (use git add -f if needed):
-# - CLAUDE.md
-# - commands/*.md
-# - settings.json (if it exists and has no secrets)
-# - .mcp.json or similar MCP configs (review first!)
+# ===== TRACK =====
+# CLAUDE.md          - main config
+# docs/              - coding standards
+# commands/          - custom slash commands
+# settings.json      - permissions config (no secrets)
 
-# ===== EXCLUDE EVERYTHING ELSE =====
+# ===== IGNORE EVERYTHING ELSE =====
 
-# Session/debug state
+# Session & runtime state
 debug/
 todos/
-projects/
-statsig/
+tasks/
 ide/
+plans/
+session-env/
+shell-snapshots/
+file-history/
+paste-cache/
+
+# Per-project memory (auto-generated, machine-specific)
+projects/
+
+# History (sensitive - contains conversation data)
+history*.jsonl
+
+# Telemetry & analytics
+statsig/
+telemetry/
+stats-cache.json
+mcp-needs-auth-cache.json
+
+# Cache
+cache/
 
 # Plugins (nested git repos)
 plugins/
 
-# Credentials and secrets
+# Backups (auto-generated)
+backups/
+
+# Credentials & secrets
 credentials.json
 *.key
 *.pem
@@ -28,9 +49,6 @@ oauth/
 # Logs and cache
 *.log
 *.cache
-cache/
-sessions/
-conversations/
 
 # OS cruft
 .DS_Store
@@ -40,15 +58,3 @@ Thumbs.db
 *.tmp
 *.swp
 *~
-
-# Any JSON with UUIDs (likely state files)
-*-agent-*.json
-
-
-# Other
-file-history/
-history*
-paste-cache/
-plans/
-shell-snapshots/
-stats-cache.json
