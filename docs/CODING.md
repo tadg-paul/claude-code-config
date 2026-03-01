@@ -52,7 +52,8 @@ Omit only with documented reason.
 - Use `command -v`, not `which`
 - Never parse `ls`
 - `find` pipelines: `-print0` with `read -r -d ''` or `xargs -0`
-- Executables provide `-h`/`--help`
+- Executables provide `-h`/`--help` and `--version`
+- If releasing on homebrew, always `make release` then install locally via `brew install` or `upgrade` - never try and live patch an existing package install from brew or any other package manager.
 
 ### Prohibited Shell Patterns
 
