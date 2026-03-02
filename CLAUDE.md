@@ -97,6 +97,12 @@ When standards conflict:
 3. These standards
 4. External style guides
 
+## Claude's runtime environment
+
+You might find yourself running within Xcode, which will only have the barebone system PATH sest. The gh cli as well as many other toold you may need are installev via homebrew. Try adding the following to your path:
+
+`export PATH=~/bin:~/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:"$PATH"`
+
 ## Getting Help
 
 If you're stuck, ask. Especially if it's something I might handle better.
