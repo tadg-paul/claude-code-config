@@ -15,11 +15,11 @@ These external standards inform our practices:
 - **Swift:** [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)
 - **Security:** [OWASP Top 10](https://owasp.org/www-project-top-ten/), [CERT Secure Coding](https://wiki.sei.cmu.edu/confluence/display/seccode)
 
-## Language Preferences
+## Language and Tool Selection
 
-Order: bash/shell, Perl, Swift, Python.
+Use the best tool for the job, but maintain consistency within a project.
 
-Suggest simpler solutions (spreadsheet formulae, word processing) before code where appropriate.
+Follow the dominant language, framework, and tooling already in use unless there is a clear reason not to. Do not introduce new languages, frameworks, or dependencies for marginal convenience. Prefer the simplest solution that is maintainable, reviewable, and fits the project.
 
 ## Style Baselines
 
