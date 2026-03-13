@@ -11,6 +11,7 @@ We practice TDD:
 5. Refactor while keeping tests green
 6. Repeat for each feature/bugfix
 7. Each new test must become part of our regression test pack, to be run after every subsequent change
+8. If I give you multiple issues to work on, run the regression test pack after all of them are done, not after each one.
 
 ## Policy
 
