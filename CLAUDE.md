@@ -88,6 +88,7 @@ Familiarize yourself with the documentation in the current repository before beg
 ### Usee Makefile
 - Use makefile for standard entry points to buid, test, install etc. so that any user can run e.g. `make install` without needing to unpack the idiosynchrocies of the language adn frameworks underneath.
 - `make release` shuould increase the version number - if no version parameter is given, increment the current version by 0.1. It should create a Homebrew release also.
+- `make release` should support a `SKIP_TESTS=1` environment variable to bypass the regression test/lint step. If the project's release target doesn't have this, add it. Use it when regression tests and lint have already passed with no code changes since (no modified or uncommitted files).
 - `make sync` should properly handle git sync especially where a project has submodules. It should `git add --all` -> `git commit -m ...` -> `git pull` (to merge) -> `git push`
 
 ## Rule Precedence
