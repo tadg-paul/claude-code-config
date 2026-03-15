@@ -307,6 +307,7 @@ trap cleanup EXIT
 
 - One function per task, <50 lines
 - Separate configuration from logic
+- No inline templates. File content intended for output (scaffolding, generated configs, boilerplate) belongs in package resource files, not string constants
 - Prefer pure functions
 - Maximum 3 levels of nesting; refactor deeper logic into functions
 

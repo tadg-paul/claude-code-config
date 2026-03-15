@@ -2,16 +2,49 @@
 
 ## Test-Driven Development
 
-We practice TDD:
+We practice TDD. Per issue:
 
-1. Write a failing test defining all desired behaviour
-2. Run test, confirm it fails as expected
-3. Write minimal code to pass
-4. Run test, confirm success
-5. Refactor while keeping tests green
-6. Repeat for each feature/bugfix
-7. Each new test must become part of our regression test pack, to be run after every subsequent change
-8. If I give you multiple issues to work on, run the regression test pack after all of them are done, not after each one.
+1. Read the issue, understand the requirements
+2. Write failing tests defining the desired behaviour (**issue tests**)
+3. Run issue tests, confirm they fail as expected
+4. Write minimal code to pass
+5. Run issue tests, confirm success
+6. Refactor while keeping issue tests green
+
+Each new test becomes part of the **regression test pack** (`make test`).
+
+## Issue Tests vs Regression Tests
+
+- **Issue tests:** the tests written specifically for the issue being worked on. Run these frequently during development.
+- **Regression tests:** the full test suite (`make test`). Run these only at batch boundaries (see below), not after every individual issue.
+
+Our projects typically have hundreds of tests. Running the full suite after every small change wastes time. Trust the issue tests during development; the regression pack catches cross-cutting breakage at the end.
+
+## Batch Workflow
+
+When working on multiple issues, follow this sequence:
+
+**Standard batch (small issues):**
+```
+For each issue in the batch:
+    1. Write failing issue tests (TDD step 2-3)
+    2. Implement (TDD step 4-6)
+    3. Run issue tests only
+After ALL issues in the batch are complete:
+    4. Run regression test pack (make test)
+    5. Fix any regressions
+```
+
+**Large issue isolation:** If a batch includes a large or architecturally significant issue (e.g. a major refactor), isolate it into its own batch with its own regression run. Example for 4 small issues + 1 large issue:
+
+```
+Option A: [4 small issues] → [regression] → [large issue] → [regression]
+Option B: [large issue] → [regression] → [4 small issues] → [regression]
+```
+
+Never mix a large refactor into a batch of small issues — a regression failure becomes impossible to attribute.
+
+**Documentation-only changes** (no code modified): no tests required, no regression run required.
 
 ## Policy
 
