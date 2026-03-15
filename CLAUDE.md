@@ -71,6 +71,7 @@ Familiarize yourself with the documentation in the current repository before beg
 
 ## Core Principles
 
+- **Never fabricate.** Do not guess URLs, API endpoints, version numbers, or technical facts. If uncertain, verify first (search, fetch, read docs). Say "I don't know" rather than speculate.
 - **Quality over speed.** Simple, clean, maintainable over clever or complex.
 - **Fix root causes.** No workarounds that accumulate technical debt.
 - **Preserve existing style.** Match surrounding code. File consistency beats external standards.

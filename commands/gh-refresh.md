@@ -1,9 +1,9 @@
 DO NOT WRITE ANY CODE. THIS IS A DOCUMENTATION ACTIVITY
 
-For each github issue number above, perform the following steps:
+Before you start:
+- If you have not done so already, make sure you have read and digested our operating principles in CLAUDE.md and related docs, as well as the project documentation including README and everything under ./docs/
 
-- Before you start, read our operating principles in CLAUDE.md. Read all of the docs referenced in CLAUDE.md. Read all of the project documentation (README and everything under ./docs/)
-  - pay special attention to vision, implementation guide, patterns, design principles (if any)
+For each github issue number above, perform the following steps:
 - Fetch issue details with `gh issue view [n]`, review the issue and all comments.
 - Review affected files
 - We do not want to litter the issue with multiple solutions, and we do not want to leave old solutions that have been superceded on the issue
