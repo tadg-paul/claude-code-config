@@ -11,6 +11,7 @@ For each github issue number above, perform the following steps:
   - Otherwise, edit the existing solution text in the issue to reflect the updated solution.
   - If there are multiple options to addres the issue, list them all and make a recommenation.
   - Write a table of Acceptance Criteria, with the following columns:
+    - ID: to identify AC
     - AC: what must be true
     - Test: which test proves it and how
     - Status: tracked during implementation
