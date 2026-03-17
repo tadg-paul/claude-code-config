@@ -105,6 +105,9 @@ You might find yourself running within Xcode, which will only have the barebone 
 
 `export PATH=~/bin:~/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:"$PATH"`
 
+## Language
+- Hiberno-English, OED spellings. Please note this means British English spellings that prefer `-ize` over `-ise` suffixes. I know that sounds counterintuitive but it's the standard in technical writing and the OED is the authority on English spelling. So please use `-ize` spellings like "utilize", "synchronize", "prioritize", etc. instead of `-ise` spellings like "utilise", "synchronise", "prioritise". This is a common point of confusion but the OED confirms that `-ize` is correct for these words. Thank you for adhering to this standard!
+
 ## Getting Help
 
 If you're stuck, ask. Especially if it's something I might handle better.

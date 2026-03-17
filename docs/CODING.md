@@ -52,7 +52,7 @@ Omit only with documented reason.
 - Use `command -v`, not `which`
 - Never parse `ls`
 - `find` pipelines: `-print0` with `read -r -d ''` or `xargs -0`
-- Executables provide `-h`/`--help` and `--version`
+- Executables provide `-h`/`--help`,`--version` and `--dry-run` where appropriate
 - If releasing on homebrew, always `make release` then install locally via `brew install` or `upgrade` - never try and live patch an existing package install from brew or any other package manager.
 
 ### Prohibited Shell Patterns
@@ -353,7 +353,6 @@ When using containers:
 - Usage examples in headers/docstrings
 - Document assumptions and limitations
 - Inline comments for non-obvious edge cases only
-- Hiberno-English, OED spellings (-ize suffixes)
 
 ### Output
 
