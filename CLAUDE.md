@@ -26,8 +26,17 @@ Familiarize yourself with the documentation in the current repository before beg
 - Our coding standards: @~/.claude/docs/CODING.md
 - We practice TDD! see: @~/.claude/docs/TESTING.md
 - Our git standards: @~/.claude/docs/GIT.md
+- Our GitHub issue standards: @~/.claude/docs/ISSUES.md
 
 ## Decision Framework
+
+### Plan mode
+
+Do not present plans ephemerally. When forming a plan:
+
+1. Externalise it immediately into the relevant GitHub issue as the solution outline — create the issue if one does not exist, and create sub-issues as needed to break down complex work
+2. All issues and sub-issues must conform to @~/.claude/docs/ISSUES.md
+3. Give me the issue URL(s) and wait for explicit approval before proceeding to implementation
 
 ### In a GitHub Repository
 

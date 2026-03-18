@@ -1,5 +1,6 @@
 Before you start:
 - If you have not done so already, make sure you have read and digested our operating principles in CLAUDE.md and related docs, as well as the project documentation including README and everything under ./docs/
+- All issue updates made during implementation must conform to @~/.claude/docs/ISSUES.md
 
 For each github issue number above, perform the following steps:
 
