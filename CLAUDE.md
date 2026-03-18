@@ -35,7 +35,8 @@ Familiarize yourself with the documentation in the current repository before beg
 - If one doesn't exist, create it with details of the proposed solution (and options), give me the link to the issue and ask me for further instructions.
 - When proposing a solution, create an Issue using the `gh` CLI
 - Note if there are any major inconsistencies in the documentation that impact this issue
-- Each time an issue is succesfully closed with all new and regression tests passing, tag it as a minor point release.
+- Each time an issue is successfully closed with all new and regression tests passing, tag it as a minor point release.
+- If the issue involved one-off tests (in `tests/one_off/`), confirm with me whether they should be deleted before tagging the release.
 
 ### Homebrew projects
 - if our project is a Homebrew project, then we must follow the Homebrew guidelines for formula and cask creation.
@@ -86,9 +87,9 @@ Familiarize yourself with the documentation in the current repository before beg
 ### Mandatory
 - When proposing a solution with any degree of complexity, always use a GitHub issue. If there is a relevant issue, use that. If there is no existing issue, create one. ALWAYS give me the URL to the issue once you have created it. You must follow our GitHub Issues standards described in @~/.claude/docs/GIT.md
 
-### Usee Makefile
-- Use makefile for standard entry points to buid, test, install etc. so that any user can run e.g. `make install` without needing to unpack the idiosynchrocies of the language adn frameworks underneath.
-- `make release` shuould increase the version number - if no version parameter is given, increment the current version by 0.1. It should create a Homebrew release also.
+### Use Makefile
+- Use makefile for standard entry points to build, test, install etc. so that any user can run e.g. `make install` without needing to unpack the idiosyncrasies of the language and frameworks underneath.
+- `make release` should increase the version number - if no version parameter is given, increment the current version by 0.1. It should create a Homebrew release also.
 - `make release` should support a `SKIP_TESTS=1` environment variable to bypass the regression test/lint step. If the project's release target doesn't have this, add it. Use it when regression tests and lint have already passed with no code changes since (no modified or uncommitted files).
 - `make sync` should properly handle git sync especially where a project has submodules. It should `git add --all` -> `git commit -m ...` -> `git pull` (to merge) -> `git push`
 
@@ -101,9 +102,11 @@ When standards conflict:
 
 ## Claude's runtime environment
 
-You might find yourself running within Xcode, which will only have the barebone system PATH sest. The gh cli as well as many other toold you may need are installev via homebrew. Try adding the following to your path:
+If a required tool cannot be found and you suspect you may be running from Xcode, a restricted shell, or another environment with a minimal PATH, try prefixing your PATH before retrying:
 
 `export PATH=~/bin:~/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:"$PATH"`
+
+Do not do this unconditionally — only if tool discovery fails.
 
 ## Language
 - Hiberno-English, OED spellings. Please note this means British English spellings that prefer `-ize` over `-ise` suffixes. I know that sounds counterintuitive but it's the standard in technical writing and the OED is the authority on English spelling. So please use `-ize` spellings like "utilize", "synchronize", "prioritize", etc. instead of `-ise` spellings like "utilise", "synchronise", "prioritise". This is a common point of confusion but the OED confirms that `-ize` is correct for these words. Thank you for adhering to this standard!

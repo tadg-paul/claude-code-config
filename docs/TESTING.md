@@ -20,6 +20,58 @@ Each new test becomes part of the **regression test pack** (`make test`).
 
 Our projects typically have hundreds of tests. Running the full suite after every small change wastes time. Trust the issue tests during development; the regression pack catches cross-cutting breakage at the end.
 
+## One-Off Tests
+
+Most tests should become part of the regression test pack. **This is the default.** If you are writing a new test and are unsure where it belongs, it belongs in regression.
+
+A **one-off test** is the exception: a test tied to a specific, non-recurring activity — verifying a data migration ran correctly, reproducing a specific production incident, checking a one-time environment state. Once its purpose is served, it has no value running again.
+
+### Storage
+
+Tests live in one of two locations:
+
+```
+tests/
+  regression/    ← default; all new tests go here; run by `make test`
+  one_off/       ← quarantine; never run by `make test`
+```
+
+`make test` must only reference `tests/regression/`. `tests/one_off/` is structurally excluded. This is the primary protection against one-off tests polluting CI.
+
+### Marker
+
+All one-off tests must also carry a marker with a mandatory `issue` reference, using whichever annotation or tagging mechanism the project's test framework provides. The following is illustrative only — apply the equivalent for your language and framework:
+
+```python
+# Python/pytest — illustrative only
+@pytest.mark.one_off(issue="#123")
+def test_migration_user_records_backfilled():
+    ...
+```
+
+If the framework has no native marker mechanism, encode the issue reference in the test name as a suffix: `test_migration_user_records_backfilled_OT007`.
+
+A one-off test without an `issue` reference must fail linting. Both the directory placement and the marker are required — either alone can catch a mistake.
+
+### Running one-off tests manually
+
+Use the test runner appropriate to the project's language and framework. Via the Makefile:
+
+```bash
+make test-one-off          # run all one-off tests
+make test-one-off ISSUE=123  # run one-off tests for a specific issue
+```
+
+### Decision rule
+
+> **If in doubt, it's a regression test.**
+
+Only place a test in `one_off/` if you can answer: *"After this issue is closed and verified, will this test ever be meaningful to run again?"* If the answer is yes, or you are unsure, it belongs in regression.
+
+### Lifecycle
+
+One-off tests are temporary. They must be reviewed and deleted once their associated issue is closed and verified. They are not to accumulate indefinitely.
+
 ## Batch Workflow
 
 When working on multiple issues, follow this sequence:
@@ -74,12 +126,82 @@ Examples:
 
 The test name should tell you what failed without reading the code.
 
-## Test Structure
+## Test IDs
 
-Follow Arrange-Act-Assert (AAA):
+All tests carry a unique ID encoded in their marker. The prefix indicates type:
+
+| Prefix | Type | Location |
+|--------|------|----------|
+| `RT-NNN` | Regression test | `tests/regression/` |
+| `OT-NNN` | One-off test | `tests/one_off/` |
+
+Numbers are zero-padded to three digits. Each prefix has its own sequence.
+
+### Usage in markers
+
+Embed the test ID in whichever marker or annotation mechanism the project's test framework provides. The following Python/pytest examples are illustrative only — apply the equivalent in your language and framework (Jest, RSpec, JUnit, Swift Testing, etc.):
 
 ```python
-def test_discount_applied_to_eligible_order():
+# Python/pytest — illustrative only
+@pytest.mark.regression(test_id="RT-042")
+def test_login_with_invalid_password_returns_401():
+    ...
+
+@pytest.mark.one_off(issue="#123", test_id="OT-007")
+def test_migration_user_records_backfilled():
+    ...
+```
+
+If the framework has no native marker or annotation mechanism, encode the ID in the test name as a suffix:
+
+```
+test_login_with_invalid_password_returns_401_RT042
+test_migration_user_records_backfilled_OT007
+```
+
+### Usage in GitHub issues
+
+Reference test IDs in AC tables:
+
+```
+| AC-1 | Login rejects invalid passwords | ✅ RT-042 |
+| AC-2 | Migration backfills user records | ✅ OT-007 |
+```
+
+### ID allocation
+
+The file `tests/NEXT_IDS.txt` is the source of truth for the next available ID in each sequence:
+
+```
+RT 043
+OT 008
+```
+
+When allocating a new ID: read the file, take the current value, increment it, write it back. This must happen in the same commit as the test itself.
+
+If `tests/NEXT_IDS.txt` does not exist in a project, create it and seed both sequences at `001` before allocating the first ID.
+
+### Mid-project migration policy
+
+This convention was introduced mid-project. The following rules govern legacy tests:
+
+1. **Do not retrofit.** Pre-existing tests with no ID must not be modified solely to add an ID. Retrofitting adds churn with no functional value.
+
+2. **Migrate on touch.** If a pre-existing test is being modified as part of an issue (fix, refactor, extension), add an ID at that point. This is the natural migration path.
+
+3. **New tests always get an ID.** No exceptions, regardless of project age.
+
+4. **Linting applies to new and touched tests only.** CI must not fail on legacy tests lacking IDs. If a linting rule enforces ID presence, scope it to files modified in the current commit.
+
+5. **Do not flag missing IDs unprompted.** If Claude Code notices a legacy test lacks an ID while working on something unrelated, note it in the issue comment but do not modify the test.
+
+## Test Structure
+
+Follow Arrange-Act-Assert (AAA) regardless of language or framework:
+
+```
+# Pseudocode — apply in whichever language the project uses
+test "discount applied to eligible order":
     # Arrange: set up preconditions
     order = Order(items=[item_over_threshold])
 
@@ -87,6 +209,18 @@ def test_discount_applied_to_eligible_order():
     result = apply_discount(order)
 
     # Assert: verify the outcome
+    assert result.discount_percent == 10
+```
+
+Python/pytest example (illustrative only):
+
+```python
+def test_discount_applied_to_eligible_order():
+    # Arrange
+    order = Order(items=[item_over_threshold])
+    # Act
+    result = apply_discount(order)
+    # Assert
     assert result.discount_percent == 10
 ```
 
@@ -110,7 +244,7 @@ def test_discount_applied_to_eligible_order():
 
 ## Test Data
 
-- **Use factories** for generating test objects (factory_boy, faker, etc.)
+- **Use factories** for generating test objects — use the factory/fixture library appropriate to the project's language and framework (e.g. factory_boy for Python, FactoryBot for Ruby, fishery for TypeScript, fixtures for Go)
 - **Fixtures** for shared setup — but keep them minimal and obvious
 - **No production data** in tests — synthetic data only
 - **Deterministic:** tests must produce the same result every run (no random without seed)
@@ -151,6 +285,24 @@ When in doubt: if removing the mock would make the test fail for reasons *other 
 - Never introduce new warnings or errors
 - If an action generates a warning or error, stop everything and resolve it
 - Build-time errors (e.g., Hugo static site) are equivalent to compile errors — fix immediately
+
+## Makefile Test Targets
+
+Projects must expose these standard targets. Replace `<test-runner>` and `<filter-flag>` with the appropriate command for the project's language and framework (e.g. `pytest` for Python, `jest` for Node, `swift test` for Swift, `go test ./...` for Go):
+
+```makefile
+test:
+	<test-runner> tests/regression/
+
+test-one-off:
+ifdef ISSUE
+	<test-runner> tests/one_off/ <filter-flag> "$(ISSUE)"
+else
+	<test-runner> tests/one_off/
+endif
+```
+
+`make test` must never reference `tests/one_off/`. If a project does not yet have a `tests/one_off/` directory, create it with a `.gitkeep`.
 
 ---
 

@@ -2,9 +2,10 @@
 
 ## Platform
 
-- **Target:** macOS/Apple Silicon locally; Linux servers remotely
+- **Local development:** macOS/Apple Silicon — this is a constraint of the hardware in use, not a technology preference
+- **Deployment:** Linux servers (remote)
 - **Approach:** CLI-first, scriptable, FOSS preferred
-- **Required tools:** GNU coreutils, ast-grep (`sg`), ShellCheck, shfmt, Ruff
+- **Required tools:** GNU coreutils, ast-grep (`sg`), ShellCheck, shfmt — plus the linter/formatter appropriate to the project language (see Style Baselines)
 
 ## Reference Standards
 
@@ -13,19 +14,45 @@ These external standards inform our practices:
 - **Shell:** [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html), [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls), [ShellCheck Wiki](https://github.com/koalaman/shellcheck/wiki)
 - **Python:** [PEP 8](https://peps.python.org/pep-0008/), [PEP 20](https://peps.python.org/pep-0020/) (Zen of Python), [CERT Python](https://wiki.sei.cmu.edu/confluence/display/python)
 - **Swift:** [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)
+- **JavaScript/TypeScript:** [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript), [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)
+- **Ruby:** [Ruby Style Guide](https://rubystyle.guide/)
+- **Rust:** [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/), [Rust Book](https://doc.rust-lang.org/book/)
+- **Go:** [Effective Go](https://go.dev/doc/effective_go), [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
+- **Java/Kotlin:** [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html), [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
+- **C/C++:** [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
 - **Security:** [OWASP Top 10](https://owasp.org/www-project-top-ten/), [CERT Secure Coding](https://wiki.sei.cmu.edu/confluence/display/seccode)
 
 ## Language and Tool Selection
 
-Use the best tool for the job, but maintain consistency within a project.
+Use the best tool for the job. Do not bias towards any particular language, framework, or technology out of habit or personal preference.
 
-Follow the dominant language, framework, and tooling already in use unless there is a clear reason not to. Do not introduce new languages, frameworks, or dependencies for marginal convenience. Prefer the simplest solution that is maintainable, reviewable, and fits the project.
+Decision hierarchy:
+1. **Existing project language/framework** — follow what is already in use unless there is a clear, documented reason not to.
+2. **Genuinely best fit** — if starting fresh or extending significantly, choose the technology that best fits the problem, deployment context, and maintainability requirements.
+3. **Simplest maintainable solution** — prefer the option that is easiest to read, test, and hand over.
+
+Do not introduce new languages, frameworks, or dependencies for marginal convenience. Do not default to a language because it is familiar — justify the choice on merit.
 
 ## Style Baselines
 
-- **Shell:** Google Shell Style Guide + safety rules below
-- **Python:** PEP 8; Ruff for linting/formatting
-- **Swift:** Swift API Design Guidelines
+These are the languages most commonly used across our projects. For any language not listed, apply that language's dominant community standard and the general principles in this document.
+
+| Language | Style Standard | Linter | Formatter |
+|----------|---------------|--------|-----------|
+| Shell/Bash | Google Shell Style Guide + safety rules below | ShellCheck | shfmt |
+| Python | PEP 8, PEP 20 | Ruff | Ruff |
+| Swift | Swift API Design Guidelines | SwiftLint | swift-format |
+| JavaScript | Airbnb or project-existing standard | ESLint | Prettier |
+| TypeScript | Airbnb or project-existing standard | ESLint + typescript-eslint | Prettier |
+| Ruby | Ruby Style Guide | RuboCop | RuboCop |
+| Rust | Rust API Guidelines | Clippy | rustfmt |
+| Go | Effective Go | golangci-lint | gofmt |
+| Java | Google Java Style Guide | Checkstyle / SpotBugs | google-java-format |
+| Kotlin | Kotlin Coding Conventions | ktlint | ktlint |
+| C/C++ | Google C++ Style Guide | clang-tidy | clang-format |
+| Any other | Dominant community standard for that language | Community standard linter | Community standard formatter |
+
+All linting must pass for changed files regardless of language.
 
 ## Shell
 
@@ -413,12 +440,7 @@ Never modify system config (`.bashrc`, etc.) without explicit permission.
 
 ## Linting
 
-| Language | Linter | Formatter |
-|----------|--------|-----------|
-| Shell | ShellCheck | shfmt |
-| Python | Ruff | Ruff |
-
-All linting must pass for changed files.
+See the Style Baselines table above for the linter and formatter for each language. All linting must pass for changed files. If a project has a pre-existing linter configuration, follow it — do not override it with personal preference.
 
 ---
 
