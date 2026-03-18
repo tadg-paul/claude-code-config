@@ -2,13 +2,15 @@
 
 ## Versioning
 
-Internal standards documents (like these guidelines) should include a version header:
+Project documentation files (under `./docs/` in a project) should include a version header:
 
 ```markdown
 <!-- Version: 1.2 | Last updated: 2026-01-20 -->
 ```
 
 When making significant changes, increment the version and note what changed in a brief changelog at the end of the document.
+
+Global config files in `~/.claude/` are version-controlled via git and do not require version headers.
 
 ## Process
 

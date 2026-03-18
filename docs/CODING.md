@@ -213,8 +213,7 @@ Avoid using `sed` or `awk` for string manipulation, these are brittle and prone 
 
 **Python — specific exception handling:**
 
-- Never ever install globabl pip packages
-- ALWAYS create a venv before adding packages
+- Never install pip packages globally; always create a venv first
 
 ```python
 # BAD: catches everything including KeyboardInterrupt, SystemExit

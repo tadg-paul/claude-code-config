@@ -17,7 +17,7 @@ A well-formed issue must contain:
 |---|---|
 | **ID** | Format: `AC{issue}.{n}` — e.g. `AC12.1` |
 | **AC** | A single, falsifiable *state of the system* — not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
-| **Test** | How to verify the AC is met. Name the test(s) with their RT-NNN/OT-NNN IDs and briefly describe the stimulus and expected observable output. Multiple tests per AC are allowed. |
+| **Test** | How to verify the AC is met. Name the test(s) with their ID (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output. Multiple tests per AC are allowed. |
 | **Status** | `pending` / `passing` / `failing` / `skipped` |
 
 ## The AC/Test boundary (the most common mistake)
@@ -48,4 +48,4 @@ Every sub-issue must also conform to this standard — a well-formed issue with 
 
 ## Test ID allocation in issues
 
-Allocating test IDs (RT-NNN/OT-NNN) in AC tables and creating `tests/NEXT_IDS.txt` if it does not yet exist are **not code changes**. They may be done at any time as part of issue preparation without an approved issue.
+Allocating test IDs (RT-NNN/OT-NNN/UT-NNN) in AC tables and creating `tests/NEXT_IDS.txt` if it does not yet exist are **not code changes**. They may be done at any time as part of issue preparation without an approved issue.

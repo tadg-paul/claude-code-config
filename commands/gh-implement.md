@@ -3,8 +3,6 @@ Before you start:
 - All issue updates made during implementation must conform to @~/.claude/docs/ISSUES.md
 
 For each github issue number above, perform the following steps:
-
-For each github issue number above, perform the following steps:
 - Fetch issue details with `gh issue view [n]`, review the issue and all comments - there may have been changes since you last looked.
 - If there is no documented solution in the issue, create a new comment with the solution.
 - Refuse to proceed if either of the following are missing from the issue:

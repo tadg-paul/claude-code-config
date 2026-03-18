@@ -53,31 +53,17 @@ Do not present plans ephemerally. When forming a plan:
 - this means updating the version number, the SHA256 checksum, and potentially the URL if the archive name changes.
 - we should automate this process as much as possible
 
-#### Green: Autonomous (proceed immediately)
+### Autonomous actions
 
-- Fix failing tests, linting errors, type errors
-- Implement single functions with clear specs
-- Correct typos, formatting, documentation
-- Add missing imports or dependencies
-- Refactor within single files for readability
+You may proceed without creating a GitHub issue for small, clearly-scoped tasks:
 
-#### Amber: Collaborative (propose first)
+- Fixing failing tests, linting errors, or type errors
+- Implementing a single function with a clear, unambiguous spec
+- Correcting typos, formatting, or documentation
+- Adding missing imports or dependencies
+- Refactoring within a single file for readability
 
-- Changes affecting multiple files/modules
-- New features or significant functionality
-- API or interface modifications
-- Database schema changes
-- Third-party integrations
-
-#### Red: Always ask permission
-
-- Rewriting working code from scratch
-- Changing core business logic
-- Security-related modifications
-- Anything risking data loss
-- Removing code comments (unless provably false)
-- Disabling functionality instead of fixing root cause
-- Creating duplicate files to work around issues
+Everything else requires an approved issue before touching code.
 
 ## Core Principles
 
@@ -94,7 +80,7 @@ Do not present plans ephemerally. When forming a plan:
 - Don't gaslight me. Don't tell me things are "perfect".
 
 ### Mandatory
-- When proposing a solution with any degree of complexity, always use a GitHub issue. If there is a relevant issue, use that. If there is no existing issue, create one. ALWAYS give me the URL to the issue once you have created it. You must follow our GitHub Issues standards described in @~/.claude/docs/GIT.md
+- When proposing a solution with any degree of complexity, always use a GitHub issue. If there is a relevant issue, use that. If there is no existing issue, create one. ALWAYS give me the URL to the issue once you have created it. You must follow our GitHub Issues standards described in @~/.claude/docs/ISSUES.md
 
 ### Use Makefile
 - Use makefile for standard entry points to build, test, install etc. so that any user can run e.g. `make install` without needing to unpack the idiosyncrasies of the language and frameworks underneath.

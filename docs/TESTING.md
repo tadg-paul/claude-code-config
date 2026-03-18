@@ -130,12 +130,15 @@ The test name should tell you what failed without reading the code.
 
 All tests carry a unique ID encoded in their marker. The prefix indicates type:
 
-| Prefix | Type | Location |
-|--------|------|----------|
-| `RT-NNN` | Regression test | `tests/regression/` |
-| `OT-NNN` | One-off test | `tests/one_off/` |
+| Prefix | Type | Location | Run by |
+|--------|------|----------|--------|
+| `RT-NNN` | Regression test | `tests/regression/` | `make test` |
+| `OT-NNN` | One-off test | `tests/one_off/` | `make test-one-off` |
+| `UT-NNN` | User test | documented in issue only | human |
 
 Numbers are zero-padded to three digits. Each prefix has its own sequence.
+
+**User tests (`UT-NNN`)** are tests that cannot be automated or executed by an AI agent — they require a human to perform and verify manually (e.g. validating content is accessible in a specific app or device after a migration). They have no corresponding test file. The test description, steps, and expected outcome are documented in the AC table of the relevant GitHub issue. They must still be assigned an ID and marked as `passing` / `failing` / `skipped` in the AC table by the user after execution.
 
 ### Usage in markers
 
@@ -179,7 +182,13 @@ OT 008
 
 When allocating a new ID: read the file, take the current value, increment it, write it back. This must happen in the same commit as the test itself.
 
-If `tests/NEXT_IDS.txt` does not exist in a project, create it and seed both sequences at `001` before allocating the first ID.
+If `tests/NEXT_IDS.txt` does not exist in a project, create it and seed all three sequences at `001` before allocating the first ID.
+
+```
+RT 001
+OT 001
+UT 001
+```
 
 **Test ID allocation is not a code change.** Allocating IDs in a GitHub issue's AC table, and creating `tests/NEXT_IDS.txt` if it does not yet exist, may be done at any time as part of issue preparation — no approved issue is required for either activity.
 
