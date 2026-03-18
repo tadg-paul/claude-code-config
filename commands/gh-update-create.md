@@ -1,5 +1,7 @@
 **DO NOT WRITE ANY CODE. THIS IS A DOCUMENTATION ACTIVITY.**
 
+Exception: allocating test IDs (RT-NNN/OT-NNN) in AC tables and creating `tests/NEXT_IDS.txt` if it does not yet exist are permitted — these are issue preparation tasks, not code changes.
+
 Before you start:
 - If you have not done so already, make sure you have read and digested our operating principles in CLAUDE.md and related docs, as well as the project documentation including README and everything under ./docs/
 

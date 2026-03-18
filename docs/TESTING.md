@@ -181,6 +181,8 @@ When allocating a new ID: read the file, take the current value, increment it, w
 
 If `tests/NEXT_IDS.txt` does not exist in a project, create it and seed both sequences at `001` before allocating the first ID.
 
+**Test ID allocation is not a code change.** Allocating IDs in a GitHub issue's AC table, and creating `tests/NEXT_IDS.txt` if it does not yet exist, may be done at any time as part of issue preparation — no approved issue is required for either activity.
+
 ### Mid-project migration policy
 
 This convention was introduced mid-project. The following rules govern legacy tests:
