@@ -185,17 +185,33 @@ If `tests/NEXT_IDS.txt` does not exist in a project, create it and seed both seq
 
 ### Mid-project migration policy
 
-This convention was introduced mid-project. The following rules govern legacy tests:
+This convention was introduced mid-project. The following rules govern legacy tests.
 
-1. **Do not retrofit.** Pre-existing tests with no ID must not be modified solely to add an ID. Retrofitting adds churn with no functional value.
+#### Directory structure
 
-2. **Migrate on touch.** If a pre-existing test is being modified as part of an issue (fix, refactor, extension), add an ID at that point. This is the natural migration path.
+Projects created before this convention may have a flat `tests/` directory with no `regression/` or `one_off/` subdirectories.
+
+When beginning work on any issue in such a project, **migrate the full test suite first** as a discrete step before any other work:
+
+1. Move all existing tests from `tests/` into `tests/regression/`
+2. Create `tests/one_off/.gitkeep`
+3. Update `make test` to point at `tests/regression/`
+4. Commit with message: `chore: migrate test suite to regression/one_off layout`
+5. Then proceed with the issue
+
+Do not fold this into the issue commit. It must be its own commit so any breakage is immediately attributable.
+
+This layout is intentionally CI-ready. Any future CI pipeline will pick up `tests/regression/` as the test target automatically. CI configuration, if and when introduced, is code and follows the same standards as all other code.
+
+#### Test IDs
+
+1. **Do not retrofit IDs.** Pre-existing tests with no ID must not be modified solely to add one. Retrofitting adds churn with no functional value.
+
+2. **Migrate on touch.** If a pre-existing test is being modified as part of an issue, add an ID at that point.
 
 3. **New tests always get an ID.** No exceptions, regardless of project age.
 
-4. **Linting applies to new and touched tests only.** CI must not fail on legacy tests lacking IDs. If a linting rule enforces ID presence, scope it to files modified in the current commit.
-
-5. **Do not flag missing IDs unprompted.** If Claude Code notices a legacy test lacks an ID while working on something unrelated, note it in the issue comment but do not modify the test.
+4. **Do not flag missing IDs unprompted.** If Claude Code notices a legacy test lacks an ID while working on something unrelated, note it in the issue comment but do not modify the test.
 
 ## Test Structure
 
