@@ -17,7 +17,7 @@ A well-formed issue must contain:
 |---|---|
 | **ID** | Format: `AC{issue}.{n}` — e.g. `AC12.1` |
 | **AC** | A single, falsifiable *state of the system* — not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
-| **Test** | How to verify the AC is met. Name the test(s) with their ID (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output. Multiple tests per AC are allowed. |
+| **Test** | How to verify the AC is met. Name the tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output for each. **Multiple tests per AC are allowed — use as many as the AC requires.** |
 | **Status** | `pending` / `passing` / `failing` / `skipped` |
 
 ## The AC/Test boundary (the most common mistake)
@@ -37,6 +37,14 @@ If your AC contains words like *call*, *assert*, *send*, *check*, *verify*, or *
 - Do not litter the issue with multiple superseded solutions
 - If a solution already exists, edit it in place to reflect the updated approach
 - Add a comment summarising what changed and why
+
+## AC table rules
+
+- Each issue has exactly one AC table — in the issue body, or the first comment if GitHub's interface required the solution and ACs to be posted there
+- Do not add a new AC table in a later comment, even if ACs have changed
+- If ACs need to change, edit the table in the issue body or first comment in place
+- Add a comment summarising what changed and why, but the table itself lives only in the issue body or first comment
+- Multiple comments each containing their own AC table is a known failure mode: it creates ambiguity about which ACs are current
 
 ## Sub-issues
 
