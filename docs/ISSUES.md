@@ -29,7 +29,7 @@ A well-formed issue must contain:
 - **Right AC:** *"The API rejects requests with invalid tokens."*
 - **Right Test:** *"RT-042: Send request with malformed JWT → assert HTTP 401 and `error: unauthorized` body."*
 
-If your AC contains words like *call*, *assert*, *send*, *check*, *verify*, or *should return*, it is probably a test description. Rewrite it.
+If your AC contains words like call, assert, send, check, verify, or should return, it IS a test description and is STRICTLY FORBIDDEN in the AC column. You MUST rewrite it to describe a passive system state.
 
 ## Solution section rules
 

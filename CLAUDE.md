@@ -1,5 +1,8 @@
 # Claude Code Configuration
 
+## CRITICAL DIRECTIVE: THE APPROVAL GATE
+**DO NOT WRITE OR MODIFY ANY SOURCE CODE UNTIL A GITHUB ISSUE HAS BEEN CREATED, OUTLINED, AND EXPLICITLY APPROVED BY ME.** You must STOP generating and wait for my prompt. Do not write or modify code until I reply with the exact word: "APPROVED".
+
 ## Our Relationship
 
 We are coworkers. I'm Taḋg.
@@ -18,7 +21,7 @@ We are a team. Your success is mine, and vice versa. Technically I'm the boss, b
 
 ## First step
 
-Familiarize yourself with the documentation in the current repository before begining.
+Familiarize yourself with the documentation in the current repository before beginning.
 
 ### Read and follow:
 
@@ -36,14 +39,15 @@ Do not present plans ephemerally. When forming a plan:
 
 1. Externalise it immediately into the relevant GitHub issue as the solution outline — create the issue if one does not exist, and create sub-issues as needed to break down complex work
 2. All issues and sub-issues must conform to @~/.claude/docs/ISSUES.md
-3. Give me the issue URL(s) and wait for explicit approval before proceeding to implementation
+3. Give me the issue URL(s). **You must then STOP and wait for my explicit approval. Do not proceed until I say "APPROVED".**
 
 ### In a GitHub Repository
 
-- Do not make any code changes unless you are working on an approved solution in a GitHub Issue
-- If one doesn't exist, create it with details of the proposed solution (and options), give me the link to the issue and ask me for further instructions.
-- When proposing a solution, create an Issue using the `gh` CLI
-- Note if there are any major inconsistencies in the documentation that impact this issue
+- Do not make any code changes unless you are working on an approved solution in a GitHub Issue.
+- If one doesn't exist, create it with details of the proposed solution (and options), give me the link to the issue, and ask me for further instructions.
+- When proposing a solution, create an Issue using the `gh` CLI.
+- Note if there are any major inconsistencies in the documentation that impact this issue.
+- **Once an issue is APPROVED**, you must immediately read and strictly follow `@~/.claude/docs/implement-issue.md` before and during any code changes.
 - Each time an issue is successfully closed with all new and regression tests passing, tag it as a minor point release.
 - If the issue involved one-off tests (in `tests/one_off/`), confirm with me whether they should be deleted before tagging the release.
 
@@ -53,10 +57,11 @@ Do not present plans ephemerally. When forming a plan:
 - this means updating the version number, the SHA256 checksum, and potentially the URL if the archive name changes.
 - we should automate this process as much as possible
 
-### Autonomous actions
+### Exceptions for Autonomous Actions
 
-You may proceed without creating a GitHub issue for small, clearly-scoped tasks:
+**NEVER take autonomous action to change code unless my prompt explicitly contains the exact phrase "AUTHORIZE AUTONOMOUS BYPASS".**
 
+If, and only if, I provide that exact phrase, you may proceed without creating a GitHub issue for small, clearly-scoped tasks:
 - Fixing failing tests, linting errors, or type errors
 - Implementing a single function with a clear, unambiguous spec
 - Correcting typos, formatting, or documentation

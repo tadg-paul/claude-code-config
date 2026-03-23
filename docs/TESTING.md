@@ -1,15 +1,15 @@
 # Testing Standards
 
 ## Test-Driven Development
-
 We practice TDD. Per issue:
 
-1. Read the issue, understand the requirements
-2. Write failing tests defining the desired behaviour (**issue tests**)
-3. Run issue tests, confirm they fail as expected
-4. Write minimal code to pass
-5. Run issue tests, confirm success
-6. Refactor while keeping issue tests green
+1. **Verify the issue has been explicitly APPROVED by me.** (Do not proceed if unapproved).
+2. Read the issue, understand the requirements.
+3. Write failing tests defining the desired behaviour (**issue tests**).
+4. Run issue tests, confirm they fail as expected.
+5. Write minimal code to pass.
+6. Run issue tests, confirm success.
+7. Refactor while keeping issue tests green.
 
 Each new test becomes part of the **regression test pack** (`make test`).
 
