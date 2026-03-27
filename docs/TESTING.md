@@ -5,13 +5,20 @@ We practice TDD. Per issue:
 
 1. **Verify the issue has been explicitly APPROVED by me.** (Do not proceed if unapproved).
 2. Read the issue, understand the requirements.
-3. Write failing tests defining the desired behaviour (**issue tests**).
-4. Run issue tests, confirm they fail as expected.
-5. Write minimal code to pass.
-6. Run issue tests, confirm success.
-7. Refactor while keeping issue tests green.
+3. **Enumerate test cases** for each AC (see below).
+4. Write failing tests defining the desired behaviour (**issue tests**).
+5. Run issue tests, confirm they fail as expected.
+6. Write minimal code to pass.
+7. Run issue tests, confirm success.
+8. Refactor while keeping issue tests green.
 
 Each new test becomes part of the **regression test pack** (`make test`).
+
+## Multi-condition coverage
+
+An AC that implies multiple conditions requires a test for each condition. Before writing any tests, enumerate every distinct condition implied by each AC and post the enumeration as a comment on the issue.
+
+Example: the AC *"The CLI rejects invalid, missing, and malformed configuration files"* implies three conditions. You must write at least three tests — one for invalid, one for missing, one for malformed. Writing a single test and marking the AC as passing is a process violation.
 
 ## Issue Tests vs Regression Tests
 
@@ -79,8 +86,8 @@ When working on multiple issues, follow this sequence:
 **Standard batch (small issues):**
 ```
 For each issue in the batch:
-    1. Write failing issue tests (TDD step 2-3)
-    2. Implement (TDD step 4-6)
+    1. Write failing issue tests (TDD step 3-4)
+    2. Implement (TDD step 5-7)
     3. Run issue tests only
 After ALL issues in the batch are complete:
     4. Run regression test pack (make test)
@@ -330,9 +337,3 @@ endif
 ```
 
 `make test` must never reference `tests/one_off/`. If a project does not yet have a `tests/one_off/` directory, create it with a `.gitkeep`.
-
----
-
-# Mandatory
-
-Every interaction with me must begin with "EHLO!"

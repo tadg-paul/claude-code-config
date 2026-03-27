@@ -2,6 +2,12 @@
 
 This document is always in context. All issue creation and updates must conform to these standards, whether triggered by a slash command, plan mode, or any other activity.
 
+# Mandatory
+
+Every interaction with me must begin with "EHLO!"
+
+---
+
 ## Well-formed issue
 
 A well-formed issue must contain:
@@ -10,6 +16,8 @@ A well-formed issue must contain:
 - A solution section (see rules below)
 - If there are multiple options, list them all and make a recommendation
 - A table of Acceptance Criteria (see below)
+
+---
 
 ## Acceptance Criteria table
 
@@ -20,16 +28,55 @@ A well-formed issue must contain:
 | **Test** | How to verify the AC is met. Name the tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output for each. **Multiple tests per AC are allowed — use as many as the AC requires.** |
 | **Status** | `pending` / `passing` / `failing` / `skipped` |
 
+### Multi-condition ACs require multi-condition coverage
+
+If an AC implies multiple distinct conditions, it requires a test for each condition. An AC like *"The API rejects requests with invalid, expired, or missing tokens"* implies three conditions: invalid, expired, and missing. Each condition requires its own test. Writing a single test for one of the three conditions and marking the AC as passing is a process violation.
+
+Before writing tests, enumerate the conditions each AC implies. Post this enumeration as a comment on the issue. Every condition must map to at least one test.
+
+---
+
 ## The AC/Test boundary (the most common mistake)
 
 > An **AC** describes *what must be true about the system*.
 > A **Test** describes *how you confirm it is true*.
 
-- **Wrong AC:** *"Call the API with an invalid token and assert a 401 is returned."*
-- **Right AC:** *"The API rejects requests with invalid tokens."*
-- **Right Test:** *"RT-042: Send request with malformed JWT → assert HTTP 401 and `error: unauthorized` body."*
+### The litmus test
 
-If your AC contains words like call, assert, send, check, verify, or should return, it IS a test description and is STRICTLY FORBIDDEN in the AC column. You MUST rewrite it to describe a passive system state.
+Ask: *"Could this statement be true or false without specifying how it is observed?"* If not — if it describes an action someone performs to check something — it is a test, not an AC.
+
+### Forbidden language in the AC column
+
+The following words and phrasings are **strictly forbidden** in the AC column. If any AC contains them, rewrite it before proceeding.
+
+**Action verbs:** call, assert, send, check, verify, run, execute, invoke, trigger, submit, click, request, query, fetch, post
+
+**Passive test phrasings:** "is returned", "results in", "produces", "yields", "should return", "should produce", "responds with", "outputs"
+
+**Test-structure language:** "when you", "if you", "given that we send", "after calling"
+
+### Examples
+
+| ❌ Wrong (test description) | ✅ Right (system state) |
+|---|---|
+| Call the API with an invalid token and assert a 401 is returned. | The API rejects requests with invalid tokens with HTTP 401. |
+| Send a POST to /users with a duplicate email and check that a 409 is returned. | The system prevents duplicate user registration. |
+| Run the export command with an empty dataset and verify the output file is empty. | Exporting an empty dataset produces an empty file. |
+| Check that the config file is created in ~/.config/app/ after installation. | Installation creates a configuration file at ~/.config/app/. |
+| Call the validate function with a malformed date string and assert it raises ValueError. | The validator rejects malformed date strings. |
+| Verify that when the --verbose flag is passed, debug output is printed to stderr. | The --verbose flag enables debug output on stderr. |
+
+### Self-audit procedure (mandatory before posting any issue)
+
+After drafting ACs, perform this audit on every row of the AC table:
+
+1. Read the AC column aloud. Does it describe an action someone performs, or a state the system is in?
+2. Does it contain any word from the forbidden list above?
+3. Apply the litmus test: could this be true or false without specifying how to observe it?
+
+If any AC fails any of these checks, rewrite it before creating or updating the issue.
+
+---
 
 ## Solution section rules
 
@@ -37,6 +84,8 @@ If your AC contains words like call, assert, send, check, verify, or should retu
 - Do not litter the issue with multiple superseded solutions
 - If a solution already exists, edit it in place to reflect the updated approach
 - Add a comment summarising what changed and why
+
+---
 
 ## AC table rules
 
@@ -46,6 +95,8 @@ If your AC contains words like call, assert, send, check, verify, or should retu
 - Add a comment summarising what changed and why, but the table itself lives only in the issue body or first comment
 - Multiple comments each containing their own AC table is a known failure mode: it creates ambiguity about which ACs are current
 
+---
+
 ## Sub-issues
 
 Sub-issues may be created as needed to break down complex work. They are appropriate where:
@@ -53,6 +104,8 @@ Sub-issues may be created as needed to break down complex work. They are appropr
 - The scope is large enough to warrant it (e.g. a major refactor, a code review)
 
 Every sub-issue must also conform to this standard — a well-formed issue with AC table, solution outline, and test IDs. Sub-issues are not lightweight stubs.
+
+---
 
 ## Test ID allocation in issues
 
