@@ -23,9 +23,9 @@ A well-formed issue must contain:
 
 | Column | Purpose |
 |---|---|
-| **ID** | Format: `AC{issue}.{n}` — e.g. `AC12.1` |
-| **AC** | A single, falsifiable *state of the system* — not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
-| **Test** | How to verify the AC is met. Name the tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output for each. **Multiple tests per AC are allowed — use as many as the AC requires.** |
+| **ID** | Format: `AC{issue}.{n}` - e.g. `AC12.1` |
+| **AC** | A single, falsifiable *state of the system* - not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
+| **Test** | How to verify the AC is met. Name the tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output for each. **Multiple tests per AC are expected and the norm**. Each test should be listed on a new line. |
 | **Status** | `⏳ pending` / `⚠️ blocked` / `✅ passing` / `❌ failing` / `⏭ skipped` |
 
 ### AC quality heuristic
@@ -49,7 +49,7 @@ Before writing tests, enumerate the conditions each AC implies. Post this enumer
 
 ### The litmus test
 
-Ask: *"Could this statement be true or false without specifying how it is observed?"* If not — if it describes an action someone performs to check something — it is a test, not an AC.
+Ask: *"Could this statement be true or false without specifying how it is observed?"* If not - if it describes an action someone performs to check something - it is a test, not an AC.
 
 ### Forbidden language in the AC column
 
@@ -89,16 +89,16 @@ If any AC fails any of these checks, rewrite it before creating or updating the 
 - If no solution is documented yet, add a new comment with the solution
 - Do not litter the issue with multiple superseded solutions
 - If a solution already exists, edit it in place to reflect the updated approach
-- Add a comment summarising what changed and why
+- Add a comment summarizing what changed and why
 
 ---
 
 ## AC table rules
 
-- Each issue has exactly one AC table — in the issue body, or the first comment if GitHub's interface required the solution and ACs to be posted there
+- Each issue has exactly one AC table - in the issue body, or the first comment if GitHub's interface required the solution and ACs to be posted there
 - Do not add a new AC table in a later comment, even if ACs have changed
 - If ACs need to change, edit the table in the issue body or first comment in place
-- Add a comment summarising what changed and why, but the table itself lives only in the issue body or first comment
+- Add a comment summarizing what changed and why, but the table itself lives only in the issue body or first comment
 - Multiple comments each containing their own AC table is a known failure mode: it creates ambiguity about which ACs are current
 
 ---
@@ -109,7 +109,7 @@ Sub-issues may be created as needed to break down complex work. They are appropr
 - A discrete piece of work can be tracked and tested independently
 - The scope is large enough to warrant it (e.g. a major refactor, a code review)
 
-Every sub-issue must also conform to this standard — a well-formed issue with AC table, solution outline, and test IDs. Sub-issues are not lightweight stubs.
+Every sub-issue must also conform to this standard - a well-formed issue with AC table, solution outline, and test IDs. Sub-issues are not lightweight stubs.
 
 ---
 
