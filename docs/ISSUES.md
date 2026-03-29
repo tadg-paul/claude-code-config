@@ -28,9 +28,11 @@ A well-formed issue must contain:
 | **Test** | How to verify the AC is met. Name the tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output for each. **Multiple tests per AC are allowed — use as many as the AC requires.** |
 | **Status** | `⏳ pending` / `⚠️ blocked` / `✅ passing` / `❌ failing` / `⏭ skipped` |
 
-# AC quality heuristic
+### AC quality heuristic
 
-A well-defined AC describes a single, falsifiable system state - and almost always requires more than one test to verify. If an AC has exactly one test, treat it as a smell: either the AC is too narrow (and is really a test in disguise) or the test coverage is incomplete. Ask: "What other inputs, edge cases, or boundary conditions could falsify this AC?"
+A well-defined AC describes a single, falsifiable system state - and nearly always requires more than one test to verify. An AC with exactly one test is a smell: either the AC is too narrow (and is really a test in disguise), or the test coverage is incomplete.
+
+Before accepting single-test coverage for any AC, ask: *"What other inputs, edge cases, or boundary conditions could falsify this?"* If the answer is none, the AC may need rewriting. If the answer is several, the tests are missing.
 
 ### Multi-condition ACs require multi-condition coverage
 
