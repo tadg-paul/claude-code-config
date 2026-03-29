@@ -26,7 +26,11 @@ A well-formed issue must contain:
 | **ID** | Format: `AC{issue}.{n}` — e.g. `AC12.1` |
 | **AC** | A single, falsifiable *state of the system* — not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
 | **Test** | How to verify the AC is met. Name the tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output for each. **Multiple tests per AC are allowed — use as many as the AC requires.** |
-| **Status** | `pending` / `passing` / `failing` / `skipped` |
+| **Status** | `⏳ pending` / `⚠️ blocked` / `✅ passing` / `❌ failing` / `⏭ skipped` |
+
+# AC quality heuristic
+
+A well-defined AC describes a single, falsifiable system state - and almost always requires more than one test to verify. If an AC has exactly one test, treat it as a smell: either the AC is too narrow (and is really a test in disguise) or the test coverage is incomplete. Ask: "What other inputs, edge cases, or boundary conditions could falsify this AC?"
 
 ### Multi-condition ACs require multi-condition coverage
 
@@ -107,6 +111,10 @@ Every sub-issue must also conform to this standard — a well-formed issue with 
 
 ---
 
-## Test ID allocation in issues
+## AC and test ID allocation in issues
 
-Allocating test IDs (RT-NNN/OT-NNN/UT-NNN) in AC tables and creating `tests/NEXT_IDS.txt` if it does not yet exist are **not code changes**. They may be done at any time as part of issue preparation without an approved issue.
+- ACs should follow the pattern `AC{issue}.{n}` e.g. the first AC in issue #12 would be `AC12.1`, then `AC12.2`, and so on.
+
+- Allocating test IDs (RT-NNN/OT-NNN/UT-NNN) in AC tables and creating `tests/NEXT_IDS.txt` if it does not yet exist are **not code changes**. They may be done at any time as part of issue preparation without an approved issue.
+
+- Once an ID has been allocated for an AC or test it is immutable. Never renumber, reuse, or delete IDs. If an AC is removed, mark it as "removed" in the table but do not delete the row or its ID. If a test is removed, mark it as "removed" in the test suite but do not delete the test or its ID.
