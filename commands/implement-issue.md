@@ -30,6 +30,6 @@ For each github issue number provided, perform the following steps IN STRICT ORD
    - After implementation, show the specific scenario described in the issue working correctly. Running tests is necessary but not sufficient — show me the actual output.
    - Never state that an issue is fixed. State that the tests pass and show the evidence. I will determine whether it is fixed.
 10. Update project documentation as appropriate.
-11. Commit changes with message `Fixes #[n]: [short description]` and push branch to remote.
+11. Commit changes with message `Implement #[n]: [short description]` and push branch to remote.
 12. Add a new comment to the issue describing implementation details, testing instructions, commit link and update the AC table with status of each AC.
 13. NEVER MARK AN ISSUE AS CLOSED! That is my job, after I review your work.
