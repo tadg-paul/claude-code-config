@@ -137,26 +137,21 @@ Target Python 3.12.x (or current stable). Respect `.python-version`. Assume pyen
 
 - Never `pip install` outside a venv
 - Update `requirements.txt` when adding dependencies
-- No Conda or global pip unless explicitly requested
 
 ## Code Commenting
 
 - **Comments are sacred.** Never remove unless provably false. Every code file starts with a 2-line ABOUTME comment explaining its purpose.
   - The exception to this is "dead code" i.e. commented-out code
 - **Evergreen comments.** Describe code as it is, not how it evolved. No temporal context.
-- **Mocking policy:** see TESTING.md §"The no mocks rule" for when mocks are and aren't acceptable.
 - **Evergreen naming.** Never name things 'improved', 'new', 'enhanced', etc.
 
 ## Code Search and Modification
 
-**Use ast-grep (`sg`) for code transformations** — refactoring, renaming, structural changes. AST-aware queries enable safe, language-aware modifications.
+**Use ast-grep (`sg`) for source code transformations** — refactoring, renaming, structural changes. AST-aware queries enable safe, language-aware modifications.
 
-**grep/ripgrep/sed/awk are acceptable for:**
-- Searching log files, config files, plain text
-- Quick searches where you need the result, not a transformation
-- Non-code files (JSON, YAML, Markdown, etc.)
+**grep/ripgrep are acceptable for searching** any file type — log files, config files, plain text, source code.
 
-**Never use grep/sed/awk to modify source code** — use `sg` for that.
+**Never use sed/awk to modify files** — source code, documentation, configuration, or otherwise. Use `sg` for source code transformations, and appropriate tools (or direct editing) for other file types. sed/awk are brittle, prone to corrupting structure, and difficult to review.
 
 ---
 
@@ -164,9 +159,59 @@ Target Python 3.12.x (or current stable). Respect `.python-version`. Assume pyen
 
 "Errors should never pass silently." — PEP 20
 
-### Error Suppression (All Languages)
+### Error Suppression — Forbidden Patterns (All Languages)
 
-Never hide errors instead of handling them. These patterns are **strictly forbidden**:
+Never hide errors instead of handling them. The following pseudocode patterns are **strictly forbidden** regardless of language:
+
+```
+# FORBIDDEN: suppress all errors silently
+risky_operation() || ignore
+
+# FORBIDDEN: disable error checking temporarily
+disable_error_checking()
+risky_operation()
+enable_error_checking()
+
+# FORBIDDEN: discard error output with no fallback
+risky_operation() 2> /dev/null
+
+# FORBIDDEN: convert failure to success
+risky_operation() || exit_success
+
+# FORBIDDEN: catch everything and do nothing
+try:
+    risky_operation()
+catch all:
+    pass
+```
+
+### Error Suppression — Correct Alternatives
+
+```
+# GOOD: check precondition before acting
+if precondition_met:
+    perform_operation()
+
+# GOOD: when failure is expected, log and continue
+if not try_operation():
+    log("Expected condition: operation did not apply")
+
+# GOOD: capture failure context for diagnostics
+result, err = try_operation()
+if err:
+    log_warning("Operation failed: " + err)
+    handle_gracefully()
+
+# GOOD: catch specific errors with meaningful recovery
+try:
+    config = load_config(path)
+catch FileNotFoundError:
+    config = create_default_config(path)
+```
+
+### Language-Specific Pitfalls
+
+These are real-language examples where the forbidden patterns commonly appear:
 
 | Pattern | Language | Why It's Banned |
 |---------|----------|-----------------|
@@ -183,76 +228,6 @@ Never hide errors instead of handling them. These patterns are **strictly forbid
 | `try!` / `force unwrap` | Swift | Use `guard`, `if let`, or `try?` with handling |
 | `catch (Exception e) {}` | Java/C# | Empty catch blocks hide bugs |
 | `@SuppressWarnings("all")` | Java | Suppress only specific, documented warnings |
-
-### Correct Alternatives
-
-**Shell — handling optional operations:**
-
-```bash
-# BAD: silences all errors including unexpected ones
-some_command "$arg" || true
-
-# GOOD: check precondition
-if [[ -f "$file" ]]; then
-    trash -- "$file"
-fi
-
-# GOOD: when failure is expected and logged
-if ! some_command "$arg" 2>/dev/null; then
-    log_debug "Expected condition: $arg not present"
-fi
-
-# GOOD: when you need the exit code but want to continue
-if ! output=$(some_command 2>&1); then
-    log_warning "Command failed: $output"
-    # handle gracefully
-fi
-```
-
-Avoid using `sed` or `awk` for string manipulation, these are brittle and prone to causing unforeseen errors.
-
-**Python — specific exception handling:**
-
-- Never install pip packages globally; always create a venv first
-
-```python
-# BAD: catches everything including KeyboardInterrupt, SystemExit
-try:
-    risky_operation()
-except:
-    pass
-
-# BAD: too broad, no logging
-try:
-    risky_operation()
-except Exception:
-    pass
-
-# GOOD: specific exception, logged, handled
-try:
-    risky_operation()
-except FileNotFoundError as e:
-    logger.info("Expected condition, file absent: %s", e)
-    return default_value
-```
-
-**Swift — proper optional handling:**
-
-```swift
-// BAD: crashes on nil
-let value = optionalValue!
-
-// GOOD: guard with early return
-guard let value = optionalValue else {
-    logger.warning("Value was nil, using default")
-    return defaultValue
-}
-
-// GOOD: if-let for optional use
-if let value = optionalValue {
-    process(value)
-}
-```
 
 ### Linter/Check Bypass Rules
 
@@ -320,7 +295,7 @@ Core principle: **fail fast, fail loud, fail safe.**
 ```bash
 # Shell cleanup pattern
 cleanup() {
-    trash -- "$temp_file"
+    # remove temp files, close connections, etc.
 }
 trap cleanup EXIT
 ```
