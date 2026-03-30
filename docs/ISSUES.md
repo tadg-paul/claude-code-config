@@ -1,10 +1,6 @@
 # GitHub Issue Standards
 
-This document is always in context. All issue creation and updates must conform to these standards, whether triggered by a slash command, plan mode, or any other activity.
-
-# Mandatory
-
-Every interaction with me must begin with "EHLO!"
+This document defines issue structure and AC quality standards. The process workflow - when to create issues, when to stop for approval, when to audit - is in CLAUDE.md §3.
 
 ---
 
@@ -25,8 +21,17 @@ A well-formed issue must contain:
 |---|---|
 | **ID** | Format: `AC{issue}.{n}` - e.g. `AC12.1` |
 | **AC** | A single, falsifiable *state of the system* - not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
-| **Test** | How to verify the AC is met. Name the tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests requiring manual execution) and briefly describe the stimulus and expected observable output for each. **Multiple tests per AC are expected and the norm**. Each test should be listed on a new line. |
+| **Test** | How to verify the AC is met. Name tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests). Briefly describe stimulus and expected observable output for each. **Multiple tests per AC are expected and the norm.** Each test on a new line. |
 | **Status** | `⏳ pending` / `⚠️ blocked` / `✅ passing` / `❌ failing` / `⏭ skipped` |
+
+### Single source of truth
+
+Each issue has exactly one AC table - in the issue body, or the first comment if GitHub's interface required the solution and ACs to be posted there.
+
+- Never create a second AC table in a later comment, even if ACs have changed.
+- If ACs need to change, edit the existing table in place.
+- Add a comment summarizing what changed and why.
+- Multiple AC tables in an issue is a known failure mode: it creates ambiguity about which ACs are current.
 
 ### AC quality heuristic
 
@@ -42,7 +47,7 @@ Before writing tests, enumerate the conditions each AC implies. Post this enumer
 
 ---
 
-## The AC/Test boundary (the most common mistake)
+## The AC/Test boundary
 
 > An **AC** describes *what must be true about the system*.
 > A **Test** describes *how you confirm it is true*.
@@ -72,7 +77,7 @@ The following words and phrasings are **strictly forbidden** in the AC column. I
 | Call the validate function with a malformed date string and assert it raises ValueError. | The validator rejects malformed date strings. |
 | Verify that when the --verbose flag is passed, debug output is printed to stderr. | The --verbose flag enables debug output on stderr. |
 
-### Self-audit procedure (mandatory before posting any issue)
+### Self-audit procedure
 
 After drafting ACs, perform this audit on every row of the AC table:
 
@@ -93,16 +98,6 @@ If any AC fails any of these checks, rewrite it before creating or updating the 
 
 ---
 
-## AC table rules
-
-- Each issue has exactly one AC table - in the issue body, or the first comment if GitHub's interface required the solution and ACs to be posted there
-- Do not add a new AC table in a later comment, even if ACs have changed
-- If ACs need to change, edit the table in the issue body or first comment in place
-- Add a comment summarizing what changed and why, but the table itself lives only in the issue body or first comment
-- Multiple comments each containing their own AC table is a known failure mode: it creates ambiguity about which ACs are current
-
----
-
 ## Sub-issues
 
 Sub-issues may be created as needed to break down complex work. They are appropriate where:
@@ -113,10 +108,8 @@ Every sub-issue must also conform to this standard - a well-formed issue with AC
 
 ---
 
-## AC and test ID allocation in issues
+## AC and test ID allocation
 
-- ACs should follow the pattern `AC{issue}.{n}` e.g. the first AC in issue #12 would be `AC12.1`, then `AC12.2`, and so on.
-
+- ACs follow the pattern `AC{issue}.{n}` - e.g. the first AC in issue #12 is `AC12.1`, then `AC12.2`, and so on.
 - Allocating test IDs (RT-NNN/OT-NNN/UT-NNN) in AC tables and creating `tests/NEXT_IDS.txt` if it does not yet exist are **not code changes**. They may be done at any time as part of issue preparation without an approved issue.
-
 - Once an ID has been allocated for an AC or test it is immutable. Never renumber, reuse, or delete IDs. If an AC is removed, mark it as "removed" in the table but do not delete the row or its ID. If a test is removed, mark it as "removed" in the test suite but do not delete the test or its ID.

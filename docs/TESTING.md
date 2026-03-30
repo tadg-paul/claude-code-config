@@ -1,68 +1,65 @@
 # Testing Standards
 
-## Test-Driven Development
-We practice TDD. Per issue:
+This document defines how to write, structure, and organize tests. The TDD workflow sequence - when to enumerate, when to write tests, when to run regression - is in CLAUDE.md §3.
 
-1. **Verify the issue has been explicitly APPROVED by me.** (Do not proceed if unapproved).
-2. Read the issue, understand the requirements.
-3. **Enumerate test cases** for each AC (see below).
-4. Write failing tests defining the desired behaviour (**issue tests**).
-5. Run issue tests, confirm they fail as expected.
-6. Write minimal code to pass.
-7. Run issue tests, confirm success.
-8. Refactor while keeping issue tests green.
+## TDD
+
+We practice test-driven development:
+
+1. Enumerate test cases for each AC (every distinct condition gets a test)
+2. Write failing tests defining the desired behaviour
+3. Run them, confirm they fail
+4. Write minimal code to pass
+5. Run them, confirm they pass
+6. Refactor while keeping tests green
 
 Each new test becomes part of the **regression test pack** (`make test`).
 
 ## Multi-condition coverage
 
-An AC that implies multiple conditions requires a test for each condition. Before writing any tests, enumerate every distinct condition implied by each AC and post the enumeration as a comment on the issue.
+An AC that implies multiple conditions requires a test for each condition.
 
-Example: the AC *"The CLI rejects invalid, missing, and malformed configuration files"* implies three conditions. You must write at least three tests — one for invalid, one for missing, one for malformed. Writing a single test and marking the AC as passing is a process violation.
+Example: the AC *"The CLI rejects invalid, missing, and malformed configuration files"* implies three conditions. You must write at least three tests - one for invalid, one for missing, one for malformed. Writing a single test and marking the AC as passing is a process violation.
 
-## Issue Tests vs Regression Tests
+## Issue tests vs regression tests
 
 - **Issue tests:** the tests written specifically for the issue being worked on. Run these frequently during development.
-- **Regression tests:** the full test suite (`make test`). Run these only at batch boundaries (see below), not after every individual issue.
+- **Regression tests:** the full test suite (`make test`). Run these only at batch boundaries, not after every individual issue.
 
-Our projects typically have hundreds of tests. Running the full suite after every small change wastes time. Trust the issue tests during development; the regression pack catches cross-cutting breakage at the end.
+Trust the issue tests during development; the regression pack catches cross-cutting breakage at the end.
 
-## One-Off Tests
+## One-off tests
 
-Most tests should become part of the regression test pack. **This is the default.** If you are writing a new test and are unsure where it belongs, it belongs in regression.
+Most tests belong in regression. **This is the default.** If you are writing a new test and are unsure where it belongs, it belongs in regression.
 
-A **one-off test** is the exception: a test tied to a specific, non-recurring activity — verifying a data migration ran correctly, reproducing a specific production incident, checking a one-time environment state. Once its purpose is served, it has no value running again.
+A **one-off test** is the exception: a test tied to a specific, non-recurring activity - verifying a data migration, reproducing a production incident, checking a one-time environment state.
 
 ### Storage
 
-Tests live in one of two locations:
-
 ```
 tests/
-  regression/    ← default; all new tests go here; run by `make test`
+  regression/    ← default; run by `make test`
   one_off/       ← quarantine; never run by `make test`
 ```
 
-`make test` must only reference `tests/regression/`. `tests/one_off/` is structurally excluded. This is the primary protection against one-off tests polluting CI.
+`make test` must only reference `tests/regression/`.
 
 ### Marker
 
-All one-off tests must also carry a marker with a mandatory `issue` reference, using whichever annotation or tagging mechanism the project's test framework provides. The following is illustrative only — apply the equivalent for your language and framework:
+All one-off tests must carry a marker with a mandatory `issue` reference, using whichever annotation mechanism the project's test framework provides:
 
 ```python
-# Python/pytest — illustrative only
+# Python/pytest - illustrative only
 @pytest.mark.one_off(issue="#123")
 def test_migration_user_records_backfilled():
     ...
 ```
 
-If the framework has no native marker mechanism, encode the issue reference in the test name as a suffix: `test_migration_user_records_backfilled_OT007`.
+If the framework has no native marker, encode the issue reference in the test name: `test_migration_user_records_backfilled_OT007`.
 
-A one-off test without an `issue` reference must fail linting. Both the directory placement and the marker are required — either alone can catch a mistake.
+A one-off test without an `issue` reference must fail linting. Both directory placement and marker are required.
 
-### Running one-off tests manually
-
-Use the test runner appropriate to the project's language and framework. Via the Makefile:
+### Running one-off tests
 
 ```bash
 make test-one-off          # run all one-off tests
@@ -73,54 +70,13 @@ make test-one-off ISSUE=123  # run one-off tests for a specific issue
 
 > **If in doubt, it's a regression test.**
 
-Only place a test in `one_off/` if you can answer: *"After this issue is closed and verified, will this test ever be meaningful to run again?"* If the answer is yes, or you are unsure, it belongs in regression.
+Only place a test in `one_off/` if you can answer: *"After this issue is closed, will this test ever be meaningful to run again?"* If the answer is yes, or you are unsure, it belongs in regression.
 
 ### Lifecycle
 
-One-off tests are temporary. They must be reviewed and deleted once their associated issue is closed and verified. They are not to accumulate indefinitely.
+One-off tests are temporary. They must be reviewed and deleted once their associated issue is closed and verified.
 
-## Batch Workflow
-
-When working on multiple issues, follow this sequence:
-
-**Standard batch (small issues):**
-```
-For each issue in the batch:
-    1. Write failing issue tests (TDD step 3-4)
-    2. Implement (TDD step 5-7)
-    3. Run issue tests only
-After ALL issues in the batch are complete:
-    4. Run regression test pack (make test)
-    5. Fix any regressions
-```
-
-**Large issue isolation:** If a batch includes a large or architecturally significant issue (e.g. a major refactor), isolate it into its own batch with its own regression run. Example for 4 small issues + 1 large issue:
-
-```
-Option A: [4 small issues] → [regression] → [large issue] → [regression]
-Option B: [large issue] → [regression] → [4 small issues] → [regression]
-```
-
-Never mix a large refactor into a batch of small issues — a regression failure becomes impossible to attribute.
-
-**Documentation-only changes** (no code modified): no tests required, no regression run required.
-
-## Policy
-
-- All production code requires unit tests, integration tests, AND end-to-end tests.
-- Implement with test coverage that can be run via `make test`
-- Update regression tests, create regression tests if there are none
-
-**Exception:** Requires explicit approval in commit message:
-```
-SKIP TESTS: [specific reason]
-```
-
-To authorize skipping: I must say **"I AUTHORIZE YOU TO SKIP WRITING TESTS THIS TIME"**
-
-## Test Naming
-
-Use descriptive names that document what's being tested:
+## Test naming
 
 ```
 test_<unit>_<scenario>_<expected_result>
@@ -135,7 +91,7 @@ The test name should tell you what failed without reading the code.
 
 ## Test IDs
 
-All tests carry a unique ID encoded in their marker. The prefix indicates type:
+All tests carry a unique ID. The prefix indicates type:
 
 | Prefix | Type | Location | Run by |
 |--------|------|----------|--------|
@@ -145,14 +101,12 @@ All tests carry a unique ID encoded in their marker. The prefix indicates type:
 
 Numbers are zero-padded to three digits. Each prefix has its own sequence.
 
-**User tests (`UT-NNN`)** are tests that cannot be automated or executed by an AI agent — they require a human to perform and verify manually (e.g. validating content is accessible in a specific app or device after a migration). They have no corresponding test file. The test description, steps, and expected outcome are documented in the AC table of the relevant GitHub issue. They must still be assigned an ID and marked as `passing` / `failing` / `skipped` in the AC table by the user after execution.
+**User tests (`UT-NNN`)** require a human to perform and verify manually. They have no corresponding test file. Description, steps, and expected outcome are documented in the AC table. Only Taḋg can mark a UT as passing or failing.
 
 ### Usage in markers
 
-Embed the test ID in whichever marker or annotation mechanism the project's test framework provides. The following Python/pytest examples are illustrative only — apply the equivalent in your language and framework (Jest, RSpec, JUnit, Swift Testing, etc.):
-
 ```python
-# Python/pytest — illustrative only
+# Python/pytest - illustrative only
 @pytest.mark.regression(test_id="RT-042")
 def test_login_with_invalid_password_returns_401():
     ...
@@ -162,16 +116,12 @@ def test_migration_user_records_backfilled():
     ...
 ```
 
-If the framework has no native marker or annotation mechanism, encode the ID in the test name as a suffix:
-
+If the framework has no native marker, encode the ID in the test name as a suffix:
 ```
 test_login_with_invalid_password_returns_401_RT042
-test_migration_user_records_backfilled_OT007
 ```
 
 ### Usage in GitHub issues
-
-Reference test IDs in AC tables:
 
 ```
 | AC-1 | Login rejects invalid passwords | ✅ RT-042 |
@@ -180,76 +130,47 @@ Reference test IDs in AC tables:
 
 ### ID allocation
 
-The file `tests/NEXT_IDS.txt` is the source of truth for the next available ID in each sequence:
+`tests/NEXT_IDS.txt` is the source of truth:
 
 ```
 RT 043
 OT 008
-```
-
-When allocating a new ID: read the file, take the current value, increment it, write it back. This must happen in the same commit as the test itself.
-
-If `tests/NEXT_IDS.txt` does not exist in a project, create it and seed all three sequences at `001` before allocating the first ID.
-
-```
-RT 001
-OT 001
 UT 001
 ```
 
-**Test ID allocation is not a code change.** Allocating IDs in a GitHub issue's AC table, and creating `tests/NEXT_IDS.txt` if it does not yet exist, may be done at any time as part of issue preparation — no approved issue is required for either activity.
+Read the file, take the current value, increment, write back - in the same commit as the test.
 
-### Mid-project migration policy
+If `tests/NEXT_IDS.txt` does not exist, create it and seed all sequences at `001`.
 
-This convention was introduced mid-project. The following rules govern legacy tests.
+Test ID allocation is not a code change and may be done during issue preparation.
+
+### Mid-project migration
 
 #### Directory structure
 
-Projects created before this convention may have a flat `tests/` directory with no `regression/` or `one_off/` subdirectories.
+Projects with a flat `tests/` directory must be migrated before any other work:
 
-When beginning work on any issue in such a project, **migrate the full test suite first** as a discrete step before any other work:
-
-1. Move all existing tests from `tests/` into `tests/regression/`
+1. Move all existing tests into `tests/regression/`
 2. Create `tests/one_off/.gitkeep`
 3. Update `make test` to point at `tests/regression/`
-4. Commit with message: `chore: migrate test suite to regression/one_off layout`
+4. Commit: `chore: migrate test suite to regression/one_off layout`
 5. Then proceed with the issue
 
-Do not fold this into the issue commit. It must be its own commit so any breakage is immediately attributable.
-
-This layout is intentionally CI-ready. Any future CI pipeline will pick up `tests/regression/` as the test target automatically. CI configuration, if and when introduced, is code and follows the same standards as all other code.
+This must be its own commit.
 
 #### Test IDs
 
-1. **Do not retrofit IDs.** Pre-existing tests with no ID must not be modified solely to add one. Retrofitting adds churn with no functional value.
+1. **Do not retrofit IDs.** Pre-existing tests without IDs are not modified solely to add one.
+2. **Migrate on touch.** If a pre-existing test is modified as part of an issue, add an ID then.
+3. **New tests always get an ID.** No exceptions.
+4. **Do not flag missing IDs unprompted.** Note in the issue comment but do not modify the test.
 
-2. **Migrate on touch.** If a pre-existing test is being modified as part of an issue, add an ID at that point.
+## Test structure
 
-3. **New tests always get an ID.** No exceptions, regardless of project age.
-
-4. **Do not flag missing IDs unprompted.** If Claude Code notices a legacy test lacks an ID while working on something unrelated, note it in the issue comment but do not modify the test.
-
-## Test Structure
-
-Follow Arrange-Act-Assert (AAA) regardless of language or framework:
+Follow Arrange-Act-Assert (AAA) regardless of language:
 
 ```
-# Pseudocode — apply in whichever language the project uses
 test "discount applied to eligible order":
-    # Arrange: set up preconditions
-    order = Order(items=[item_over_threshold])
-
-    # Act: perform the action
-    result = apply_discount(order)
-
-    # Assert: verify the outcome
-    assert result.discount_percent == 10
-```
-
-Python/pytest example (illustrative only):
-
-```python
-def test_discount_applied_to_eligible_order():
     # Arrange
     order = Order(items=[item_over_threshold])
     # Act
@@ -260,11 +181,11 @@ def test_discount_applied_to_eligible_order():
 
 ## Coverage
 
-- **Minimum threshold:** 80% line coverage for new code
-- **Critical paths:** 100% coverage for authentication, payment, data persistence
-- Coverage is a floor, not a ceiling — high coverage with weak assertions is worthless
+- **Minimum:** 80% line coverage for new code
+- **Critical paths:** 100% for authentication, payment, data persistence
+- Coverage is a floor, not a ceiling - high coverage with weak assertions is worthless
 
-## Test Boundaries
+## Test boundaries
 
 | Type | Scope | Speed | When to run |
 |------|-------|-------|-------------|
@@ -272,57 +193,42 @@ def test_discount_applied_to_eligible_order():
 | Integration | Multiple components | Medium (<5s) | Pre-commit |
 | End-to-end | Full system | Slow | CI pipeline |
 
-- Unit tests should have no external dependencies (no network, no filesystem, no database)
-- Integration tests may use local resources (test database, mock servers)
-- E2E tests exercise the real system
+- Unit tests: no external dependencies (no network, filesystem, database)
+- Integration tests: may use local resources (test database, mock servers)
+- E2E tests: exercise the real system
 
-## Test Data
+## Test data
 
-- **Use factories** for generating test objects — use the factory/fixture library appropriate to the project's language and framework (e.g. factory_boy for Python, FactoryBot for Ruby, fishery for TypeScript, fixtures for Go)
-- **Fixtures** for shared setup — but keep them minimal and obvious
-- **No production data** in tests — synthetic data only
-- **Deterministic:** tests must produce the same result every run (no random without seed)
+- Use factories for generating test objects (factory_boy, FactoryBot, fishery, etc.)
+- Fixtures for shared setup - minimal and obvious
+- No production data - synthetic only
+- Deterministic: same result every run (no random without seed)
 
-## Clarification: "No Mocks" Rule
+## The "no mocks" rule
 
-The "no mocks" rule in CODING.md refers to **not mocking your way out of testing real behaviour**. Specifically:
+The rule in CODING.md means **do not mock your way out of testing real behaviour**.
 
-**Acceptable:**
-- Mocking external HTTP APIs to avoid network calls in unit tests
-- Mocking time/dates for deterministic tests
-- Mocking filesystem for unit tests (but prefer tmpdir fixtures)
+**Acceptable:** mocking external HTTP APIs, time/dates, filesystem for unit tests (prefer tmpdir).
 
-**Not acceptable:**
-- Mocking the class you're supposed to be testing
-- Mocking so much that the test doesn't verify real behaviour
-- Using mocks instead of fixing the design to be testable
+**Not acceptable:** mocking the class under test, mocking so much the test verifies nothing real, using mocks instead of fixing design to be testable.
 
-When in doubt: if removing the mock would make the test fail for reasons *other than* external dependencies, you're mocking too much.
+If removing the mock would make the test fail for reasons *other than* external dependencies, you're mocking too much.
 
-## Requirements
-
-- Tests MUST cover functionality being implemented
-- Never ignore test output — logs often contain critical information
-- Test output must be pristine to pass
-- If logs should contain errors, capture and test them
-
-## Quality
-
-- Clear, maintainable tests
-- One behaviour per test
-- Descriptive names explaining what's tested
-- Include edge cases and error conditions
-- Tests are documentation — write for the next developer
-
-## Warnings and Errors
+## Warnings and errors
 
 - Never introduce new warnings or errors
-- If an action generates a warning or error, stop everything and resolve it
-- Build-time errors (e.g., Hugo static site) are equivalent to compile errors — fix immediately
+- If an action generates a warning or error, stop and resolve it
+- Build-time errors are equivalent to compile errors - fix immediately
 
-## Makefile Test Targets
+## Policy
 
-Projects must expose these standard targets. Replace `<test-runner>` and `<filter-flag>` with the appropriate command for the project's language and framework (e.g. `pytest` for Python, `jest` for Node, `swift test` for Swift, `go test ./...` for Go):
+- All production code requires unit, integration, and end-to-end tests
+- Test coverage must be runnable via `make test`
+- Update regression tests; create them if none exist
+
+**Exception:** requires explicit approval - Taḋg must say **"I AUTHORIZE YOU TO SKIP WRITING TESTS THIS TIME"**
+
+## Makefile test targets
 
 ```makefile
 test:
@@ -336,4 +242,4 @@ else
 endif
 ```
 
-`make test` must never reference `tests/one_off/`. If a project does not yet have a `tests/one_off/` directory, create it with a `.gitkeep`.
+`make test` must never reference `tests/one_off/`.
