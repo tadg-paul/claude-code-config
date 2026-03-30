@@ -74,7 +74,7 @@ Omit only with documented reason.
 ### Required Practices
 
 - Quote variables: `"$var"`
-- Terminate options: `rm -- "$file"`
+- Terminate options: `trash -- "$file"`
 - Use arrays for command construction, not strings
 - Use `command -v`, not `which`
 - Never parse `ls`
@@ -144,7 +144,7 @@ Target Python 3.12.x (or current stable). Respect `.python-version`. Assume pyen
 - **Comments are sacred.** Never remove unless provably false. Every code file starts with a 2-line ABOUTME comment explaining its purpose.
   - The exception to this is "dead code" i.e. commented-out code
 - **Evergreen comments.** Describe code as it is, not how it evolved. No temporal context.
-- **No mocks.** Real data, real APIs. Always.
+- **Mocking policy:** see TESTING.md §"The no mocks rule" for when mocks are and aren't acceptable.
 - **Evergreen naming.** Never name things 'improved', 'new', 'enhanced', etc.
 
 ## Code Search and Modification
@@ -190,16 +190,16 @@ Never hide errors instead of handling them. These patterns are **strictly forbid
 
 ```bash
 # BAD: silences all errors including unexpected ones
-rm "$file" || true
+some_command "$arg" || true
 
 # GOOD: check precondition
 if [[ -f "$file" ]]; then
-    rm -- "$file"
+    trash -- "$file"
 fi
 
-# GOOD: when absence is expected and logged
-if ! rm -- "$file" 2>/dev/null; then
-    log_debug "File already absent: $file"
+# GOOD: when failure is expected and logged
+if ! some_command "$arg" 2>/dev/null; then
+    log_debug "Expected condition: $arg not present"
 fi
 
 # GOOD: when you need the exit code but want to continue
@@ -320,7 +320,7 @@ Core principle: **fail fast, fail loud, fail safe.**
 ```bash
 # Shell cleanup pattern
 cleanup() {
-    rm -f -- "$temp_file"
+    trash -- "$temp_file"
 }
 trap cleanup EXIT
 ```
@@ -396,6 +396,7 @@ When using containers:
 ## File Operations
 
 - Use `trash` instead of `rm` to allow recovery
+- **Exception:** temporary files and directories created for the sole purpose of a single operation may be deleted directly in cleanup/teardown logic rather than trashed.
 - Atomic writes: write to temp, then `mv`
 - Use `flock` when multiple processes may write
 

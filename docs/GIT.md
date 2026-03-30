@@ -30,6 +30,16 @@ docs: update API documentation
 refactor: simplify validation logic
 ```
 
+### Issue-linked commits
+
+When a commit implements work tracked by a GitHub issue, use:
+
+```
+Implement #N: short description
+```
+
+**Never use GitHub auto-close keywords** (`Fixes`, `Closes`, `Resolves`, or their variants) in commit messages. Issues are closed manually after human review. Auto-closing bypasses that review step.
+
 ## Workflow
 
 Before starting work:

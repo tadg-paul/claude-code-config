@@ -14,6 +14,7 @@ These are absolute. No exception process applies. No justification overrides the
 - Never state "Co-authored-by Claude" or any AI attribution.
 - Never claim something is "fixed", "done", "perfect", or "complete". State that tests pass and show evidence. Taḋg determines if it is fixed.
 - Never create a second AC table in an issue. Exactly one AC table exists per issue, in the body or first comment. Edit it in place.
+- Never use `rm`; only `trash` is allowed.
 
 "I know what you meant" is not a reason to skip a step.
 "It's faster this way" is not a reason to skip a step.
@@ -223,6 +224,7 @@ Do not present plans ephemerally. When forming a plan:
 ### Makefile
 
 - Use Makefile for standard entry points: build, test, install
+- `make install` symlinks main executable(s) to ~/.local/bin and `make uninstall` cleans it up.
 - `make release` increments version by 0.1 if no parameter given, creates Homebrew release
 - `make release` supports `SKIP_TESTS=1` to bypass regression when tests have already passed with no code changes since
 - `make sync` handles git sync including submodules: `git add --all` -> `git commit` -> `git pull` -> `git push`
