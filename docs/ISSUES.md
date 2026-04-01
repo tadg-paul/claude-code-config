@@ -21,8 +21,11 @@ A well-formed issue must contain:
 |---|---|
 | **ID** | Format: `AC{issue}.{n}` - e.g. `AC12.1` |
 | **AC** | A single, falsifiable *state of the system* - not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
-| **Test** | How to verify the AC is met. Name tests with their issue-scoped IDs (RT-{issue}.{n} for regression, OT-{issue}.{n} for one-off, UT-{issue}.{n} for user tests). Briefly describe stimulus and expected observable output for each. **Multiple tests per AC are expected and the norm.** Each test on a new line. |
-| **Status** | `⏳ pending` / `⚠️ blocked` / `✅ passing` / `❌ failing` / `🚫 removed` |
+| **Tests** | Each test on its own line: `{status} {ID}: {description}`. Removed tests use strikethrough: `~~🚫 {ID}: {description}~~`. AC status is implicit — all ✅ = passing, any ❌ = failing, any ⏳ = pending. **Multiple tests per AC are expected and the norm.** |
+
+Every AC table must end with a key line:
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
 
 ### Single source of truth
 

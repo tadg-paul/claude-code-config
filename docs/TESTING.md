@@ -68,9 +68,7 @@ make test-one-off ISSUE=123  # run one-off tests for a specific issue
 
 ### Decision rule
 
-> **If in doubt, it's a regression test.**
-
-Only place a test in `one_off/` if you can answer: *"After this issue is closed, will this test ever be meaningful to run again?"* If the answer is yes, or you are unsure, it belongs in regression.
+Work through the decision tree in [Choosing the right test type](#choosing-the-right-test-type). The default among *automated* tests is RT, but a test that requires human verification is always a UT regardless of how simple it seems, and a test tied to a one-time event is always an OT.
 
 ### Lifecycle
 
@@ -103,6 +101,27 @@ All tests carry a unique ID. IDs are scoped to the issue that created them, foll
 
 **User tests (`UT-{issue}.{n}`)** require a human to perform and verify manually. They have no corresponding test file. Description, steps, and expected outcome are documented in the AC table. Only Taḋg can mark a UT as passing or failing.
 
+### Choosing the right test type
+
+Ask two questions in order:
+
+1. **Can a machine verify this?** If the outcome requires human judgement — visual correctness, subjective quality, natural-language readability — it is a **UT**. No code is written; the test is documented in the AC table only.
+
+2. **Will this test matter after the issue closes?** If it verifies a one-time event — a data migration, an incident reproduction, a transient environment state — it is an **OT**. If it guards ongoing behaviour that could regress, it is an **RT**.
+
+| Can a machine verify it? | Matters after issue closes? | Type |
+|---|---|---|
+| No | — | **UT** (human test, issue only) |
+| Yes | No | **OT** (one-off, `tests/one_off/`) |
+| Yes | Yes | **RT** (regression, `tests/regression/`) |
+
+**Examples:**
+- "The menu icon looks correct at all display scales" → **UT** — requires human visual judgement
+- "Migration backfills all legacy rows" → **OT** — once migrated, the test has no purpose
+- "Login rejects empty password with 401" → **RT** — must never regress
+
+**Anti-pattern: tests that invoke the build system.** Never write an RT (or any automated test) that invokes `make`, `make test`, or any build/test harness target. Since RTs run inside `make test`, this creates infinite recursion. Tests that verify Makefile behaviour, CLI entry points, or build outputs belong as **OTs** or **UTs**, not RTs.
+
 ### Usage in markers
 
 ```python
@@ -124,8 +143,13 @@ test_login_with_invalid_password_returns_401_RT12_1
 ### Usage in GitHub issues
 
 ```
-| AC12.1 | Login rejects invalid passwords | ✅ RT-12.1, RT-12.2 |
-| AC12.2 | Migration backfills user records | ✅ OT-12.1 |
+| ID | AC | Tests |
+|---|---|---|
+| AC12.1 | Login rejects invalid passwords | ✅ RT-12.1: Empty password returns 401<br>✅ RT-12.2: Wrong password returns 401 |
+| AC12.2 | Migration backfills user records | ✅ OT-12.1: Legacy rows backfilled<br>⏳ UT-12.1: Spot-check migrated accounts |
+| AC12.3 | ~~Chooser filters by app name~~ | ~~🚫 RT-12.3: Filtered list matches query~~ |
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
 ```
 
 ### ID allocation
