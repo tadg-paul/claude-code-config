@@ -17,6 +17,19 @@ Global config files in `~/.claude/` are version-controlled via git and do not re
 - Before devising any solution, make sure that you have read and digested the documentation for this project which may have changed since the last time you looked.
 - When changing any code, update the relevant documentation after (and not before).
 
+## Reviewing doc changes
+
+When proposing documentation edits — whether for approval or as evidence of completion — write the before and after versions to temp files and open a VS Code diff:
+
+```bash
+cp path/to/file.md /tmp/file_old.md
+cp path/to/file.md /tmp/file_new.md
+# edit /tmp/file_new.md
+code -d /tmp/file_old.md /tmp/file_new.md
+```
+
+Apply to the real file only after approval or confirmation.
+
 ## Structure
 - Each project should have README.md or README.org (but not both)
 - Documentation should be in .md or .org format

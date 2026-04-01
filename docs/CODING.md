@@ -123,20 +123,69 @@ count+=1
 
 **Never use system Python on macOS.**
 
-### Environment
+### Version management
 
-Target Python 3.12.x (or current stable). Respect `.python-version`. Assume pyenv installed.
+Target Python 3.12.x (current LTS) or 3.13.x (current stable). Pin per-project with a `.python-version` file containing just the version string (e.g. `3.12`).
 
+**Preferred:** `uv` — manages Python versions, venvs, and packages in one tool. Replaces `pyenv` + `pip` + `venv`.
+
+**Acceptable:** `pyenv` + `python3 -m venv` — use this if the project already uses it or `uv` is not available.
+
+Never use `pyenv local` to set a version mid-script; use `.python-version` instead.
+
+### Virtual environments
+
+**Never `pip install` or `uv pip install` outside a venv.** No exceptions.
+
+**With uv:**
 ```bash
-[ -d ".venv" ] && source .venv/bin/activate || {
-    pyenv local 3.12.x
-    python3 -m venv .venv
-    source .venv/bin/activate
-}
+uv venv          # creates .venv using version from .python-version
+uv pip install -r requirements.txt
 ```
 
-- Never `pip install` outside a venv
-- Update `requirements.txt` when adding dependencies
+**With pip:**
+```bash
+python3 -m venv .venv
+.venv/bin/pip install --upgrade pip -q
+.venv/bin/pip install -r requirements.txt -q
+```
+
+### Project structure
+
+Use a `src/` layout for new projects — package lives at `src/<packagename>/`. This prevents accidental imports of source rather than the installed package. Do not restructure existing projects to `src/` layout simply because you are touching them.
+
+### Dependency files
+
+Prefer `pyproject.toml` for packages with a proper structure. `requirements.txt` is acceptable for simple scripts and tools.
+
+```toml
+[project]
+name = "mypackage"
+requires-python = ">=3.12"
+dependencies = ["pyyaml>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.4"]
+```
+
+### Ruff configuration
+
+Standard config for all Python projects:
+
+```toml
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP"]
+ignore = ["E501"]  # line too long — enforced by formatter, not linter
+
+[tool.ruff.lint.isort]
+known-first-party = ["<package-name>"]
+```
+
+`E501` is always ignored — `ruff format` enforces line length; having both causes conflicts. 88 is the community standard (Black's default). Deviate only with documented reason.
 
 ## Code Commenting
 
