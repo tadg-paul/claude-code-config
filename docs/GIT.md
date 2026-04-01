@@ -63,6 +63,31 @@ When hooks fail, follow this sequence exactly:
 
 Cannot fix? Ask for help. Never bypass.
 
+## Project Hooks Must Chain to Global Hooks
+
+When a project needs its own git hooks, the project hook must call the global hook first — never silently replace it. A project-local `.git/hooks/pre-commit` or a project-level `core.hooksPath` overrides the global hook entirely unless chaining is explicit.
+
+Use this pattern:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Chain to global hook first — project hooks must not override global hooks
+if global_hooks_path="$(git config --global core.hooksPath 2>/dev/null)"; then
+    if [[ -x "$global_hooks_path/${0##*/}" ]]; then
+        "$global_hooks_path/${0##*/}"
+    fi
+fi
+
+# Project-specific checks below
+```
+
+Notes:
+- `${0##*/}` resolves to the hook's own name (`pre-commit`, `pre-push`, etc.), so the pattern works for any hook type without modification.
+- `set -e` ensures the global hook's exit code propagates — if the global hook fails, the project hook fails too.
+- The `if` around `git config` handles the case where no global `core.hooksPath` is configured.
+
 ## Pressure Response
 
 When asked to commit/push with failing hooks:
