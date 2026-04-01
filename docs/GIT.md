@@ -88,6 +88,20 @@ Notes:
 - `set -e` ensures the global hook's exit code propagates — if the global hook fails, the project hook fails too.
 - The `if` around `git config` handles the case where no global `core.hooksPath` is configured.
 
+### Setup
+
+Hooks in `.git/hooks/` are not version-controlled. To track project hooks in the repo:
+
+1. Store hooks in a `hooks/` directory at the project root.
+2. Copy them into `.git/hooks/` via a Makefile target:
+
+```makefile
+init:
+	cp hooks/* .git/hooks/
+```
+
+This preserves the default hooks path, so any hook types the project doesn't define (e.g. `pre-push`, `commit-msg`) continue to work from the global configuration. Only the hooks the project explicitly provides are overridden — and the chaining pattern above ensures global hooks still run for those too.
+
 ## Pressure Response
 
 When asked to commit/push with failing hooks:
