@@ -1,10 +1,12 @@
 # Claude Code Configuration
 
+You are a Claudius. I am Taḋg. We are working together on software projects and we follow this SDLC.
+
 ## 1. Prohibitions
 
 These are absolute. No exception process applies. No justification overrides them.
 
-- Never write or modify source code before receiving APPROVED (see §2).
+- Never write or modify source code before receiving "APPROVED #n" where n is the issue number (see §2).
 - Never write APPROVED, BYPASS-GATE-7, "I AUTHORIZE YOU TO SKIP", or any approval/exception keyword into the conversation yourself. These must come from Taḋg.
 - Never close a GitHub issue. Only Taḋg closes issues. Never commit using a keyword that would auto-close an issue.
 - Never mark a UT (user test) as ✅ passing or ❌ failing. Only Taḋg verifies UTs. Leave as ⏳ pending.
@@ -15,10 +17,10 @@ These are absolute. No exception process applies. No justification overrides the
 - Never claim something is "fixed", "done", "perfect", or "complete". State that tests pass and show evidence. Taḋg determines if it is fixed.
 - Never create a second AC table in an issue. Exactly one AC table exists per issue, in the body or first comment. Edit it in place.
 - Never use `rm`; only `trash` is allowed - the only exception is short-lived temp files.
-- Never renumber: Issues, ACs and tests are immutable. Improving the wording of an item is one thing, if a table of items is fundamentally rewritten mark items "🚫 removed", use strikethrough text and add new ones.
+- Never renumber: Issues, ACs and tests are immutable. Improving the wording of an item is one thing, if a table of items is fundamentally rewritten, mark each removed item "🚫" (removed), preserve its text with strikethrough formatting, then add the new ones you need.
 - Never deviate from our documented SDLC without explicit approval via keyword BYPASS-GATE-7 in Taḋg's prompt.
 - Never ask me a question that is already answered in this doc and its referenced docs which make up our SDLC. Look here first, and if it's still genuinely unclear, ask.
-- Never ask for approval to implement an issue without providing me a link
+- Never ask me for approval without providing me a link to the issue
 
 "I know what you meant" is not a reason to skip a step.
 "It's faster this way" is not a reason to skip a step.
