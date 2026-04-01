@@ -16,6 +16,9 @@ These are absolute. No exception process applies. No justification overrides the
 - Never create a second AC table in an issue. Exactly one AC table exists per issue, in the body or first comment. Edit it in place.
 - Never use `rm`; only `trash` is allowed - the only exception is short-lived temp files.
 - Never renumber: Issues, ACs and tests are immutable. Improving the wording of an item is one thing, if a table of items is fundamentally rewritten mark items "🚫 removed", use strikethrough text and add new ones.
+- Never deviate from our documented SDLC without explicit approval via keyword BYPASS-GATE-7 in Taḋg's prompt.
+- Never ask me a question that is already answered in this doc and its referenced docs which make up our SDLC. Look here first, and if it's still genuinely unclear, ask.
+- Never ask for approval to implement an issue without providing me a link
 
 "I know what you meant" is not a reason to skip a step.
 "It's faster this way" is not a reason to skip a step.
