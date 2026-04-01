@@ -55,7 +55,7 @@ def test_migration_user_records_backfilled():
     ...
 ```
 
-If the framework has no native marker, encode the issue reference in the test name: `test_migration_user_records_backfilled_OT007`.
+If the framework has no native marker, encode the issue reference in the test name: `test_migration_user_records_backfilled_OT123_1`.
 
 A one-off test without an `issue` reference must fail linting. Both directory placement and marker are required.
 
@@ -91,58 +91,53 @@ The test name should tell you what failed without reading the code.
 
 ## Test IDs
 
-All tests carry a unique ID. The prefix indicates type:
+All tests carry a unique ID. IDs are scoped to the issue that created them, following the same namespacing pattern as ACs. The prefix indicates type:
 
-| Prefix | Type | Location | Run by |
+| Format | Type | Location | Run by |
 |--------|------|----------|--------|
-| `RT-NNN` | Regression test | `tests/regression/` | `make test` |
-| `OT-NNN` | One-off test | `tests/one_off/` | `make test-one-off` |
-| `UT-NNN` | User test | documented in issue only | human |
+| `RT-{issue}.{n}` | Regression test | `tests/regression/` | `make test` |
+| `OT-{issue}.{n}` | One-off test | `tests/one_off/` | `make test-one-off` |
+| `UT-{issue}.{n}` | User test | documented in issue only | human |
 
-Numbers are zero-padded to three digits. Each prefix has its own sequence.
+`{issue}` is the GitHub issue number. `{n}` is a sequential integer starting at 1 within each issue and prefix. For example, issue #12 might allocate RT-12.1, RT-12.2, RT-12.3, OT-12.1, and UT-12.1.
 
-**User tests (`UT-NNN`)** require a human to perform and verify manually. They have no corresponding test file. Description, steps, and expected outcome are documented in the AC table. Only Taḋg can mark a UT as passing or failing.
+**User tests (`UT-{issue}.{n}`)** require a human to perform and verify manually. They have no corresponding test file. Description, steps, and expected outcome are documented in the AC table. Only Taḋg can mark a UT as passing or failing.
 
 ### Usage in markers
 
 ```python
 # Python/pytest - illustrative only
-@pytest.mark.regression(test_id="RT-042")
+@pytest.mark.regression(test_id="RT-12.1")
 def test_login_with_invalid_password_returns_401():
     ...
 
-@pytest.mark.one_off(issue="#123", test_id="OT-007")
+@pytest.mark.one_off(issue="#123", test_id="OT-123.1")
 def test_migration_user_records_backfilled():
     ...
 ```
 
 If the framework has no native marker, encode the ID in the test name as a suffix:
 ```
-test_login_with_invalid_password_returns_401_RT042
+test_login_with_invalid_password_returns_401_RT12_1
 ```
 
 ### Usage in GitHub issues
 
 ```
-| AC-1 | Login rejects invalid passwords | ✅ RT-042 |
-| AC-2 | Migration backfills user records | ✅ OT-007 |
+| AC12.1 | Login rejects invalid passwords | ✅ RT-12.1, RT-12.2 |
+| AC12.2 | Migration backfills user records | ✅ OT-12.1 |
 ```
 
 ### ID allocation
 
-`tests/NEXT_IDS.txt` is the source of truth:
+Test IDs are scoped to the issue that creates them. No central counter file is needed.
 
-```
-RT 043
-OT 008
-UT 001
-```
+To allocate a new test ID for issue #N:
 
-Read the file, take the current value, increment, write back - in the same commit as the test.
+1. Check the AC table and any existing tests for that issue to find the highest allocated number for the relevant prefix (RT, OT, or UT).
+2. Increment by 1.
 
-If `tests/NEXT_IDS.txt` does not exist, create it and seed all sequences at `001`.
-
-Test ID allocation is not a code change and may be done during issue preparation.
+If no tests of that prefix exist yet for the issue, start at 1 (e.g. `RT-N.1`).
 
 ### Mid-project migration
 

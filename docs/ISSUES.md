@@ -21,8 +21,8 @@ A well-formed issue must contain:
 |---|---|
 | **ID** | Format: `AC{issue}.{n}` - e.g. `AC12.1` |
 | **AC** | A single, falsifiable *state of the system* - not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
-| **Test** | How to verify the AC is met. Name tests with their IDs (RT-NNN for regression, OT-NNN for one-off, UT-NNN for user tests). Briefly describe stimulus and expected observable output for each. **Multiple tests per AC are expected and the norm.** Each test on a new line. |
-| **Status** | `⏳ pending` / `⚠️ blocked` / `✅ passing` / `❌ failing` / `⏭ skipped` |
+| **Test** | How to verify the AC is met. Name tests with their issue-scoped IDs (RT-{issue}.{n} for regression, OT-{issue}.{n} for one-off, UT-{issue}.{n} for user tests). Briefly describe stimulus and expected observable output for each. **Multiple tests per AC are expected and the norm.** Each test on a new line. |
+| **Status** | `⏳ pending` / `⚠️ blocked` / `✅ passing` / `❌ failing` / `🚫 removed` |
 
 ### Single source of truth
 
@@ -110,6 +110,6 @@ Every sub-issue must also conform to this standard - a well-formed issue with AC
 
 ## AC and test ID allocation
 
-- ACs follow the pattern `AC{issue}.{n}` - e.g. the first AC in issue #12 is `AC12.1`, then `AC12.2`, and so on.
-- Allocating test IDs (RT-NNN/OT-NNN/UT-NNN) in AC tables and creating `tests/NEXT_IDS.txt` if it does not yet exist are **not code changes**. They may be done at any time as part of issue preparation without an approved issue.
-- Once an ID has been allocated for an AC or test it is immutable. Never renumber, reuse, or delete IDs. If an AC is removed, mark it as "removed" in the table but do not delete the row or its ID. If a test is removed, mark it as "removed" in the test suite but do not delete the test or its ID.
+- ACs follow the pattern `AC{issue}.{n}` — e.g. the first AC in issue #12 is `AC12.1`, then `AC12.2`, and so on.
+- Test IDs follow the same issue-scoped pattern: `RT-{issue}.{n}`, `OT-{issue}.{n}`, `UT-{issue}.{n}` — e.g. the first regression test for issue #12 is `RT-12.1`, the second is `RT-12.2`. Each prefix has its own sequence within the issue.
+- Once an ID has been allocated for an AC or test it is immutable. Never renumber, reuse, or delete IDs. If an AC is removed, mark it as `🚫 removed` in the table but do not delete the row or its ID. If a test is removed, mark it as removed in the test suite but do not delete the test or its ID.

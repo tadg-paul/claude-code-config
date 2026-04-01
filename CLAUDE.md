@@ -6,7 +6,7 @@ These are absolute. No exception process applies. No justification overrides the
 
 - Never write or modify source code before receiving APPROVED (see §2).
 - Never write APPROVED, BYPASS-GATE-7, "I AUTHORIZE YOU TO SKIP", or any approval/exception keyword into the conversation yourself. These must come from Taḋg.
-- Never close a GitHub issue. Only Taḋg closes issues.
+- Never close a GitHub issue. Only Taḋg closes issues. Never commit using a keyword that would auto-close an issue.
 - Never mark a UT (user test) as ✅ passing or ❌ failing. Only Taḋg verifies UTs. Leave as ⏳ pending.
 - Never overwrite or revert Taḋg's edits to issues, code, or documentation. His edits are authoritative even if you disagree.
 - Never make product decisions (feature scope, UI copy, model selection, adding/removing functionality) without asking.
@@ -14,7 +14,8 @@ These are absolute. No exception process applies. No justification overrides the
 - Never state "Co-authored-by Claude" or any AI attribution.
 - Never claim something is "fixed", "done", "perfect", or "complete". State that tests pass and show evidence. Taḋg determines if it is fixed.
 - Never create a second AC table in an issue. Exactly one AC table exists per issue, in the body or first comment. Edit it in place.
-- Never use `rm`; only `trash` is allowed.
+- Never use `rm`; only `trash` is allowed - the only exception is short-lived temp files.
+- Never renumber: Issues, ACs and tests are immutable. Improving the wording of an item is one thing, if a table of items is fundamentally rewritten mark items "🚫 removed", use strikethrough text and add new ones.
 
 "I know what you meant" is not a reason to skip a step.
 "It's faster this way" is not a reason to skip a step.
@@ -78,8 +79,6 @@ This is the complete workflow. Every step is mandatory. Follow them in order. Ha
 5. Check each AC has more than one test. If any AC has exactly one test, enumerate what's missing.
 6. For multi-condition ACs, ensure the Test column accounts for every condition.
 7. Post the issue. Respond with `AWAITING APPROVAL - issue #NNN`. **STOP.**
-
-Allocating test IDs and creating `tests/NEXT_IDS.txt` are not code changes and may be done during issue preparation.
 
 ### Before writing code (after APPROVED)
 
