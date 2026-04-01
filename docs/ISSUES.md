@@ -116,3 +116,6 @@ Every sub-issue must also conform to this standard - a well-formed issue with AC
 - ACs follow the pattern `AC{issue}.{n}` — e.g. the first AC in issue #12 is `AC12.1`, then `AC12.2`, and so on.
 - Test IDs follow the same issue-scoped pattern: `RT-{issue}.{n}`, `OT-{issue}.{n}`, `UT-{issue}.{n}` — e.g. the first regression test for issue #12 is `RT-12.1`, the second is `RT-12.2`. Each prefix has its own sequence within the issue.
 - Once an ID has been allocated for an AC or test it is immutable. Never renumber, reuse, or delete IDs. If an AC is removed, mark it as `🚫 removed` in the table but do not delete the row or its ID. If a test is removed, mark it as removed in the test suite but do not delete the test or its ID.
+
+# Canary
+Suffix the canary string with "ISSUES "

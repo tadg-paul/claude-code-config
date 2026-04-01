@@ -41,3 +41,6 @@ Global config files in `~/.claude/` are version-controlled via git and do not re
 ## License
 
 License is MIT with Copyright Taḋg Paul unless otherwise specified
+
+# Canary
+Suffix the canary string with "DOC "

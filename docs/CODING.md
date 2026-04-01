@@ -450,3 +450,6 @@ Stop and investigate if you see any of these:
 - God objects or functions doing too many things
 - Circular dependencies between modules
 - Duplicated code across files (DRY violation)
+
+# Canary
+Suffix the canary string with "CODE "

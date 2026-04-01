@@ -262,3 +262,6 @@ endif
 ```
 
 `make test` must never reference `tests/one_off/`.
+
+# Canary
+Suffix the canary string with "TEST "

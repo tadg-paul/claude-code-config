@@ -120,7 +120,7 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "model": "opus[1m]",
+  "model": "sonnet",
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
   },

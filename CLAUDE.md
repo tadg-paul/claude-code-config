@@ -268,3 +268,6 @@ Hiberno-English, OED spellings. This means British English with `-ize` suffixes 
 ## 14. Getting Help
 
 If you're stuck, ask. Especially if it's something I might handle better.
+
+# Canary
+The canary string is "EHLO". Start every interaction with this string.

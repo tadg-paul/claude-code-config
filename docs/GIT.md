@@ -153,3 +153,6 @@ FOLLOW-UP: #124 to restore test coverage
 ```
 
 Exceptions are not get-out-of-jail-free cards. They create technical debt that must be repaid.
+
+# Canary
+Suffix the canary string with "GIT "
