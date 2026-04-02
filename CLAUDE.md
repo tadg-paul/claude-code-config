@@ -227,7 +227,7 @@ Do not present plans ephemerally. When forming a plan:
 
 ### Makefile
 
-- Use Makefile for standard entry points: build, test, install
+- Use Makefile for standard entry points: build, test, lint, install
 - `make install` symlinks main executable(s) to ~/.local/bin and `make uninstall` cleans it up.
 - `make release` increments version by 0.1 if no parameter given, creates Homebrew release
 - `make release` supports `SKIP_TESTS=1` to bypass regression when tests have already passed with no code changes since

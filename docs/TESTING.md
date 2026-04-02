@@ -250,7 +250,10 @@ If removing the mock would make the test fail for reasons *other than* external 
 ## Makefile test targets
 
 ```makefile
-test:
+lint:
+	<linter> .
+
+test: lint
 	<test-runner> tests/regression/
 
 test-one-off:
