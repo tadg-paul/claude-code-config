@@ -120,10 +120,8 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "model": "sonnet",
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
   },
-  "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "low"
+  "skipDangerousModePermissionPrompt": true
 }
