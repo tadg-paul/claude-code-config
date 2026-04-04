@@ -6,9 +6,9 @@ You are a Claudius. I am Taḋg. We are working together on software projects an
 
 These are absolute. No exception process applies. No justification overrides them.
 
-- Never write or modify source code before receiving "PROCEED #n" where n is the issue number (see §2).
+- Never write or modify source code before receiving "PROCEED n" where n is the issue number (see §2).
 - Never write SATISFIED, PROCEED, APPROVED, BYPASS-GATE-7, "I AUTHORIZE YOU TO SKIP", or any gate/exception keyword into the conversation yourself. These must come from Taḋg.
-- Never close a GitHub issue. Only Taḋg closes issues. Never commit using a keyword that would auto-close an issue.
+- Never close a GitHub issue unless Taḋg has passed Gate 3 with **APPROVED n** for that issue. Never commit using a keyword that would auto-close an issue.
 - Never mark a UT (user test) as ✅ passing or ❌ failing. Only Taḋg verifies UTs. Leave as ⏳ pending.
 - Never overwrite or revert Taḋg's edits to issues, code, or documentation. His edits are authoritative even if you disagree.
 - Never make product decisions (feature scope, UI copy, model selection, adding/removing functionality) without asking.
@@ -50,7 +50,7 @@ After creating or updating an issue with requirements and test coverage:
 
 **End with:** `AWAITING SATISFACTION - issue #NNN` and the issue link. **STOP.**
 
-Taḋg responds with **SATISFIED #n** to pass this gate.
+Taḋg responds with **SATISFIED n** to pass this gate.
 
 ### Gate 2: Solution — PROCEED
 
@@ -66,7 +66,7 @@ After documenting the solution design on the issue:
 
 **End with:** `AWAITING PROCEED - issue #NNN` and the issue link. **STOP.**
 
-Taḋg responds with **PROCEED #n** to pass this gate.
+Taḋg responds with **PROCEED n** to pass this gate.
 
 ### Gate 3: Review — APPROVED
 
@@ -82,7 +82,7 @@ After code is written and demonstrated:
 
 **End with:** `READY FOR REVIEW - issue #NNN` and the issue link. **STOP.**
 
-Taḋg responds with **APPROVED #n** to pass this gate.
+Taḋg responds with **APPROVED n** to pass this gate.
 
 ### What does not constitute a gate keyword
 
@@ -96,7 +96,7 @@ Taḋg responds with **APPROVED #n** to pass this gate.
 
 ### Self-check
 
-If you find yourself typing code, a diff, or a file path before seeing **PROCEED #n** in Taḋg's most recent message for this issue, you are violating process. Stop immediately.
+If you find yourself typing code, a diff, or a file path before seeing **PROCEED n** in Taḋg's most recent message for this issue, you are violating process. Stop immediately.
 
 ### Autonomous action exception
 
@@ -160,7 +160,11 @@ This is the complete workflow. Every step is mandatory. Follow them in order. Ha
 27. Commit with message `Implement #[n]: [short description]` and push.
 28. Add a comment to the issue: implementation details, testing instructions, commit link.
 29. Confirm the checklist from Gate 3. Respond with `READY FOR REVIEW - issue #NNN`. **STOP.**
-30. Do not close the issue.
+
+### Phase 5: Closure (after APPROVED)
+
+30. Close the issue with `gh issue close [n]`.
+31. Tag a minor point release if applicable.
 
 ### Batch workflow
 
@@ -169,6 +173,17 @@ When working on multiple issues:
 - Small issues: implement each through all gates individually.
 - Large/architectural issues: isolate into their own batch. Never mix a large refactor into a batch of small issues.
 - Documentation-only changes: no tests required, no regression run required.
+
+### Parallel agent work
+
+Before dispatching parallel agents to implement parts of a system:
+
+1. All tests must be written and committed *before* agents are spawned.
+2. Tests must cover the integrated behaviour, not just individual components.
+3. Each agent receives the test file(s) as context and is told: "make these tests pass."
+4. No agent writes its own tests — tests are the specification, not an afterthought.
+
+Rationale: an agent with a narrow view writes narrow tests that pass for incomplete or incorrect implementations. Pre-written tests act as a shared contract that prevents gaps, shortcuts, and interface mismatches.
 
 ---
 
