@@ -120,8 +120,11 @@
     ],
     "defaultMode": "acceptEdits"
   },
+  "model": "opus[1m]",
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
   },
+  "effortLevel": "low",
+  "fastMode": true,
   "skipDangerousModePermissionPrompt": true
 }
