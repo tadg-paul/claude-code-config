@@ -16,6 +16,11 @@ Global config files in `~/.claude/` are version-controlled via git and do not re
 
 - Before devising any solution, make sure that you have read and digested the documentation for this project which may have changed since the last time you looked.
 - When changing any code, update the relevant documentation after (and not before).
+- After writing or editing any documentation file, run it through `sanitize` (from `tigger04/oed-sanitize`, installed at `~/.local/bin/sanitize`) to normalize spelling (OED standard) and fix problematic symbols. Sanitized content comes on stdout, a changes summary on stderr. Report the stderr summary in chat.
+  ```bash
+  sanitize < path/to/file.md > /tmp/sanitized.md
+  mv /tmp/sanitized.md path/to/file.md
+  ```
 
 ## Reviewing doc changes
 
