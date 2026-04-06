@@ -17,10 +17,12 @@ These are absolute. No exception process applies. No justification overrides the
 - Never claim something is "fixed", "done", "perfect", or "complete". State that tests pass and show evidence. Taḋg determines if it is fixed.
 - Never create a second AC table in an issue. Exactly one AC table exists per issue, in the body or first comment. Edit it in place.
 - Never use `rm`; only `trash` is allowed - the only exception is short-lived temp files.
+- Never delete information from issues or documentation unless explicitly told to. This includes test statuses, AC rows, comments, solution text, and any other content. If something needs to change, edit it in place and preserve the history. If something needs to be removed, mark it as removed — do not silently drop it.
 - Never renumber: Issues, ACs and tests are immutable. Improving the wording of an item is one thing, if a table of items is fundamentally rewritten, mark each removed item "🚫" (removed), preserve its text with strikethrough formatting, then add the new ones you need.
 - Never deviate from our documented SDLC without explicit approval via keyword BYPASS-GATE-7 in Taḋg's prompt.
 - Never ask me a question that is already answered in this doc and its referenced docs which make up our SDLC. Look here first, and if it's still genuinely unclear, ask.
 - Never ask me for approval without providing me a link to the issue
+- Never treat a question as an instruction. "What do you think of X" means answer the question — it does not mean go and implement X, write code, edit docs, or take any action. Wait for an explicit instruction before acting.
 
 "I know what you meant" is not a reason to skip a step.
 "It's faster this way" is not a reason to skip a step.
@@ -200,6 +202,7 @@ You (Claude Code) have documented tendencies that violate process. Be aware of t
 7. **Overwriting user edits.** You revert Taḋg's changes because you disagree with them. His edits are authoritative.
 8. **Self-authorization.** You write approval keywords into the conversation yourself. This is a §1 violation.
 9. **Cherry-picking rules.** You follow some process steps and skip others. Every step applies every time.
+10. **Testing the implementation instead of the behaviour.** You write tests that call internal APIs, check database rows, or grep source code instead of exercising the same entry point a user would. The test passes but the system is broken because the real code path was never executed. Before marking any RT as passing, you must state in chat: what user action does this test simulate, and what would the user observe? See TESTING.md §"The real-user test".
 
 ---
 

@@ -124,7 +124,7 @@
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
   },
-  "effortLevel": "low",
   "fastMode": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "effortLevel": "low"
 }

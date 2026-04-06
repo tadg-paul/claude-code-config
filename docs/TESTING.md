@@ -2,6 +2,18 @@
 
 This document defines how to write, structure, and organize tests. The TDD workflow sequence - when to enumerate, when to write tests, when to run regression - is in CLAUDE.md §3.
 
+## The real-user test
+
+Tests must verify observable behaviour through the same entry point a user would use. Before marking any RT as passing, state in chat: *what user action does this test simulate, and what would the user observe?* If the answer references internal APIs, database rows, source code grep results, or any artefact the user never sees - the test doesn't match its spec. Rewrite it.
+
+This is not a rule about any specific shortcut. It is the question that all the other testing rules exist to enforce: *"Would this test have caught a real bug?"*
+
+**Anti-patterns this catches:**
+- Calling a library function when the spec says "run the CLI command"
+- Asserting a database row exists when the spec says "user sees a confirmation page"
+- Grepping source code instead of running anything
+- Testing the narrowest internal slice that technically touches the AC while leaving the integration between components - and the integration to functionality - unverified
+
 ## TDD
 
 We practice test-driven development:
@@ -105,20 +117,20 @@ All tests carry a unique ID. IDs are scoped to the issue that created them, foll
 
 Ask two questions in order:
 
-1. **Can a machine verify this?** If the outcome requires human judgement — visual correctness, subjective quality, natural-language readability — it is a **UT**. No code is written; the test is documented in the AC table only.
+1. **Can a machine verify this?** If the outcome requires human judgement - visual correctness, subjective quality, natural-language readability - it is a **UT**. No code is written; the test is documented in the AC table only.
 
-2. **Will this test matter after the issue closes?** If it verifies a one-time event — a data migration, an incident reproduction, a transient environment state — it is an **OT**. If it guards ongoing behaviour that could regress, it is an **RT**.
+2. **Will this test matter after the issue closes?** If it verifies a one-time event - a data migration, an incident reproduction, a transient environment state - it is an **OT**. If it guards ongoing behaviour that could regress, it is an **RT**.
 
 | Can a machine verify it? | Matters after issue closes? | Type |
 |---|---|---|
-| No | — | **UT** (human test, issue only) |
+| No | - | **UT** (human test, issue only) |
 | Yes | No | **OT** (one-off, `tests/one_off/`) |
 | Yes | Yes | **RT** (regression, `tests/regression/`) |
 
 **Examples:**
-- "The menu icon looks correct at all display scales" → **UT** — requires human visual judgement
-- "Migration backfills all legacy rows" → **OT** — once migrated, the test has no purpose
-- "Login rejects empty password with 401" → **RT** — must never regress
+- "The menu icon looks correct at all display scales" -> **UT** - requires human visual judgement
+- "Migration backfills all legacy rows" -> **OT** - once migrated, the test has no purpose
+- "Login rejects empty password with 401" -> **RT** - must never regress
 
 **Anti-pattern: tests that invoke the build system.** Never write an RT (or any automated test) that invokes `make`, `make test`, or any build/test harness target. Since RTs run inside `make test`, this creates infinite recursion. Tests that verify Makefile behaviour, CLI entry points, or build outputs belong as **OTs** or **UTs**, not RTs.
 
