@@ -18,7 +18,7 @@ These are absolute. No exception process applies. No justification overrides the
 - Never create a second AC table in an issue. Exactly one AC table exists per issue, in the body or first comment. Edit it in place.
 - Never use `rm`; only `trash` is allowed - the only exception is short-lived temp files.
 - Never delete information from issues or documentation unless explicitly told to. This includes test statuses, AC rows, comments, solution text, and any other content. If something needs to change, edit it in place and preserve the history. If something needs to be removed, mark it as removed — do not silently drop it.
-- Never renumber: Issues, ACs and tests are immutable. Improving the wording of an item is one thing, if a table of items is fundamentally rewritten, mark each removed item "🚫" (removed), preserve its text with strikethrough formatting, then add the new ones you need.
+- Never renumber **once signed off**: Issues, ACs and tests become immutable after they have passed a gate (SATISFIED for ACs/tests, APPROVED for results). Improving the wording of an item is one thing, if a table of items is fundamentally rewritten after sign-off, mark each removed item "🚫" (removed), preserve its text with strikethrough formatting, then add the new ones you need. **Before** sign-off — i.e. while drafting an issue prior to SATISFIED — ACs and tests are draft text and may be freely added, edited, removed, or renumbered without strikethrough or removal markers.
 - Never deviate from our documented SDLC without explicit approval via keyword BYPASS-GATE-7 in Taḋg's prompt.
 - Never ask me a question that is already answered in this doc and its referenced docs which make up our SDLC. Look here first, and if it's still genuinely unclear, ask.
 - Never ask me for approval without providing me a link to the issue
@@ -79,7 +79,8 @@ After code is written and demonstrated:
 - Each coding standard section checked, listed by name and section
 - For each UT: launch the application/tool, show Taḋg what's on screen, and ask "Does this pass UT-{issue}.{n}?" as a yes/no question. Never give Taḋg instructions to run something himself.
 - AC table updated in place — automated test statuses updated, UTs left as ⏳ pending until Taḋg answers
-- No new warnings or errors introduced
+- Build pipeline (`make test`) passes with zero errors — errors are a hard block, no exceptions
+- No new warnings introduced. Any pre-existing warnings must be listed and justified. New warnings are a hard block equal to errors
 - Documentation updated if applicable
 
 **End with:** `READY FOR REVIEW - issue #NNN` and the issue link. **STOP.**
@@ -146,27 +147,28 @@ This is the complete workflow. Every step is mandatory. Follow them in order. Ha
 
 ### Phase 3: Implementation (after PROCEED)
 
-17. Write failing tests for all enumerated conditions. Run them. Confirm they fail.
-18. Write minimal code to pass. Run issue tests. Confirm they pass.
-19. Refactor while keeping issue tests green.
-20. Never overwrite Taḋg's edits. If he has edited something, that edit is authoritative.
-21. Never make product decisions without asking.
+17. **STOP.** Inform Taḋg that PROCEED has been received and ask whether he wants to run `/audit-acs`, `/audit-tests`, or `/write-tests` before implementation begins. Do not write any code — including tests — until Taḋg confirms to continue.
+18. Write failing tests for all enumerated conditions. Run them. Confirm they fail.
+19. Write minimal code to pass. Run issue tests. Confirm they pass.
+20. Refactor while keeping issue tests green.
+21. Never overwrite Taḋg's edits. If he has edited something, that edit is authoritative.
+22. Never make product decisions without asking.
 
 ### Phase 4: Review
 
-22. Run `make test` and paste the output (includes lint).
-23. List each coding standard section you checked against, by name and section number.
-24. For each UT: launch the application/tool, show Taḋg what's on screen, and ask "Does this pass UT-{issue}.{n}?" — never give instructions for Taḋg to run something himself.
-25. Update the AC table **in place**. Update automated test statuses. Leave UTs as ⏳ pending.
-26. Update project documentation as appropriate.
-27. Commit with message `Implement #[n]: [short description]` and push.
-28. Add a comment to the issue: implementation details, testing instructions, commit link.
-29. Confirm the checklist from Gate 3. Respond with `READY FOR REVIEW - issue #NNN`. **STOP.**
+23. Run `make test` and paste the output (includes lint).
+24. List each coding standard section you checked against, by name and section number.
+25. For each UT: launch the application/tool, show Taḋg what's on screen, and ask "Does this pass UT-{issue}.{n}?" — never give instructions for Taḋg to run something himself.
+26. Update the AC table **in place**. Update automated test statuses. Leave UTs as ⏳ pending.
+27. Update project documentation as appropriate.
+28. Commit with message `Implement #[n]: [short description]` and push.
+29. Add a comment to the issue: implementation details, testing instructions, commit link.
+30. Confirm the checklist from Gate 3. Respond with `READY FOR REVIEW - issue #NNN`. **STOP.**
 
 ### Phase 5: Closure (after APPROVED)
 
-30. Close the issue with `gh issue close [n]`.
-31. Tag a minor point release if applicable.
+31. Close the issue with `gh issue close [n]`.
+32. Tag a minor point release if applicable.
 
 ### Batch workflow
 

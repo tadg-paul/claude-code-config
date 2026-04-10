@@ -24,12 +24,14 @@ Global config files in `~/.claude/` are version-controlled via git and do not re
 
 ## Reviewing doc changes
 
-When proposing documentation edits — whether for approval or as evidence of completion — write the before and after versions to temp files and open a VS Code diff:
+When proposing documentation edits - whether for approval or as evidence of completion - write the before and after versions to temp files, run `sanitize` on the new version, then open a VS Code diff. Taḋg must review the sanitized version, not a pre-sanitize draft.
 
 ```bash
 cp path/to/file.md /tmp/file_old.md
 cp path/to/file.md /tmp/file_new.md
 # edit /tmp/file_new.md
+sanitize < /tmp/file_new.md > /tmp/file_sanitized.md
+mv /tmp/file_sanitized.md /tmp/file_new.md
 code -d /tmp/file_old.md /tmp/file_new.md
 ```
 

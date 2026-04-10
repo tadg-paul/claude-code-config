@@ -21,7 +21,7 @@ A well-formed issue must contain:
 |---|---|
 | **ID** | Format: `AC{issue}.{n}` - e.g. `AC12.1` |
 | **AC** | A single, falsifiable *state of the system* - not a test, not a user action, not an implementation step. Write it as: *"Given [context], [system] [does/returns/stores/rejects] [X]."* If it describes something a test *does*, rewrite it as what the system *must be true of*. |
-| **Tests** | Each test on its own line: `{status} {ID}: {description}`. Removed tests use strikethrough: `~~🚫 {ID}: {description}~~`. AC status is implicit — all ✅ = passing, any ❌ = failing, any ⏳ = pending. **Multiple tests per AC are expected and the norm.** |
+| **Tests** | Each test on its own line: `{status} {ID}: {description}`. Removed tests use strikethrough: `~~🚫 {ID}: {description}~~`. AC status is implicit - all ✅ = passing, any ❌ = failing, any ⏳ = pending. **Multiple tests per AC are expected and the norm.** |
 
 Every AC table must end with a key line:
 
@@ -113,9 +113,10 @@ Every sub-issue must also conform to this standard - a well-formed issue with AC
 
 ## AC and test ID allocation
 
-- ACs follow the pattern `AC{issue}.{n}` — e.g. the first AC in issue #12 is `AC12.1`, then `AC12.2`, and so on.
-- Test IDs follow the same issue-scoped pattern: `RT-{issue}.{n}`, `OT-{issue}.{n}`, `UT-{issue}.{n}` — e.g. the first regression test for issue #12 is `RT-12.1`, the second is `RT-12.2`. Each prefix has its own sequence within the issue.
-- Once an ID has been allocated for an AC or test it is immutable. Never renumber, reuse, or delete IDs. If an AC is removed, mark it as `🚫 removed` in the table but do not delete the row or its ID. If a test is removed, mark it as removed in the test suite but do not delete the test or its ID.
+- ACs follow the pattern `AC{issue}.{n}` - e.g. the first AC in issue #12 is `AC12.1`, then `AC12.2`, and so on.
+- Test IDs follow the same issue-scoped pattern: `RT-{issue}.{n}`, `OT-{issue}.{n}`, `UT-{issue}.{n}` - e.g. the first regression test for issue #12 is `RT-12.1`, the second is `RT-12.2`. Each prefix has its own sequence within the issue.
+- IDs become immutable **once the issue has passed Gate 1 (SATISFIED)**. After sign-off, never renumber, reuse, or delete IDs. If an AC is removed post-sign-off, mark it as `🚫 removed` in the table but do not delete the row or its ID. If a test is removed post-sign-off, mark it as removed in the test suite but do not delete the test or its ID.
+- **Before** Gate 1, ACs and tests are draft text. They may be freely added, edited, removed, or renumbered without strikethrough or removal markers - drafting is iterative until SATISFIED.
 
 # Canary
 Suffix the canary string with "ISSUES "
