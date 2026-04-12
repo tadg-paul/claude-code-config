@@ -124,5 +124,5 @@
     "swift-lsp@claude-plugins-official": true
   },
   "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "low"
+  "fastMode": true
 }
