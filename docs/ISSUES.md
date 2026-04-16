@@ -4,6 +4,24 @@ This document defines issue structure and AC quality standards. The process work
 
 ---
 
+## Voice and tone
+
+Issues must be written impersonally, in the third person. Describe the system, the problem, and the solution -- not who did what or who will decide. Issues outlive conversations and must stand on their own.
+
+**Wrong:**
+- "I noticed that the login fails when..."
+- "Tadg wants us to reject invalid tokens."
+- "We should add a check here."
+- "This is for Tadg to choose."
+
+**Right:**
+- "Login fails when..."
+- "The API must reject invalid tokens."
+- "A check is required here."
+- "Two options are presented below; the trade-offs are documented for decision."
+
+---
+
 ## Well-formed issue
 
 A well-formed issue must contain:

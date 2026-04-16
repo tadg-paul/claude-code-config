@@ -1,5 +1,19 @@
 # DOCUMENTATION STANDARDS
 
+## Voice and tone
+
+Documentation must be written impersonally, in the third person. Describe the system, the behaviour, and the rationale -- not who did what or who will decide. Documentation outlives conversations and must stand on its own.
+
+**Wrong:**
+- "I added a new flag to handle this case."
+- "We should run the linter before committing."
+- "Tadg decides which voice to use."
+
+**Right:**
+- "The `--verbose` flag enables debug output."
+- "The linter must pass before a commit is accepted."
+- "Voice selection is configured via the `--voice` flag."
+
 ## Versioning
 
 Project documentation files (under `./docs/` in a project) should include a version header:
