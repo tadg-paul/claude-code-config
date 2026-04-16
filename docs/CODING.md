@@ -2,10 +2,10 @@
 
 ## Platform
 
-- **Local development:** macOS/Apple Silicon — this is a constraint of the hardware in use, not a technology preference
+- **Local development:** macOS/Apple Silicon - this is a constraint of the hardware in use, not a technology preference
 - **Deployment:** Linux servers (remote)
 - **Approach:** CLI-first, scriptable, FOSS preferred
-- **Required tools:** GNU coreutils, ast-grep (`sg`), ShellCheck, shfmt — plus the linter/formatter appropriate to the project language (see Style Baselines)
+- **Required tools:** GNU coreutils, ast-grep (`sg`), ShellCheck, shfmt - plus the linter/formatter appropriate to the project language (see Style Baselines)
 
 ## Reference Standards
 
@@ -27,11 +27,11 @@ These external standards inform our practices:
 Use the best tool for the job. Do not bias towards any particular language, framework, or technology out of habit or personal preference.
 
 Decision hierarchy:
-1. **Existing project language/framework** — follow what is already in use unless there is a clear, documented reason not to.
-2. **Genuinely best fit** — if starting fresh or extending significantly, choose the technology that best fits the problem, deployment context, and maintainability requirements.
-3. **Simplest maintainable solution** — prefer the option that is easiest to read, test, and hand over.
+1. **Existing project language/framework** - follow what is already in use unless there is a clear, documented reason not to.
+2. **Genuinely best fit** - if starting fresh or extending significantly, choose the technology that best fits the problem, deployment context, and maintainability requirements.
+3. **Simplest maintainable solution** - prefer the option that is easiest to read, test, and hand over.
 
-Do not introduce new languages, frameworks, or dependencies for marginal convenience. Do not default to a language because it is familiar — justify the choice on merit.
+Do not introduce new languages, frameworks, or dependencies for marginal convenience. Do not default to a language because it is familiar - justify the choice on merit.
 
 ## Style Baselines
 
@@ -58,7 +58,7 @@ All linting must pass for changed files regardless of language.
 
 ### Version Targeting
 
-- **Private projects:** bash 5+ (associative arrays, regex matching, etc.) — assume Homebrew locally, standard on Linux
+- **Private projects:** bash 5+ (associative arrays, regex matching, etc.) - assume Homebrew locally, standard on Linux
 - **Public/open-source:** bash 3.2 (macOS default compatibility)
 
 ### Mandatory Safety Header
@@ -127,9 +127,9 @@ count+=1
 
 Target Python 3.12.x (current LTS) or 3.13.x (current stable). Pin per-project with a `.python-version` file containing just the version string (e.g. `3.12`).
 
-**Preferred:** `uv` — manages Python versions, venvs, and packages in one tool. Replaces `pyenv` + `pip` + `venv`.
+**Preferred:** `uv` - manages Python versions, venvs, and packages in one tool. Replaces `pyenv` + `pip` + `venv`.
 
-**Acceptable:** `pyenv` + `python3 -m venv` — use this if the project already uses it or `uv` is not available.
+**Acceptable:** `pyenv` + `python3 -m venv` - use this if the project already uses it or `uv` is not available.
 
 Never use `pyenv local` to set a version mid-script; use `.python-version` instead.
 
@@ -152,7 +152,7 @@ python3 -m venv .venv
 
 ### Project structure
 
-Use a `src/` layout for new projects — package lives at `src/<packagename>/`. This prevents accidental imports of source rather than the installed package. Do not restructure existing projects to `src/` layout simply because you are touching them.
+Use a `src/` layout for new projects - package lives at `src/<packagename>/`. This prevents accidental imports of source rather than the installed package. Do not restructure existing projects to `src/` layout simply because you are touching them.
 
 ### Dependency files
 
@@ -185,7 +185,7 @@ ignore = ["E501"]  # line too long — enforced by formatter, not linter
 known-first-party = ["<package-name>"]
 ```
 
-`E501` is always ignored — `ruff format` enforces line length; having both causes conflicts. 88 is the community standard (Black's default). Deviate only with documented reason.
+`E501` is always ignored - `ruff format` enforces line length; having both causes conflicts. 88 is the community standard (Black's default). Deviate only with documented reason.
 
 ## Code Commenting
 
@@ -196,19 +196,19 @@ known-first-party = ["<package-name>"]
 
 ## Code Search and Modification
 
-**Use ast-grep (`sg`) for source code transformations** — refactoring, renaming, structural changes. AST-aware queries enable safe, language-aware modifications.
+**Use ast-grep (`sg`) for source code transformations** - refactoring, renaming, structural changes. AST-aware queries enable safe, language-aware modifications.
 
-**grep/ripgrep are acceptable for searching** any file type — log files, config files, plain text, source code.
+**grep/ripgrep are acceptable for searching** any file type - log files, config files, plain text, source code.
 
-**Never use sed/awk to modify files** — source code, documentation, configuration, or otherwise. Use `sg` for source code transformations, and appropriate tools (or direct editing) for other file types. sed/awk are brittle, prone to corrupting structure, and difficult to review.
+**Never use sed/awk to modify files** - source code, documentation, configuration, or otherwise. Use `sg` for source code transformations, and appropriate tools (or direct editing) for other file types. sed/awk are brittle, prone to corrupting structure, and difficult to review.
 
 ---
 
 ## Prohibited Anti-Patterns
 
-"Errors should never pass silently." — PEP 20
+"Errors should never pass silently." - PEP 20
 
-### Error Suppression — Forbidden Patterns (All Languages)
+### Error Suppression - Forbidden Patterns (All Languages)
 
 Never hide errors instead of handling them. The following pseudocode patterns are **strictly forbidden** regardless of language:
 
@@ -234,7 +234,7 @@ catch all:
     pass
 ```
 
-### Error Suppression — Correct Alternatives
+### Error Suppression - Correct Alternatives
 
 ```
 # GOOD: check precondition before acting
@@ -265,6 +265,7 @@ These are real-language examples where the forbidden patterns commonly appear:
 | Pattern | Language | Why It's Banned |
 |---------|----------|-----------------|
 | `\|\| true` / `\|\| :` | Shell | Silences failures; defeats `set -e` |
+| `cmd \|\| rc=$?` | Shell | Suppresses `set -e`; use `if cmd; then ... else ... fi` |
 | `set +e` (temporary) | Shell | Disables safety; handle specific commands instead |
 | `2>/dev/null` (unguarded) | Shell | Hides diagnostics; must have fallback logic |
 | `cmd \|\| exit 0` | Shell | Converts failure to success; masks real errors |
@@ -306,7 +307,7 @@ $command $flags
 
 | Pattern | Why It's Banned | Do Instead |
 |---------|-----------------|------------|
-| `sleep N` for synchronisation | Race condition; service may not be ready | Poll with timeout, use readiness checks |
+| `sleep N` for synchronization | Race condition; service may not be ready | Poll with timeout, use readiness checks |
 | Retry without backoff | Can overwhelm failing service | Exponential backoff with jitter |
 | Retry without limit | Infinite loops on persistent failures | Max attempts with circuit breaker |
 | Global variables for state | Hidden dependencies, testing nightmare | Pass parameters explicitly |
@@ -377,16 +378,16 @@ Pre-commit hook recommended: `detect-secrets` or `gitleaks` to catch accidental 
 
 Validate all external input at system boundaries:
 
-- **Prefer allowlists** over denylists — explicitly permit known-good values
-- **Set maximum lengths** — unbounded input enables DoS
-- **Validate encoding** — reject or sanitise non-UTF-8 where unexpected
-- **Prevent path traversal** — reject `../` in user-supplied filenames
-- **Parameterised queries always** — never concatenate SQL
+- **Prefer allowlists** over denylists - explicitly permit known-good values
+- **Set maximum lengths** - unbounded input enables DoS
+- **Validate encoding** - reject or sanitize non-UTF-8 where unexpected
+- **Prevent path traversal** - reject `../` in user-supplied filenames
+- **Parameterised queries always** - never concatenate SQL
 
 #### Permissions
 
 - Minimum required permissions for files and processes
-- Never `chmod 777` — use the least permissive mode that works
+- Never `chmod 777` - use the least permissive mode that works
 - Run services as non-root where possible
 
 #### Docker
@@ -412,7 +413,7 @@ When using containers:
 ### Logging
 
 - **Levels:** DEBUG (development detail), INFO (normal operation), WARN (recoverable issues), ERROR (failures requiring attention)
-- **Structured logging** for production — JSON format enables parsing
+- **Structured logging** for production - JSON format enables parsing
 - **Never log:** credentials, tokens, PII, full credit card numbers
 - **Always log:** request IDs/correlation IDs for tracing, operation context, error details
 - **Log to stderr** for CLI tools; use proper logging framework for services
@@ -451,12 +452,12 @@ For systemd, launchd, cron:
 
 - **Audit regularly:** `npm audit`, `pip-audit`, `cargo audit`, `bundler-audit`
 - **Pin versions** in production; use ranges only in libraries
-- **Review new dependencies** before adding — check maintenance status, known vulnerabilities
+- **Review new dependencies** before adding - check maintenance status, known vulnerabilities
 - **Update promptly** when security patches are released
 
 ## Model References
 
-When citing LLM models (OpenAI, Anthropic), verify via search if uncertain — knowledge cutoff may cause errors about recent releases.
+When citing LLM models (OpenAI, Anthropic), verify via search if uncertain - knowledge cutoff may cause errors about recent releases.
 
 ## System Configuration
 
@@ -464,7 +465,7 @@ Never modify system config (`.bashrc`, etc.) without explicit permission.
 
 ## Linting
 
-See the Style Baselines table above for the linter and formatter for each language. All linting must pass for changed files. If a project has a pre-existing linter configuration, follow it — do not override it with personal preference.
+See the Style Baselines table above for the linter and formatter for each language. All linting must pass for changed files. If a project has a pre-existing linter configuration, follow it - do not override it with personal preference.
 
 ---
 
