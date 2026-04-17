@@ -12,6 +12,7 @@ todos/
 tasks/
 ide/
 plans/
+sessions/
 session-env/
 shell-snapshots/
 file-history/
