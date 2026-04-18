@@ -319,6 +319,14 @@ Projects developed using this SDLC framework (or earlier iterations of it):
 - **Batch and parallel workflows.** The test-first rule for parallel agents is relatively new and has not yet been tested at large scale across many concurrent agents.
 - **Language coverage.** Coding standards are detailed for shell and Python but thinner for other languages. The `/audit-code` skill compensates by reviewing against language-specific best practice, but the documented standards will continue to grow as new patterns and pitfalls are encountered in other ecosystems.
 
+## Canary System
+
+Each reference document (CLAUDE.md, CODING.md, TESTING.md, ISSUES.md, GIT.md, DOCUMENTATION.md) contains a canary section at the end. CLAUDE.md defines a base canary string that must appear at the start of every response from Claude Code. Each reference document adds its own keyword as a suffix to that string.
+
+The purpose is verification that the documents have actually been read. Claude Code is instructed to read the reference documents before beginning work, but without a mechanism to confirm it has done so, there is no way to distinguish "read and followed" from "skipped and guessed." The canary string serves as a lightweight proof-of-reading: if the response includes the full canary with all suffixes, the documents were loaded into context. If a suffix is missing, the corresponding document was not read.
+
+This does not guarantee the rules were followed -- only that the text was seen. But it closes one failure mode: Claude claiming to have read the standards while operating from its own defaults.
+
 ## Licence
 
 MIT. Copyright Tadhg O'Brien.
