@@ -18,8 +18,15 @@ shell-snapshots/
 file-history/
 paste-cache/
 
+# Memory (auto-generated, conversation-specific)
+memory/
+
 # Per-project memory (auto-generated, machine-specific)
 projects/
+
+# Profiling artefacts
+default.profraw
+*.profraw
 
 # History (sensitive - contains conversation data)
 history*.jsonl
