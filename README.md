@@ -333,10 +333,8 @@ Projects developed using this SDLC framework (or earlier iterations of it):
 | yapper | Fast, Apple Silicon-native TTS CLI and Swift library, powered by Kokoro-82M via MLX | [tigger04/yapper](https://github.com/tigger04/yapper) |
 | make-audiobook | Convert ebooks and documents into audiobooks using open-source TTS, locally and privately | [tigger04/make-audiobook](https://github.com/tigger04/make-audiobook) |
 | oed-sanitize | CLI tool that converts English text to Oxford spelling (OED British English with -ize suffixes) | [tigger04/oed-sanitize](https://github.com/tigger04/oed-sanitize) |
-| writeback | Writing tool | [tigger04/writeback](https://github.com/tigger04/writeback) |
-| epub-audiobook | iOS app that plays EPUB files as audiobooks using system text-to-speech | [tigger04/epub-audiobook](https://github.com/tigger04/epub-audiobook) |
+| writeback | Feedback capture system for a writing group | [tigger04/writeback](https://github.com/tigger04/writeback) |
 | superscale | AI image upscaling on Mac using Apple Neural Engine, runs locally | [tigger04/superscale](https://github.com/tigger04/superscale) |
-| real-ESRGAN-pro | macOS-native CLI wrapper around Real-ESRGAN for AI image/video upscaling | [tigger04/Real-ESRGAN](https://github.com/tigger04/Real-ESRGAN) |
 | smart-rename | AI-powered file renaming based on file content | [tigger04/smart-rename](https://github.com/tigger04/smart-rename) |
 | image-outliner | CLI tool converting bitmap images into clean monochrome vector outlines | [tigger04/image-outliner](https://github.com/tigger04/image-outliner) |
 | storyboard-gen | Turn a YAML storyboard into AI-generated video with Ken Burns effects | [tigger04/storyboard-gen](https://github.com/tigger04/storyboard-gen) |
@@ -344,18 +342,7 @@ Projects developed using this SDLC framework (or earlier iterations of it):
 | summarize-text | Text summarization tool | [tigger04/summarize-text](https://github.com/tigger04/summarize-text) |
 | golink | Self-hosted HTTP redirect service, domain-agnostic | [tigger04/golink](https://github.com/tigger04/golink) |
 | bg-clock | Native macOS analogue clock rendered on the desktop background, built with SwiftUI | [tigger04/bg-clock](https://github.com/tigger04/bg-clock) |
-| AnalogueClock | macOS analogue clock app | [tigger04/AnalogueClock](https://github.com/tigger04/AnalogueClock) |
 | fzflauncher | macOS application launcher using fzf in a GUI wrapper | [tigger04/fzflauncher](https://github.com/tigger04/fzflauncher) |
-| watermark-whitehat | Security research toolkit for testing AI-generated image watermark robustness | [tigger04/watermark-whitehat](https://github.com/tigger04/watermark-whitehat) |
-| fw-email-to-ics | Convert Fighting Words volunteer reminder emails to ICS calendar files | [tigger04/fw-email-to-ics](https://github.com/tigger04/fw-email-to-ics) |
-| streak-notify | Streak notification tool | [tigger04/streak-notify](https://github.com/tigger04/streak-notify) |
-| rhyme-cli | Rhyme lookup CLI | [tigger04/rhyme-cli](https://github.com/tigger04/rhyme-cli) |
-| shout | CLI tool | [tigger04/shout](https://github.com/tigger04/shout) |
-| meet | Meeting tool | [tigger04/meet](https://github.com/tigger04/meet) |
-| hetzner | VPS infrastructure and deployment tooling | [tigger04/hetzner](https://github.com/tigger04/hetzner) |
-| omni | Hugo-based website | [tigger04/www-omni](https://github.com/tigger04/www-omni) |
-| readers | Reading platform | [tigger04/readers](https://github.com/tigger04/readers) |
-| homebrew-tap | Homebrew tap for personal projects | [tigger04/homebrew-tap](https://github.com/tigger04/homebrew-tap) |
 
 ## Areas for Improvement
 
