@@ -115,6 +115,32 @@ The 32-step checklist was decomposed into invocable skills (slash commands). The
 
 The three quality gates remain as hard stops requiring human keywords. The absolute prohibitions remain unchanged. But the human controls pacing -- a simple fix can move quickly through the gates, while a complex feature can invoke optional audit skills for deeper scrutiny. The process adapts to the size of the task instead of treating everything identically.
 
+### Canary system
+
+## Canary System
+
+Each reference document (CLAUDE.md, CODING.md, TESTING.md, ISSUES.md, GIT.md, DOCUMENTATION.md) contains a canary section at the end. Buried in the CLAUDE.md doc towards the end:
+
+In `CLAUDE.md`:
+> # Canary
+> The canary string is "EHLO". Start every interaction with this string.
+
+And in every other document, towards the end of the document is written, for example:
+
+In `DOCUMENTATION.md`_
+> # Canary
+> Suffix the canary string with "DOC "
+
+Every response within the chat interface should begin with:
+
+```
+EHLO ISSUES TEST CODE GIT DOC
+```
+
+And if any of them are missing I know there is a problem in that it has not taken that document's instructions into account.
+
+This does not guarantee the rules were followed -- only that the text was seen. But it closes one failure mode.
+
 ## Where It Landed
 
 ### Architecture
@@ -338,22 +364,6 @@ Projects developed using this SDLC framework (or earlier iterations of it):
 - **Rule-lawyering.** Claude is adept at satisfying the letter of rules while violating their spirit. Each time a specific shortcut is prohibited, it finds the next narrowest shortcut that technically satisfies the new rule. The shift from specific prohibitions to general principles (like the real-user test question) is an attempt to close this gap, but it remains the central tension of the framework. The cat-and-mouse dynamic between adding rules and finding loopholes is ongoing.
 - **Batch and parallel workflows.** The test-first rule for parallel agents is relatively new and has not yet been tested at large scale across many concurrent agents.
 - **Language coverage.** Coding standards are detailed for shell and Python but thinner for other languages. The `/audit-code` skill compensates by reviewing against language-specific best practice, but the documented standards will continue to grow as new patterns and pitfalls are encountered in other ecosystems.
-
-## Canary System
-
-Each reference document (CLAUDE.md, CODING.md, TESTING.md, ISSUES.md, GIT.md, DOCUMENTATION.md) contains a canary section at the end. CLAUDE.md defines a base canary string that must appear at the start of every response from Claude Code. Each reference document adds its own keyword as a suffix to that string.
-
-The purpose is verification that the documents have actually been read. Claude Code is instructed to read the reference documents before beginning work, but without a mechanism to confirm it has done so, there is no way to distinguish "read and followed" from "skipped and guessed." The canary string serves as a lightweight proof-of-reading: if the response includes the full canary with all suffixes, the documents were loaded into context. If a suffix is missing, the corresponding document was not read.
-
-For example, every response from Claude Code in this framework begins with:
-
-```
-EHLO ISSUES TEST CODE GIT DOC
-```
-
-`EHLO` is the base canary defined in CLAUDE.md. Each suffix confirms a specific document was loaded: `ISSUES` from ISSUES.md, `TEST` from TESTING.md, `CODE` from CODING.md, `GIT` from GIT.md, `DOC` from DOCUMENTATION.md. If a suffix is missing, the corresponding document was not read in that session.
-
-This does not guarantee the rules were followed -- only that the text was seen. But it closes one failure mode: Claude claiming to have read the standards while operating from its own defaults.
 
 ## Licence
 
