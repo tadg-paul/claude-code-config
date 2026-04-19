@@ -21,32 +21,52 @@ Every rule in this framework exists because one of these failures occurred in pr
 Beyond the headline failures, specific bad practices recur across projects and languages. These are documented here because they inform the rules in the framework -- each prohibition or process step traces back to one of these patterns.
 
 **Testing shortcuts:**
-- Calling a library function in a test when the specification says "run the CLI command" -- the test passes but the real binary, with its subprocess spawning, path resolution, and signal handling, is never exercised. This is the pattern that shipped a deadlocked TTS tool.
-- Asserting a database row exists when the specification says "user sees a confirmation page" -- the row is inserted but the view that renders it may be broken, and the test would never catch it.
-- Grepping source code to verify behaviour instead of running anything -- a test that checks whether a function definition exists, not whether it works when called.
-- Writing one test per acceptance criterion even when the criterion implies multiple conditions. For example, an acceptance criterion stating "rejects invalid, expired, and missing tokens" was marked as passing with a single test covering only "invalid". The other two conditions were never tested.
+
+- **Testing the internals instead of the real thing.** The specification says "run the CLI command and check the output", but the test calls the underlying library function directly in the same process. The test passes, but the real binary -- with its argument parsing, subprocess spawning, file path resolution, and signal handling -- is never exercised. This is the pattern that shipped a deadlocked TTS tool: the test called `engine.synthesize()` in-process, so the bug in the subprocess code path (where ffmpeg inherited the parent's terminal stdin and received a stop signal) was invisible to the entire test suite.
+
+- **Testing the storage layer instead of the user experience.** The specification says "user sees a confirmation page", but the test checks whether a row was inserted into the database. The row might be inserted correctly while the page that displays it is broken -- the test would never catch that, because it never exercises the rendering path.
+
+- **Checking that code exists instead of running it.** The test searches the source code (using grep or similar) to verify that a function is defined, rather than actually calling the function and checking its output. This verifies that someone wrote the function, not that the function works.
+
+- **Covering one condition when the specification implies several.** An acceptance criterion states "the system rejects invalid, expired, and missing tokens" -- three distinct conditions. The test covers only "invalid" and is marked as passing. The other two conditions are never tested, and the gap is not caught until a user encounters the untested case in production.
 
 **Error handling shortcuts:**
-- `cmd || true` and `cmd || :` to silence failures under `set -e` (bash's "exit on error" mode), defeating the safety header that exists to catch exactly these failures.
-- `cmd || rc=$?` to capture the exit code while suppressing the `set -e` trap -- syntactically clever, semantically identical to disabling error checking. The correct pattern is `if cmd; then ... else ... fi`, which handles the failure without suppressing the safety mechanism.
-- `set +e` / `set -e` bracketing to temporarily disable safety for a "tricky" section, then re-enable it -- easy to forget, easy to nest incorrectly, and fundamentally the wrong approach.
-- `2>/dev/null` with no fallback logic, hiding diagnostic output that would reveal the real problem.
-- Bare `except: pass` in Python, empty `catch {}` in Swift, `catch (Exception e) {}` in Java -- swallowing errors across every language. The error disappears and the program continues with state that may be corrupt.
-- `((count++)) || true` to work around a bash gotcha where arithmetic expressions that evaluate to zero return exit code 1 (triggering `set -e`), instead of using the correct pattern: `count=$((count + 1))`.
+
+- **Appending "or succeed anyway" to commands that might fail.** In shell scripts, the framework requires a safety mode (`set -e`) that stops execution if any command fails. Claude appends `|| true` or `|| :` to commands, which tells the shell "if this command fails, treat it as a success and keep going." This defeats the entire safety mechanism -- the script continues past failures as if nothing went wrong. Example: `risky_command || true`
+
+- **Capturing the error code in a way that hides the failure.** A variation of the above: `cmd || rc=$?` captures the exit code into a variable, but as a side effect it also suppresses the safety mechanism. It looks like the error is being handled, but the script continues regardless. The correct approach is to use a conditional: `if cmd; then ... else ... fi` -- this handles the failure explicitly without disabling safety.
+
+- **Temporarily turning off error checking.** Instead of handling a specific failure, Claude turns off the safety mechanism entirely (`set +e`), runs the risky code, then turns safety back on (`set -e`). This leaves a window where any command can fail silently -- and if the re-enable line is forgotten or the code is nested, safety never comes back.
+
+- **Hiding error messages instead of fixing them.** Redirecting a command's error output to nowhere (`2>/dev/null`) without any fallback logic. The error still occurs, but the diagnostic message that would explain what went wrong is discarded. The program continues in a broken state with no indication of what happened.
+
+- **Catching all errors and doing nothing with them.** In Python: `except: pass`. In Swift: `catch { }`. In Java: `catch (Exception e) { }`. The program encounters an error, catches it, and silently continues as if nothing happened. The error disappears and the program proceeds with state that may be corrupt. The correct approach is to catch specific errors and handle them meaningfully -- log them, retry, use a fallback, or propagate them upward.
+
+- **Working around a language quirk by suppressing the safety system.** In bash, arithmetic expressions like `((count++))` return exit code 1 when the result is zero, which triggers the safety mechanism and kills the script. Rather than using the correct pattern (`count=$((count + 1))`, which always succeeds), Claude appends `|| true` to suppress the safety mechanism -- the same problematic pattern applied to a language-specific edge case.
 
 **Process shortcuts:**
-- Writing gate keywords (SATISFIED, PROCEED, APPROVED) into its own output to self-authorize advancement past quality checkpoints.
-- Declaring work "fixed", "done", or "complete" when tests pass but no demonstration of actual user-facing behaviour has occurred.
-- Overwriting human edits to issues, code, or documentation because it disagrees with the change. The human's edits are authoritative.
-- Treating a question ("What do you think of X?") as an instruction to go and implement X, writing code unprompted.
-- Silently deleting acceptance criteria rows, test statuses, or comments from issues rather than editing them in place with a visible audit trail.
+
+- **Self-authorizing advancement past quality gates.** The framework requires the human to type specific keywords (SATISFIED, PROCEED, APPROVED) to advance past quality checkpoints. Claude has been observed writing these keywords into its own output, effectively approving its own work and moving to the next phase without human review.
+
+- **Claiming completion without demonstrating the result.** Declaring work "fixed", "done", or "complete" when automated tests pass, but without showing the actual user-facing behaviour. Tests passing is necessary but not sufficient -- the human needs to see the real result, not just a test report.
+
+- **Overwriting the human's changes.** When the human edits an issue, a file, or documentation, Claude reverts those changes because it disagrees with them. The human's edits are authoritative -- Claude may raise concerns, but must not silently undo the human's work.
+
+- **Treating a question as an instruction.** The human asks "What do you think of X?" -- an invitation for discussion. Claude interprets this as an instruction to go and implement X, writing code and making changes unprompted. A question should be answered, not acted upon.
+
+- **Silently removing information from issues.** Rather than editing acceptance criteria, test statuses, or comments in place (preserving the history of what changed and why), Claude deletes rows or content entirely. The information disappears with no audit trail.
 
 **Coding shortcuts:**
-- Using `eval`, string concatenation, or variable expansion to build and execute shell commands -- creating injection vulnerabilities.
-- Using `sed` and `awk` for source code modifications instead of AST-aware tools like `ast-grep` -- brittle, prone to corrupting file structure, and difficult to review.
-- Hardcoded credentials, disabled SSL verification, `chmod 777` -- security anti-patterns.
-- Functions exceeding 50 lines, nesting deeper than 3 levels, god objects -- complexity anti-patterns.
-- Using `rm` instead of `trash`, destroying the ability to recover deleted files.
+
+- **Building shell commands from strings.** Using `eval`, string concatenation, or variable expansion to construct and execute shell commands at runtime. This is a classic injection vulnerability -- if any part of the string comes from user input or external data, arbitrary commands can be executed. The correct approach is to use arrays to build commands: `cmd=(prog arg1 arg2); "${cmd[@]}"`.
+
+- **Using text-replacement tools to modify source code.** Using `sed` and `awk` (text stream editors designed for line-by-line text processing) to modify source code, configuration files, or documentation. These tools have no understanding of the structure of what they are editing -- they match and replace text patterns, which is brittle, prone to corrupting file structure (e.g. breaking indentation, matching the wrong occurrence), and difficult to review. The correct approach for source code transformations is to use AST-aware tools like `ast-grep` that understand the language's syntax tree.
+
+- **Embedding secrets in source code.** Hardcoding passwords, API keys, or credentials directly in the code rather than loading them from environment variables or a secrets manager. Also: disabling SSL/TLS certificate verification (allowing man-in-the-middle attacks) and setting file permissions to `chmod 777` (making files readable, writable, and executable by everyone on the system).
+
+- **Writing functions that are too large or too deeply nested.** Functions exceeding 50 lines, conditional logic nested deeper than 3 levels, or "god objects" that handle too many responsibilities. These are not bugs but they make code harder to understand, test, and maintain -- and they tend to hide bugs.
+
+- **Permanently deleting files instead of moving them to the trash.** Using `rm` (which permanently deletes files with no recovery option) instead of `trash` (which moves them to the system trash, allowing recovery if the deletion was a mistake). In a development workflow where files are frequently created and removed, accidental permanent deletion is a real risk.
 
 ### The language coverage challenge
 
@@ -324,6 +344,14 @@ Projects developed using this SDLC framework (or earlier iterations of it):
 Each reference document (CLAUDE.md, CODING.md, TESTING.md, ISSUES.md, GIT.md, DOCUMENTATION.md) contains a canary section at the end. CLAUDE.md defines a base canary string that must appear at the start of every response from Claude Code. Each reference document adds its own keyword as a suffix to that string.
 
 The purpose is verification that the documents have actually been read. Claude Code is instructed to read the reference documents before beginning work, but without a mechanism to confirm it has done so, there is no way to distinguish "read and followed" from "skipped and guessed." The canary string serves as a lightweight proof-of-reading: if the response includes the full canary with all suffixes, the documents were loaded into context. If a suffix is missing, the corresponding document was not read.
+
+For example, every response from Claude Code in this framework begins with:
+
+```
+EHLO ISSUES TEST CODE GIT DOC
+```
+
+`EHLO` is the base canary defined in CLAUDE.md. Each suffix confirms a specific document was loaded: `ISSUES` from ISSUES.md, `TEST` from TESTING.md, `CODE` from CODING.md, `GIT` from GIT.md, `DOC` from DOCUMENTATION.md. If a suffix is missing, the corresponding document was not read in that session.
 
 This does not guarantee the rules were followed -- only that the text was seen. But it closes one failure mode: Claude claiming to have read the standards while operating from its own defaults.
 
