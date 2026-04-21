@@ -80,6 +80,7 @@ Taḋg drives the workflow by invoking skills. Each skill contains its own quali
 | Skill | Purpose | Gate |
 |-------|---------|------|
 | `/draft-issue` | Create issue with ACs and test specs | AWAITING SATISFACTION |
+| `/draft-design-issue` | Draft issue + solution design in one pass (no code) | AWAITING PROCEED |
 | `/audit-acs` | Challenge AC coverage (advisory, no code) | None |
 | `/audit-tests` | Challenge test coverage (advisory, no code) | None |
 | `/design-solution` | Document solution on issue | AWAITING PROCEED |
