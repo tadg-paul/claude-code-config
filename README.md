@@ -148,15 +148,21 @@ This does not guarantee the rules were followed -- only that the text was seen. 
 ```
 ~/.claude/
   CLAUDE.md              # Process rules, prohibitions, gates, failure modes
-  commands/              # Invocable skills (slash commands)
-    draft-issue.md       # Create issue with ACs and test specs
-    audit-acs.md         # Challenge AC coverage (advisory)
-    audit-tests.md       # Challenge test coverage (advisory)
-    design-solution.md   # Document solution on issue
-    write-tests.md       # Write test code only (TDD red phase)
-    implement.md         # Write code to pass tests
-    audit-code.md        # Review code against standards (advisory)
-    review.md            # Full review: make test, standards, user test demos
+  skills/                # Invocable skills (slash commands, skill format)
+    draft-issue/         # Create issue with ACs and test specs
+    draft-design-issue/  # Draft issue + solution design in one pass
+    audit-acs/           # Challenge AC coverage (advisory)
+    audit-tests/         # Challenge test coverage (advisory)
+    design-solution/     # Document solution on issue
+    write-tests/         # Write test code only (TDD red phase)
+    implement/           # Write code to pass tests
+    audit-code/          # Review code against standards (advisory)
+    review/              # Full review: make test, standards, user test demos
+    summarize-issues/    # Open issues summary, gap analysis, prioritization
+    satisfied/           # Gate 1 keyword (human-only, model invocation disabled)
+    proceed/             # Gate 2 keyword (human-only, model invocation disabled)
+    approved/            # Gate 3 keyword (human-only, model invocation disabled)
+    bypass/              # BYPASS-GATE-7 (human-only, model invocation disabled)
   docs/
     ISSUES.md            # Issue structure, AC quality standards
     TESTING.md           # Testing standards, TDD, real-user test
@@ -308,13 +314,21 @@ The gate system evolved through three iterations (described in "What Was Tried" 
 
 Gate keywords must come from the human, typed in ALL CAPS, followed by the issue number (e.g. `SATISFIED 12`). Claude may never write a gate keyword itself -- this is an absolute prohibition. The strict format requirements (ALL CAPS, with issue number, in the current conversation turn, from the human) were refined after Claude found ways to self-authorize: writing keywords into its own output, referencing approvals from different issues, and inferring approval from context rather than waiting for the explicit keyword.
 
+The gate keywords are implemented as skills with `disable-model-invocation: true` in their frontmatter, which means the platform itself prevents Claude from invoking them -- this prohibition is enforced at the system level, not just by instruction.
+
 ### Typical flow
 
 ```
 /draft-issue -> SATISFIED n -> /design-solution -> PROCEED n -> /write-tests -> /implement -> /review -> APPROVED n
 ```
 
-The human invokes each skill when it is needed. Skills may be skipped, reordered, or repeated as the situation demands. The three optional audit skills (`/audit-acs`, `/audit-tests`, `/audit-code`) are available when the human wants a second opinion on coverage or quality but are not mandatory steps. The gate keywords are the only hard stops -- no code can be written before PROCEED, and no issue can be closed before APPROVED.
+Or, for faster iteration, `/draft-design-issue` combines the issue and solution design into a single pass, skipping straight to AWAITING PROCEED:
+
+```
+/draft-design-issue -> PROCEED n -> /write-tests -> /implement -> /review -> APPROVED n
+```
+
+The human invokes each skill when it is needed. Skills may be skipped, reordered, or repeated as the situation demands. The three optional audit skills (`/audit-acs`, `/audit-tests`, `/audit-code`) are available when the human wants a second opinion on coverage or quality but are not mandatory steps. `/summarize-issues` provides a birds-eye view of open issues against the project's architecture and plan. The gate keywords are the only hard stops -- no code can be written before PROCEED, and no issue can be closed before APPROVED.
 
 ### Key principles
 

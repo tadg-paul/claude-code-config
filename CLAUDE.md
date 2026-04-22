@@ -140,7 +140,7 @@ You (Claude Code) have documented tendencies that violate process. Be aware of t
 8. **Self-authorization.** You write approval keywords into the conversation yourself. This is a §1 violation.
 9. **Cherry-picking rules.** You follow some process steps and skip others. Every step applies every time.
 10. **Testing the implementation instead of the behaviour.** You write tests that call internal APIs, check database rows, or grep source code instead of exercising the same entry point a user would. The test passes but the system is broken because the real code path was never executed. Before marking any RT as passing, you must state in chat: what user action does this test simulate, and what would the user observe? See TESTING.md §"The real-user test".
-11. **Error suppression under `set -e`.** You use `|| true`, `|| rc=$?`, `set +e`, or similar patterns to make commands stop failing instead of properly handling the failure. The correct pattern is always `if command; then ... else ... fi`. If a command might fail and you need to handle it, that is a conditional — use conditional syntax. Track what failed: `FAILURES+=("description of what went wrong")` and report/handle at the end. See CODING.md §"Prohibited Anti-Patterns".
+11. **Error suppression under `set -e`.** You use `|| true`, `|| rc=$?`, `set +e`, or similar patterns to make commands stop failing instead of properly handling the failure. The correct pattern is always `if command; then ... else ... fi`. If a command might fail and you need to handle it, that is a conditional - use conditional syntax. Track what failed: `FAILURES+=("description of what went wrong")` and report/handle at the end. See CODING.md §"Prohibited Anti-Patterns".
 
 ---
 
