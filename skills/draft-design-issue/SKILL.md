@@ -1,3 +1,7 @@
+---
+description: Draft a GitHub issue with full requirements and solution design in one pass. No code is written.
+---
+
 Create a GitHub issue with full requirements and solution design in one pass. Read and follow @~/.claude/docs/ISSUES.md for all issue structure and AC quality standards. Do not write any code.
 
 ### Phase 1: Requirements

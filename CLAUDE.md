@@ -88,6 +88,7 @@ Taḋg drives the workflow by invoking skills. Each skill contains its own quali
 | `/implement` | Write code to pass tests | Tests green |
 | `/audit-code` | Review code against CODING.md + language best practice (advisory, no code) | None |
 | `/review` | Run make test, check standards, demo UTs | READY FOR REVIEW |
+| `/summarize-issues` | Summarize open issues, gap analysis against architecture/plan, prioritize | None |
 
 ### Typical flow
 

@@ -1,3 +1,7 @@
+---
+description: Document the solution design for an existing issue. No code is written.
+---
+
 Document the solution design for the current issue. Do not write any code.
 
 1. Fetch the issue with `gh issue view [n]` and read all comments -- there may have been changes since you last looked.

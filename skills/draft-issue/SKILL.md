@@ -1,3 +1,7 @@
+---
+description: Create a GitHub issue with acceptance criteria and test specifications following SDLC standards.
+---
+
 Create a GitHub issue for the current task. Read and follow @~/.claude/docs/ISSUES.md for all issue structure and AC quality standards.
 
 1. Review affected files and project documentation.

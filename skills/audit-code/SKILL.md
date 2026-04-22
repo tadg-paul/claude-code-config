@@ -1,3 +1,7 @@
+---
+description: Review implementation code against CODING.md and language best practice. Advisory only -- no file changes.
+---
+
 Review the implementation code for the current issue. Do not modify any files.
 
 1. **Standards check.** Review all changed files against CODING.md and against best practice for the language(s) and stack(s) in use. CODING.md cannot enumerate patterns for every language -- apply community standards, idioms, and known pitfalls for this specific ecosystem alongside our own rules.

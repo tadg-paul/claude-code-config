@@ -1,7 +1,7 @@
 # ===== TRACK =====
 # CLAUDE.md          - main config
 # docs/              - coding standards
-# commands/          - custom slash commands
+# skills/            - custom slash commands (skill format)
 # settings.json      - permissions config (no secrets)
 
 # ===== IGNORE EVERYTHING ELSE =====

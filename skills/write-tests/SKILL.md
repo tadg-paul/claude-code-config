@@ -1,8 +1,12 @@
-Write the automated tests for the current issue now. Do not write any other code — only tests.
+---
+description: Write automated tests for the current issue. TDD red phase -- no implementation code.
+---
+
+Write the automated tests for the current issue now. Do not write any other code -- only tests.
 
 For each test:
 
-1. **State the real-user test.** What user action does this test simulate? What would the user observe? If the answer references internal APIs, database rows, or source code — rewrite the test before proceeding.
+1. **State the real-user test.** What user action does this test simulate? What would the user observe? If the answer references internal APIs, database rows, or source code -- rewrite the test before proceeding.
 
 2. **Verify coverage.** For each AC, confirm that every distinct condition is covered by at least one test. Flag any AC with only one test as a potential gap.
 

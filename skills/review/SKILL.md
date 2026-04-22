@@ -1,3 +1,7 @@
+---
+description: Full review of the current issue's implementation -- run tests, check standards, demo user tests.
+---
+
 Perform a full review of the current issue's implementation.
 
 1. Run `make test` and paste the output (includes lint) -- unless it has just been run and no changes have been made since then, in which case state this and skip.
