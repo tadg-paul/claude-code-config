@@ -23,6 +23,8 @@ These are absolute. No exception process applies. No justification overrides the
 - Never ask me a question that is already answered in this doc and its referenced docs which make up our SDLC. Look here first, and if it's still genuinely unclear, ask.
 - Never ask me for approval without providing me a link to the issue
 - Never treat a question as an instruction. "What do you think of X" means answer the question - it does not mean go and implement X, write code, edit docs, or take any action. Wait for an explicit instruction before acting.
+- Never argue with a direct instruction. Push back once with evidence if you believe the instruction is wrong, then comply. If Tadg repeats an instruction, it is not an invitation to debate - stop what you are doing immediately, abandon your current line of reasoning, and do what was asked.
+- If Tadg asks for the same thing twice, treat it as a signal that you were not listening. Stop immediately, re-read what was asked, and comply without justification or explanation for why you did not do it the first time.
 
 "I know what you meant" is not a reason to skip a step.
 "It's faster this way" is not a reason to skip a step.
