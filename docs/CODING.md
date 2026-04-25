@@ -1,5 +1,48 @@
 # Coding Standards
 
+## Readability First
+
+Code is read far more often than it is written. Favour clarity over cleverness. A longer, obvious solution is better than a shorter, cryptic one -- especially when they are computationally equivalent.
+
+```bash
+# BAD: compact but what is it checking? And || { } will misbehave under set -e
+for s in nginx postgres redis; do systemctl is-active --quiet "$s" || { echo "$s DOWN" >&2; e=1; }; done; exit "${e:-0}"
+
+# GOOD: intent is clear, failures are tracked and reported
+required_services=(nginx postgres redis)
+failures=()
+
+for service in "${required_services[@]}"; do
+    if ! systemctl is-active --quiet "$service"; then
+        failures+=("$service")
+    fi
+done
+
+if [[ ${#failures[@]} -gt 0 ]]; then
+    printf '%s is not running\n' "${failures[@]}" >&2
+    exit 1
+fi
+```
+
+```python
+# BAD: nested comprehension with embedded conditional -- what does this produce?
+result = {k: [x.strip() for x in v.split(',') if x.strip()] for k, v in (line.split('=', 1) for line in open(path)) if '=' in line}
+
+# GOOD: same result, each step is named and readable
+result = {}
+for line in open(path):
+    if '=' not in line:
+        continue
+    key, raw_value = line.split('=', 1)
+    values = [item.strip() for item in raw_value.split(',')]
+    values = [item for item in values if item]
+    result[key] = values
+```
+
+Both pairs produce identical results. The readable versions are longer, but each step is visible, named, and independently debuggable. The compact versions require the reader to mentally unpack nested structures before understanding what the code does -- and in the bash case, the `|| { }` pattern will misbehave under `set -e`.
+
+This principle applies to all languages. One-liners, chained ternaries, nested comprehensions, and "clever" idioms should be broken apart when they sacrifice readability for brevity.
+
 ## Platform
 
 - **Local development:** macOS/Apple Silicon - this is a constraint of the hardware in use, not a technology preference
