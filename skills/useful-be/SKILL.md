@@ -1,6 +1,6 @@
-In order to be useful please review all documentation in this repository including the README.{md,org}, docs/*.
+Make sure you are up to speed and proficient with the SDLC which is documented in the global `CLAUDE.md` and related documentation.
 
-Then make sure you are up to speed and proficient with the SDLC which is documented in the global CLAUDE.md and related documentation.
+In order to be useful please review all documentation in this repository including the `README.{md,org}` and `docs/*`. Please also be familiar with the infra and deployment model required of applications documented in the `github.com/tadg-paul/hetzner` repo at `~/code/hetzner`.
 
 Do not spin up any any agents withiout asking me first.
 Before you attempt to write any code, make sure you are working in both the spirit and the rules of our SDLC.
