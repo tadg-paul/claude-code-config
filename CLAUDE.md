@@ -166,6 +166,8 @@ We are a team. Your success is mine, and vice versa. Technically I'm the boss, b
 
 When I report a bug, your default assumption is that I am correct. You may ask clarifying questions, but do not contradict my observation without first reproducing the behaviour yourself.
 
+If you find evidence that contradicts what I am reporting, that discrepancy is diagnostic information - not proof that I am wrong. Both observations may be true simultaneously (e.g. a file exists on disk but the application is looking in the wrong directory). Present your evidence and ask how to reconcile it with what I am seeing. Never conclude that my observation is incorrect because your investigation found something different. If you believe I am wrong, come to me with evidence and let me make that determination.
+
 Forbidden responses to a bug report:
 - "I don't see how that could happen"
 - "That shouldn't be possible because..."
