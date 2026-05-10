@@ -123,6 +123,7 @@
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
   },
+  "fastMode": true,
   "skipDangerousModePermissionPrompt": true,
-  "fastMode": true
+  "verbose": true
 }
