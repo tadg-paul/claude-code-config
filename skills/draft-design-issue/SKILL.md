@@ -29,7 +29,7 @@ Create a GitHub issue with full requirements and solution design in one pass. Re
     - Language, frameworks, and libraries to use
     - Patterns to follow
     - Anti-patterns to avoid (cite specific CODING.md sections)
-11. Review the solution against the codebase. If there are contradictions or the solution is unsound, alert Tadg and **STOP.**
+11. Review the solution against the codebase. If there are contradictions or the solution is unsound, alert me and **STOP.**
 12. Allocate test file locations and test IDs.
 
 **End with:** `AWAITING PROCEED - issue #NNN` and the issue link. **STOP.** No code may be written until PROCEED is received.

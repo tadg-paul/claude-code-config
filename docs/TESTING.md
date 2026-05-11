@@ -111,7 +111,7 @@ All tests carry a unique ID. IDs are scoped to the issue that created them, foll
 
 `{issue}` is the GitHub issue number. `{n}` is a sequential integer starting at 1 within each issue and prefix. For example, issue #12 might allocate RT-12.1, RT-12.2, RT-12.3, OT-12.1, and UT-12.1.
 
-**User tests (`UT-{issue}.{n}`)** require a human to perform and verify manually. They have no corresponding test file. Description, steps, and expected outcome are documented in the AC table. Only Taḋg can mark a UT as passing or failing.
+**User tests (`UT-{issue}.{n}`)** require a human to perform and verify manually. They have no corresponding test file. Description, steps, and expected outcome are documented in the AC table. Only I can mark a UT as passing or failing.
 
 ### Choosing the right test type
 
@@ -257,7 +257,7 @@ If removing the mock would make the test fail for reasons *other than* external 
 - Test coverage must be runnable via `make test`
 - Update regression tests; create them if none exist
 
-**Exception:** requires explicit approval - Taḋg must say **"I AUTHORIZE YOU TO SKIP WRITING TESTS THIS TIME"**
+**Exception:** requires explicit approval - I must say **"I AUTHORIZE YOU TO SKIP WRITING TESTS THIS TIME"**
 
 ## Makefile test targets
 

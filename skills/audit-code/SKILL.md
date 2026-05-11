@@ -14,4 +14,4 @@ Review the implementation code for the current issue. Do not modify any files.
 
 5. **Summarize.** List all findings with file paths and line numbers. Categorize as blockers (must fix) or smells (worth discussing). Recommend specific fixes for each finding.
 
-Do not proceed past this audit. Wait for Tadg's response.
+Do not proceed past this audit. Wait for my response.

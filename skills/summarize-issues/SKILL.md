@@ -24,4 +24,4 @@ Summarize the current state of open issues for this project. Do not write any co
 
 6. **Summarize.** Present the full picture: open issues, gaps, proposed additions, and recommended order of work.
 
-Wait for Tadg's response.
+Wait for my response.

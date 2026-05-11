@@ -16,4 +16,4 @@ Review the test specifications for the current issue. Do not write any code or m
 
 6. **Summarize.** List all findings: coverage gaps, gaming opportunities, integration risks, mistyped tests. Recommend specific additions.
 
-Do not proceed past this audit. Wait for Tadg's response.
+Do not proceed past this audit. Wait for my response.

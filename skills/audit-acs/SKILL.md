@@ -17,4 +17,4 @@ Review the acceptance criteria for the current issue. Do not write any code or m
 
 5. **Summarize.** List all findings: missing edge cases, missing ACs, quality violations. Recommend specific additions or rewrites.
 
-Do not proceed past this audit. Wait for Tadg's response.
+Do not proceed past this audit. Wait for my response.
