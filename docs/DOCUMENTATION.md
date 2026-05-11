@@ -53,7 +53,7 @@ Apply to the real file only after approval or confirmation.
 
 ## Structure
 - Each project should have README.md or README.org (but not both)
-- Documentation should be in .md or .org format
+- Documentation should be in .md or .org format. Markdown (`.md`) is the default; use `.org` only where a project already standardizes on it
 - All other documentation should reside in ./docs/
 - README should contain:
   - A high-level overview of the project

@@ -45,10 +45,10 @@ This principle applies to all languages. One-liners, chained ternaries, nested c
 
 ## Platform
 
-- **Local development:** macOS/Apple Silicon - this is a constraint of the hardware in use, not a technology preference
+- **Local development:** macOS/Apple Silicon -- this is a constraint of the hardware in use, not a technology preference
 - **Deployment:** Linux servers (remote)
 - **Approach:** CLI-first, scriptable, FOSS preferred
-- **Required tools:** GNU coreutils, ast-grep (`sg`), ShellCheck, shfmt - plus the linter/formatter appropriate to the project language (see Style Baselines)
+- **Required tools:** GNU coreutils, ast-grep (`sg`), ShellCheck, shfmt -- plus the linter/formatter appropriate to the project language (see Style Baselines)
 
 ## Reference Standards
 
@@ -70,11 +70,12 @@ These external standards inform our practices:
 Use the best tool for the job. Do not bias towards any particular language, framework, or technology out of habit or personal preference.
 
 Decision hierarchy:
-1. **Existing project language/framework** - follow what is already in use unless there is a clear, documented reason not to.
-2. **Genuinely best fit** - if starting fresh or extending significantly, choose the technology that best fits the problem, deployment context, and maintainability requirements.
-3. **Simplest maintainable solution** - prefer the option that is easiest to read, test, and hand over.
 
-Do not introduce new languages, frameworks, or dependencies for marginal convenience. Do not default to a language because it is familiar - justify the choice on merit.
+1. **Existing project language/framework** -- follow what is already in use unless there is a clear, documented reason not to.
+2. **Genuinely best fit** -- if starting fresh or extending significantly, choose the technology that best fits the problem, deployment context, and maintainability requirements.
+3. **Simplest maintainable solution** -- prefer the option that is easiest to read, test, and hand over.
+
+Do not introduce new languages, frameworks, or dependencies for marginal convenience. Do not default to a language because it is familiar -- justify the choice on merit. In particular, do not reach for shell scripting when a compiled language (Go, Rust) would produce a less brittle result.
 
 ## Style Baselines
 
@@ -82,7 +83,7 @@ These are the languages most commonly used across our projects. For any language
 
 | Language | Style Standard | Linter | Formatter |
 |----------|---------------|--------|-----------|
-| Shell/Bash | Google Shell Style Guide + safety rules below | ShellCheck | shfmt |
+| Shell/Bash | Google Shell Style Guide + safety rules in SHELL_SCRIPTING.md | ShellCheck | shfmt |
 | Python | PEP 8, PEP 20 | Ruff | Ruff |
 | Swift | Swift API Design Guidelines | SwiftLint | swift-format |
 | JavaScript | Airbnb or project-existing standard | ESLint | Prettier |
@@ -97,138 +98,14 @@ These are the languages most commonly used across our projects. For any language
 
 All linting must pass for changed files regardless of language.
 
-## Shell
+## Language-Specific Standards
 
-### Version Targeting
+Language-specific standards live in their own documents and are loaded alongside this one:
 
-- **Private projects:** bash 5+ (associative arrays, regex matching, etc.) - assume Homebrew locally, standard on Linux
-- **Public/open-source:** bash 3.2 (macOS default compatibility)
+- Shell scripting: @~/.claude/docs/SHELL_SCRIPTING.md
+- Python: @~/.claude/docs/PYTHON.md
 
-### Mandatory Safety Header
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
-```
-
-Omit only with documented reason.
-
-### Required Practices
-
-- Quote variables: `"$var"`
-- Terminate options: `trash -- "$file"`
-- Use arrays for command construction, not strings
-- Use `command -v`, not `which`
-- Never parse `ls`
-- `find` pipelines: `-print0` with `read -r -d ''` or `xargs -0`
-- All CLI executables must provide `-h`/`--help` and `--version`. Provide `--dry-run` where appropriate
-- If releasing on homebrew, always `make release` then install locally via `brew install` or `upgrade` - never try and live patch an existing package install from brew or any other package manager.
-
-### Prohibited Shell Patterns
-
-Never execute code from strings or discovery:
-
-- `$cmd` / `"$cmd"` / `${cmd}` as commands
-- `eval` (any use)
-- String concatenation to build and run commands
-- Running scripts found via `find` or globbing
-- Wiring discovered paths into schedulers/services
-
-### Safe Alternatives
-
-- Functions or `case` dispatch for behaviour selection
-- Bash array for dynamic commands: `cmd=(git status --porcelain); "${cmd[@]}"`
-- Script selection: allowlist by name, validate against `^[A-Za-z0-9._-]+$`, verify exists/executable/permissions
-
-### Arithmetic Expression Gotcha
-
-The `(( ))` construct returns exit code 1 when the expression evaluates to 0, triggering `set -e`. The `let` builtin has the same behaviour. Never suppress this with `|| true`.
-
-```bash
-# BAD: suppresses the exit code problem
-((count++)) || true
-((count++)) || :
-let count++ || true
-
-# GOOD: arithmetic expansion in assignment (always succeeds)
-count=$((count + 1))
-
-# GOOD: null command consumes the expression (always succeeds)
-: $((count++))
-
-# GOOD: declare as integer, then use +=
-declare -i count=0
-count+=1
-```
-
-## Python
-
-**Never use system Python on macOS.**
-
-### Version management
-
-Target Python 3.12.x (current LTS) or 3.13.x (current stable). Pin per-project with a `.python-version` file containing just the version string (e.g. `3.12`).
-
-**Preferred:** `uv` - manages Python versions, venvs, and packages in one tool. Replaces `pyenv` + `pip` + `venv`.
-
-**Acceptable:** `pyenv` + `python3 -m venv` - use this if the project already uses it or `uv` is not available.
-
-Never use `pyenv local` to set a version mid-script; use `.python-version` instead.
-
-### Virtual environments
-
-**Never `pip install` or `uv pip install` outside a venv.** No exceptions.
-
-**With uv:**
-```bash
-uv venv          # creates .venv using version from .python-version
-uv pip install -r requirements.txt
-```
-
-**With pip:**
-```bash
-python3 -m venv .venv
-.venv/bin/pip install --upgrade pip -q
-.venv/bin/pip install -r requirements.txt -q
-```
-
-### Project structure
-
-Use a `src/` layout for new projects - package lives at `src/<packagename>/`. This prevents accidental imports of source rather than the installed package. Do not restructure existing projects to `src/` layout simply because you are touching them.
-
-### Dependency files
-
-Prefer `pyproject.toml` for packages with a proper structure. `requirements.txt` is acceptable for simple scripts and tools.
-
-```toml
-[project]
-name = "mypackage"
-requires-python = ">=3.12"
-dependencies = ["pyyaml>=6.0"]
-
-[project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.4"]
-```
-
-### Ruff configuration
-
-Standard config for all Python projects:
-
-```toml
-[tool.ruff]
-target-version = "py312"
-line-length = 88
-
-[tool.ruff.lint]
-select = ["E", "W", "F", "I", "B", "UP"]
-ignore = ["E501"]  # line too long — enforced by formatter, not linter
-
-[tool.ruff.lint.isort]
-known-first-party = ["<package-name>"]
-```
-
-`E501` is always ignored - `ruff format` enforces line length; having both causes conflicts. 88 is the community standard (Black's default). Deviate only with documented reason.
+When a language-specific document exists, its rules take precedence over the general guidance here for that language. The general guidance still applies for cross-cutting concerns (security, dependencies, error handling principles, etc.).
 
 ## Code Commenting
 
@@ -237,21 +114,23 @@ known-first-party = ["<package-name>"]
 - **Evergreen comments.** Describe code as it is, not how it evolved. No temporal context.
 - **Evergreen naming.** Never name things 'improved', 'new', 'enhanced', etc.
 
-## Code Search and Modification
+## Data Handling
 
-**Use ast-grep (`sg`) for source code transformations** - refactoring, renaming, structural changes. AST-aware queries enable safe, language-aware modifications.
+**Use format-aware parsers, not regex or line-oriented tools, to read structured data** (JSON, YAML, TOML, XML, HTML, CSV, or any nested format). In compiled or interpreted languages use the standard library or established parsing libraries. In shell scripts use the format-aware CLI tools listed in @~/.claude/docs/SHELL_SCRIPTING.md.
 
-**grep/ripgrep are acceptable for searching** any file type - log files, config files, plain text, source code.
+**Never use sed, awk, perl, or any line-based stream editor to modify data of any kind.** `perl -pi -e` and `perl -ne` are sed with extra steps and fall under the same prohibition. For source code, use direct editing or `ast-grep` (`sg`) for cross-file structural refactors. For structured data, use a parser. For plaintext, use direct editing.
 
-**Never use sed/awk to modify files** - source code, documentation, configuration, or otherwise. Use `sg` for source code transformations, and appropriate tools (or direct editing) for other file types. sed/awk are brittle, prone to corrupting structure, and difficult to review.
+`grep` and `ripgrep` are correct for searching plaintext where the meaningful unit is a line break. Once meaning depends on nesting, escaping, or types, switch to a parser.
+
+Tests must never pass by grepping or otherwise introspecting source code -- see @~/.claude/docs/TESTING.md.
 
 ---
 
 ## Prohibited Anti-Patterns
 
-"Errors should never pass silently." - PEP 20
+"Errors should never pass silently." -- PEP 20
 
-### Error Suppression - Forbidden Patterns (All Languages)
+### Error Suppression -- Forbidden Patterns (All Languages)
 
 Never hide errors instead of handling them. The following pseudocode patterns are **strictly forbidden** regardless of language:
 
@@ -277,7 +156,7 @@ catch all:
     pass
 ```
 
-### Error Suppression - Correct Alternatives
+### Error Suppression -- Correct Alternatives
 
 ```
 # GOOD: check precondition before acting
@@ -321,6 +200,7 @@ These are real-language examples where the forbidden patterns commonly appear:
 | `try!` / `force unwrap` | Swift | Use `guard`, `if let`, or `try?` with handling |
 | `catch (Exception e) {}` | Java/C# | Empty catch blocks hide bugs |
 | `@SuppressWarnings("all")` | Java | Suppress only specific, documented warnings |
+| `_ = err` (ignored error) | Go | Errors must be checked; assign to `_` only with explicit justification |
 
 ### Linter/Check Bypass Rules
 
@@ -342,6 +222,7 @@ $command $flags
 ```
 
 **Requirements for any linter suppression:**
+
 1. Specify the exact rule/code being suppressed
 2. Explain why suppression is necessary (not just convenient)
 3. Confirm the underlying issue cannot be fixed properly
@@ -364,17 +245,7 @@ $command $flags
 
 ---
 
-## Script Standards
-
-### Portability
-
-- Cross-platform Darwin/Linux where feasible
-- `#!/usr/bin/env` shebangs
-- Handle macOS paths (`~/Library`, etc.)
-- Consider ARM64 quirks
-- Prefer Unix built-ins (exceptions: coreutils, ast-grep)
-
-### Error Handling
+## Error Handling
 
 Core principle: **fail fast, fail loud, fail safe.**
 
@@ -383,21 +254,14 @@ Core principle: **fail fast, fail loud, fail safe.**
 - Validate inputs early; reject bad data at the boundary
 - Never convert errors to success silently
 - Log sufficient context to diagnose failures
-- Clean up resources on failure (use traps in shell)
+- Clean up resources on failure (use language-appropriate constructs: `defer` in Go, context managers in Python, `try/finally`, shell traps -- see SHELL_SCRIPTING.md)
 
-```bash
-# Shell cleanup pattern
-cleanup() {
-    # remove temp files, close connections, etc.
-}
-trap cleanup EXIT
-```
+## Web Design
 
-### Web design
 - Use responsive design unless there is a very good reason not to
 - Responsiveness should be defined in terms of rems never px, as this affects browser zoom/resizing etc.
 
-### Structure
+## Code Structure
 
 - One function per task, <50 lines
 - Separate configuration from logic
@@ -405,9 +269,9 @@ trap cleanup EXIT
 - Prefer pure functions
 - Maximum 3 levels of nesting; refactor deeper logic into functions
 
-### Security
+## Security
 
-#### Secrets Management
+### Secrets Management
 
 Never hardcode credentials, API keys, or tokens. Use:
 
@@ -417,23 +281,23 @@ Never hardcode credentials, API keys, or tokens. Use:
 
 Pre-commit hook recommended: `detect-secrets` or `gitleaks` to catch accidental commits.
 
-#### Input Validation
+### Input Validation
 
 Validate all external input at system boundaries:
 
-- **Prefer allowlists** over denylists - explicitly permit known-good values
-- **Set maximum lengths** - unbounded input enables DoS
-- **Validate encoding** - reject or sanitize non-UTF-8 where unexpected
-- **Prevent path traversal** - reject `../` in user-supplied filenames
-- **Parameterised queries always** - never concatenate SQL
+- **Prefer allowlists** over denylists -- explicitly permit known-good values
+- **Set maximum lengths** -- unbounded input enables DoS
+- **Validate encoding** -- reject or sanitize non-UTF-8 where unexpected
+- **Prevent path traversal** -- reject `../` in user-supplied filenames
+- **Parameterised queries always** -- never concatenate SQL
 
-#### Permissions
+### Permissions
 
 - Minimum required permissions for files and processes
-- Never `chmod 777` - use the least permissive mode that works
+- Never `chmod 777` -- use the least permissive mode that works
 - Run services as non-root where possible
 
-#### Docker
+### Docker
 
 When using containers:
 
@@ -442,31 +306,30 @@ When using containers:
 - Pin base image versions (not `:latest`)
 - Scan images for vulnerabilities (`docker scout`, `trivy`)
 
-### Documentation
+## Inline Documentation
 
 - Usage examples in headers/docstrings
 - Document assumptions and limitations
 - Inline comments for non-obvious edge cases only
 
-### Output
+## Output
 
 - ISO 8601 for dates/times
 - Clear, parseable formats
 
-### Logging
+## Logging
 
 - **Levels:** DEBUG (development detail), INFO (normal operation), WARN (recoverable issues), ERROR (failures requiring attention)
-- **Structured logging** for production - JSON format enables parsing
+- **Structured logging** for production where ingestion infrastructure exists -- otherwise plaintext is acceptable and often preferable for human readability
 - **Never log:** credentials, tokens, PII, full credit card numbers
 - **Always log:** request IDs/correlation IDs for tracing, operation context, error details
-- **Log to stderr** for CLI tools; use proper logging framework for services
+- **Log to stderr** for CLI tools; use a proper logging framework for services
 
 ## File Operations
 
-- Use `trash` instead of `rm` to allow recovery
-- **Exception:** temporary files and directories created for the sole purpose of a single operation may be deleted directly in cleanup/teardown logic rather than trashed.
-- Atomic writes: write to temp, then `mv`
-- Use `flock` when multiple processes may write
+- Atomic writes: write to temp, then `mv` (rename is atomic on POSIX)
+- Use file locking when multiple processes may write
+- Shell-specific tooling (`trash`, `flock`) is covered in @~/.claude/docs/SHELL_SCRIPTING.md
 
 ## Network Operations
 
@@ -474,16 +337,6 @@ When using containers:
 - Retry with exponential backoff for transient failures
 - Maximum retry attempts with circuit breaker pattern
 - Log request/response metadata at debug level
-
-## Schedulers and Services
-
-For systemd, launchd, cron:
-
-- Never generate definitions from runtime discovery (unless job-dedicated directory with validated scripts)
-- Use build/install-time path resolution
-- `ExecStart=` must use absolute, fixed paths
-- Avoid `sh -c`/`bash -c` in units; pass arguments directly
-- Logs must go somewhere predictable; failures must be visible
 
 ## Dependencies
 
@@ -495,12 +348,12 @@ For systemd, launchd, cron:
 
 - **Audit regularly:** `npm audit`, `pip-audit`, `cargo audit`, `bundler-audit`
 - **Pin versions** in production; use ranges only in libraries
-- **Review new dependencies** before adding - check maintenance status, known vulnerabilities
+- **Review new dependencies** before adding -- check maintenance status, known vulnerabilities
 - **Update promptly** when security patches are released
 
 ## Model References
 
-When citing LLM models (OpenAI, Anthropic), verify via search if uncertain - knowledge cutoff may cause errors about recent releases.
+When citing LLM models (OpenAI, Anthropic), verify via search if uncertain -- knowledge cutoff may cause errors about recent releases.
 
 ## System Configuration
 
@@ -508,7 +361,7 @@ Never modify system config (`.bashrc`, etc.) without explicit permission.
 
 ## Linting
 
-See the Style Baselines table above for the linter and formatter for each language. All linting must pass for changed files. If a project has a pre-existing linter configuration, follow it - do not override it with personal preference.
+See the Style Baselines table above for the linter and formatter for each language. All linting must pass for changed files. If a project has a pre-existing linter configuration, follow it -- do not override it with personal preference.
 
 ---
 
