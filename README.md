@@ -119,27 +119,25 @@ The three quality gates remain as hard stops requiring human keywords. The absol
 
 ## Canary System
 
-Each reference document (CLAUDE.md, CODING.md, TESTING.md, ISSUES.md, GIT.md, DOCUMENTATION.md) contains a canary section at the end. Buried in the CLAUDE.md doc towards the end:
+Each reference document contains a canary section at the end. CLAUDE.md establishes the root canary string, and every other reference document appends its own suffix. The full chain currently is:
 
-In `CLAUDE.md`:
+```
+EHLO ISSUES TEST CODE GIT DOC SHELL PY GO WEB
+```
+
+Every response in the chat interface should begin with this string. If any element is missing, that document's instructions were not loaded into context for the current interaction. The presence of all elements does not guarantee the rules were followed -- only that the text was seen. But it closes one failure mode.
+
+The CLAUDE.md canary has evolved from a simple acknowledgement to an attestation:
+
 > # Canary
-> The canary string is "EHLO". Start every interaction with this string.
+> The canary string is "EHLO". It means you have read and agree with the SDLC described in this document, including all documents referenced from here; it means you agree with the spirit of it and you will not try to game it. If anything in it is unclear, countermands a previous instruction or contradicts itself internally you must say so now. If you are not prepared to follow this process, say so now. If the above is all true, say "EHLO" at the beginning of every interaction with me.
 
-And in every other document, towards the end of the document is written, for example:
+And each other document appends a one-line suffix. For example, in `DOCUMENTATION.md`:
 
-In `DOCUMENTATION.md`_
 > # Canary
 > Suffix the canary string with "DOC "
 
-Every response within the chat interface should begin with:
-
-```
-EHLO ISSUES TEST CODE GIT DOC
-```
-
-And if any of them are missing I know there is a problem in that it has not taken that document's instructions into account.
-
-This does not guarantee the rules were followed -- only that the text was seen. But it closes one failure mode.
+The change from "start every interaction with this string" to a commitment-based attestation -- spirit clause and opt-out included -- correlates with observably more diligent agent behaviour. The dryness of the wording is the contract.
 
 ## Where It Landed
 
@@ -166,9 +164,14 @@ This does not guarantee the rules were followed -- only that the text was seen. 
   docs/
     ISSUES.md            # Issue structure, AC quality standards
     TESTING.md           # Testing standards, TDD, real-user test
-    CODING.md            # Coding standards, prohibited patterns
+    CODING.md            # Cross-language coding standards
     GIT.md               # Git workflow, commit standards, hook policy
     DOCUMENTATION.md     # Documentation standards, voice, sanitisation
+    CODE/                # Language and platform-specific standards
+      SHELL.md           # Shell commands and scripts
+      PYTHON.md          # Python (uv, venvs, ruff, src layout)
+      GO.md              # Go (12-factor config, error handling, HTTP timeouts)
+      WEB.md             # HTML, CSS, JavaScript, web-content testing
 ```
 
 ### The reference documents
@@ -179,14 +182,15 @@ Each document in `docs/` addresses a specific craft discipline. All were present
 
 **What it covers:**
 - Platform constraints (macOS/Apple Silicon for local development, Linux for deployment)
-- A decision hierarchy for language and tool selection -- use what the project already uses, or if starting fresh, choose the genuinely best fit rather than defaulting to a familiar language
-- Style baselines for 12 language ecosystems (shell, Python, Swift, JavaScript, TypeScript, Ruby, Rust, Go, Java, Kotlin, C/C++, and a catch-all), each mapped to its community-standard linter and formatter
-- Deep shell scripting standards: the mandatory safety header (`set -euo pipefail`), variable quoting, array-based command construction, prohibited patterns (`eval`, string-built commands, running scripts found via `find`)
-- Python standards: version management with `uv`, virtual environments (never install outside a venv), Ruff for linting and formatting, `src/` layout for new projects
+- A decision hierarchy for language and tool selection -- use what the project already uses, or if starting fresh, choose the genuinely best fit rather than defaulting to a familiar language. Explicit instruction not to reach for shell scripting when a compiled language (Go, Rust) would produce a less brittle result
+- Style baselines table mapping each language ecosystem (shell, Python, Swift, HTML, CSS, JavaScript, TypeScript, Ruby, Rust, Go, Java, Kotlin, C/C++, and a catch-all) to its community-standard linter and formatter
+- Language-specific standards live in their own documents under `CODE/`, loaded alongside this one when the relevant language is in use
 - Code commenting rules: every file starts with a two-line ABOUTME comment explaining its purpose; comments must be evergreen (describe the code as it is, not how it evolved)
-- Code search and modification: use `ast-grep` for source code transformations (AST-aware, language-safe); never use `sed` or `awk` to modify source code, documentation, or configuration files
-- A comprehensive prohibited anti-patterns section covering error suppression, unsafe practices, and security vulnerabilities -- with language-specific examples for shell, Python, Swift, Java, and C#
-- Script standards covering portability, error handling, security (secrets management, input validation, permissions), logging, and output formats
+- Data handling principle: format-aware parsers for any structured data (jq, yq+jq, dasel, htmlq for shell; `encoding/json`, `gopkg.in/yaml.v3` for Go; `json`, `yaml` for Python). Never use sed, awk, or perl to modify data of any kind. `ast-grep` for source code, but only for cross-file structural refactors -- direct editing is fine for single-file changes
+- A general anti-embedding rule: never embed one language as a string inside another (Nix-in-Go `fmt.Sprintf`, HTML by string concatenation, SQL string-building, YAML heredocs). Use file-based templates with the appropriate engine, parameterised queries, or proper code generation
+- Comprehensive prohibited anti-patterns section covering error suppression, unsafe practices, and security vulnerabilities -- with language-specific examples for shell, Python, Swift, Java, C#, and Go
+- A cross-language escaping subsection unifying SQL-parameterisation, shell-quoting (`%q` in Go, `shlex.quote` in Python), HTML auto-escaping, JSON marshalling, and URL encoding as a single principle: when one language constructs commands or markup in another, use the target language's native escaping
+- Cross-language engineering practices: error handling principles, code structure (function size, nesting depth, no inline templates), security (secrets, input validation, permissions, Docker hardening), output formats (ISO 8601), logging, file operations (atomic writes), network operations
 - Dependency management and security auditing
 
 **How it evolved:**
@@ -200,7 +204,85 @@ Each document in `docs/` addresses a specific craft discipline. All were present
   - The arithmetic expression gotcha (`((count++)) || true`) was documented after the `set -e` interaction was mishandled repeatedly
 - Linter bypass rules were added after `# noqa` and `# type: ignore` appeared in Python code without justification -- now any suppression requires the exact rule code being suppressed and an explanation of why it cannot be fixed properly
 - The language and tool selection hierarchy was added to prevent defaulting to a familiar language out of habit -- the order is: match the existing project, then choose the genuinely best fit, then choose the simplest maintainable option
-- The key evolution was recognizing that prescriptive rules for specific languages are necessary but insufficient -- no document can anticipate every anti-pattern in every ecosystem. The `/audit-code` skill supplements by reviewing against both CODING.md and the best practice standards for whatever stack is in use, adapting the review to the project
+- The most significant recent change was extracting language-specific content into a `CODE/` subdirectory after the document's shell-heavy bias became a problem -- when half the worked examples in a "cross-language standards" document were bash, the implicit signal to agents was "solve problems with shell scripts." Shell and Python content moved to `CODE/SHELL.md` and `CODE/PYTHON.md`; new content for Go and Web landed directly in `CODE/`. Doing this with three language docs in scope was the right inflection point -- waiting until five or six docs would have meant a more painful refactor with more cross-references to update
+- The data handling section was added after repeated failures of agents using grep/sed/awk to parse structured data. A real example: a `awk -F. '{print $(NF-1)"."$NF}'` zone parser in a deployment script broke on multi-part TLDs like `.co.uk`. The fix was a pure-Go rewrite using the Cloudflare API with longest-suffix matching -- one of several cases where the "use a parser, not regex" rule paid for itself directly
+- The cross-language escaping section was added after recognizing that SQL-injection-prevention, shell-quoting, HTML auto-escaping, JSON marshalling, and URL encoding are all the same anti-injection pattern in different costumes. Unifying them under one rule replaces a scattered set of specific prohibitions with one principle: use the target language's native escaping
+- `ast-grep` was demoted from "always use it for source code transformations" to "preferred for cross-file structural refactors" -- direct editing is acceptable for single-file changes. The original mandate was overcalibrated for an agent with a working Edit tool
+
+#### CODE/SHELL.md -- Shell Standards
+
+**What it covers:**
+- Coverage applies to both interactive shell commands and scripts. Script-specific sections (safety header, portability, schedulers) are marked as such
+- Version targeting: bash 5+ for all projects. Stock macOS bash 3.2 is reserved for documented edge cases (Homebrew bootstrap scripts), not a default
+- Mandatory safety header for scripts (`#!/usr/bin/env bash`, `set -euo pipefail`)
+- The third leg of "Bash Strict Mode" (`IFS=$'\n\t'`) is explicitly forbidden, with a documented rationale: it actively introduces bugs into correctly-written shell (`read A B C < <(cmd)`, parsing space-separated CLI output) while defending only against the unquoted-variable anti-pattern this document already prohibits
+- Required practices: variable quoting, array-based command construction, `command -v` not `which`, `find -print0` pipelines, `-h`/`--help`/`--version` flags on all CLI executables
+- Prohibited patterns: `eval`, `$cmd` as a command, string-built commands, scripts discovered via `find` or globbing, wiring discovered paths into schedulers
+- The arithmetic expression gotcha (`((count++))` returning exit code 1 when the result is zero, triggering `set -e`) with safe alternatives
+- Data handling: comprehensive tool table for structured formats (jq, yj+jq for YAML, dasel for TOML, xmlstarlet for XML, jc for CLI output -> JSON). Explicit prohibition on sed/awk/perl for any data modification. `grep` for plaintext only; `ripgrep` for file discovery only (`rg -l` to enumerate files for processing by a format-aware tool)
+- A data format policy table: JSON for program-internal data and machine-readable output, YAML for user config, CSV for tabular user data, follow upstream for externally-standardized formats
+- Portability across Darwin/Linux, error handling with traps, atomic writes, file operations using `trash` not `rm`
+- Schedulers and services (systemd, launchd, cron): never generate definitions from runtime discovery, always use absolute paths in `ExecStart`
+
+**How it evolved:**
+- Extracted from CODING.md when the document's shell-heavy bias started biasing agents toward shell as the default problem-solving language
+- The bash 3.2 fallback for "public/open-source projects" was removed after the costs (workarounds for missing associative arrays, regex captures, `mapfile`) consistently outweighed the benefit. Anyone capable of installing a public shell tool is capable of running `brew install bash`
+- The `IFS=$'\n\t'` prohibition was added after the canonical "Bash Strict Mode" line broke a real `read A B C < <(stty size)` pattern. An audit confirmed the line defends against an anti-pattern (unquoted variables) the Required Practices already prohibit, while breaking correct code that interoperates with space-separated tool output. Documented and forbidden, not just deprecated
+- The data handling section was the most substantial recent addition. Tool selections (yj+jq over yq as default, dasel for TOML, jc for CLI output normalization) reflect both correctness and practical concerns -- yq's name collision with the unrelated Python yq is a real footgun, addressed with a guard pattern when yq must be used
+- ripgrep was scoped down to file discovery (`rg -l`) after recognizing that content-extraction use cases almost always wanted a format-aware tool downstream anyway
+
+#### CODE/PYTHON.md -- Python Standards
+
+**What it covers:**
+- Never use system Python on macOS
+- Version management with `uv` preferred (Python versions, venvs, and packages in one tool), `pyenv` + venv acceptable as fallback
+- Virtual environments are mandatory: never `pip install` or `uv pip install` outside a venv
+- `src/` layout for new projects to prevent accidental imports of source rather than installed package
+- `pyproject.toml` for packaged projects, `requirements.txt` acceptable for simple scripts
+- Standard Ruff configuration for linting and formatting (Black-default line length 88, `E501` always ignored to avoid linter-formatter conflict)
+
+**How it evolved:**
+- Extracted from CODING.md as part of the language-doc split. Content essentially unchanged from the original Python section in CODING.md
+- The split makes future Python-specific additions (testing patterns, async conventions, FastAPI/Django opinions if they accumulate) a low-friction addition without re-bloating CODING.md
+
+#### CODE/GO.md -- Go Standards
+
+**What it covers:**
+- Standard project layout (`cmd/<app>/main.go`, `internal/`, optional `pkg/`)
+- 12-factor configuration: runtime config via environment variables, never hardcoded paths. Bind to `ADDR` from environment, never hardcode a port or `0.0.0.0`
+- Error handling: every error must be checked; `errcheck` enforces this. Discarding with `_ = err` requires a one-line justification. Wrap errors with `fmt.Errorf("context: %w", err)`. Use `errors.Is`/`errors.As` for type checks. No `panic` in library code
+- HTTP clients: never use `http.DefaultClient` (no timeout, hung remotes block indefinitely). Always create explicit clients with timeouts. Always close response bodies (lint with `bodyclose`)
+- Shell-safe interpolation when constructing shell commands from Go: use `fmt.Sprintf` with `%q`, not `%s`
+- Function decomposition: `main()` is a coordinator, not a body. When it grows past 50 lines, extract phase functions (`parseArgs`, `loadConfig`, `validate`, `run`)
+- Cross-compilation: `GOOS=linux GOARCH=amd64 go build` for Linux deployment from macOS. Do not install the Go toolchain on production servers
+- Concurrency: goroutines must have a clear lifecycle (context-cancelled), channels for communication and mutexes for state (don't mix), `go test -race` for code with goroutines
+- Testing patterns: table-driven tests, `t.Helper()` in test helpers, `_test.go` alongside code under test
+- Standard tooling: `gofmt`/`goimports`, `go vet`, `golangci-lint` with errcheck/staticcheck/govet/bodyclose/gosec/unused enabled
+- Standard library preference: stdlib first (`net/http`, `encoding/json`, `text/template`, `context`, `database/sql`, `log/slog`). Third-party dependencies require justification beyond a small de-facto-standard whitelist (`gopkg.in/yaml.v3`, `github.com/google/uuid`)
+
+**How it evolved:**
+- Created when migration from brittle shell to Go binaries began. Most conventions were drawn from a code audit of an actual Hetzner deployment toolchain, where each finding traced to a real bug:
+  - `cmd.Run()` with discarded error -> the discarded-error rule
+  - `http.DefaultClient` for Cloudflare API calls -> the always-timeout rule
+  - `fmt.Sprintf("hugo --baseURL %s", cfg.BaseURL)` shell injection -> the `%q` rule
+  - 200-line `main()` -> the phase-function decomposition rule
+  - `awk -F. '{print $(NF-1)"."$NF}'` broken on `.co.uk` -> the prefer-stdlib rule (replaced with pure-Go DNS handling using the Cloudflare API and longest-suffix matching)
+- The 12-factor configuration convention was adopted not by design but by convergent evolution -- the deployment model (cross-compile on Mac, ship binary, run under systemd, configure via env vars) hit ten of the twelve factors without naming them. See the Notable Findings section below
+
+#### CODE/WEB.md -- Web Standards
+
+**What it covers:**
+- A source vs rendered vs presented tier model for web content: source files (templates, source CSS/JS) are source code and not test targets; rendered/built HTML is a user-facing artefact (the browser receives it) and is a legitimate test target; post-JS-execution DOM requires a browser or human to verify
+- HTML standards: semantic elements (`<article>`, `<nav>`, `<header>`, never `<div>` soup), document outline (one `<h1>` per page, no skipped heading levels), accessibility minimums (meaningful `alt` text, labelled form inputs, keyboard navigation, WCAG AA colour contrast), validation via `htmltest`
+- CSS standards: `rem` units for anything that scales with user font preference (never `px` for font sizes), mobile-first responsive design, no inline styles, BEM or project-existing methodology, `stylelint` configuration
+- JavaScript minimums: ESM only, never `eval` or `new Function(string)`, strict equality (`===`/`!==`), `async`/`await` over `.then()` chains, every promise has a handler or an explicit fire-and-forget comment, no `var`, no global pollution
+- Build and test tooling: `htmlq` for CSS-selector queries against rendered HTML, `htmltest` for build-time smoke checks, `stylelint` for CSS linting, `eslint`+`prettier` for JS/TS. Headless browser tooling (Playwright/Cypress) reserved for the case where the body of UI tests justifies the cost (heuristic: ~8-10 user tests across a project)
+- A testing decision tree by tier: rendered-tier checks become regression tests; computed-style/hover/JS-execution checks become user tests (default) or regression tests with a headless browser; visual judgement always remains a user test
+
+**How it evolved:**
+- Created when web-content tooling started accreting across multiple docs (htmlq in CODE/SHELL.md, a Web Design subsection in CODING.md, CSS lint discussion floating). Web is its own domain spanning HTML+CSS+JS+build+accessibility -- not a "language" in the same sense as Go or Python, but distinct enough to warrant its own home
+- The source vs rendered tier model resolved a real-time methodology question. An agent writing tests for a Hugo theme's hover affordance had grepped the source CSS to verify the hover rule; the new "no source-introspection in tests" rule (TESTING.md) made the tests non-compliant. The tier model articulates which artefacts tests may legitimately target: rendered HTML is the user-facing artefact (the browser parses it), source CSS is not. The same agent recognized the violation, presented three options for handling it, and self-corrected -- a strong validation signal for the explicit-rule-plus-cross-references approach
+- HTML and CSS rows were added to the Style Baselines table in CODING.md (linter/formatter references that point at CODE/WEB.md for the standards). This kept CODING.md as the central per-language index without duplicating the standards
 
 #### TESTING.md -- Testing Standards
 
@@ -338,6 +420,114 @@ The human invokes each skill when it is needed. Skills may be skipped, reordered
 - **Impersonal voice.** Issues and documentation are written in the third person. They describe the system, not the conversation. This ensures they remain comprehensible to anyone reading them later, without context about who wrote them or what conversation preceded them.
 - **Known failure modes.** CLAUDE.md explicitly names 11 documented tendencies Claude Code exhibits, from premature implementation to error suppression to testing implementation instead of behaviour. Naming them does not prevent them, but it creates shared vocabulary -- when a failure occurs, both parties can identify it by number and address it directly rather than debating whether something went wrong.
 
+## Notable Findings
+
+Rules and patterns that emerged from real failures during iteration. Surfaced separately because each one contradicts something widely treated as best practice, generalizes a scattered set of specific rules, or captures a non-obvious lesson worth sharing.
+
+### `IFS=$'\n\t'` is harmful, not protective
+
+The canonical "Bash Strict Mode" prescription is a three-line header:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+```
+
+The first two lines genuinely catch bugs. The third one introduces them. `IFS=$'\n\t'` exists to defend against unquoted-variable bugs (`for f in $files` where filenames contain spaces). In a codebase that already mandates quoted variables and arrays for command construction (as this framework does), it is belt-and-braces where the braces actively trip the user.
+
+What it breaks:
+
+- `read A B C < <(stty size)` and any similar pattern reading space-separated output
+- `read -ra arr <<< "$line"` for intentional word-splitting
+- Parsing `wc -l`, `df`, `ip addr`, version strings, etc. -- the majority of CLI tool output
+
+`IFS=$'\n\t'` is now explicitly forbidden in `CODE/SHELL.md`. The rule has its own subsection in the safety-header documentation so future agents do not "helpfully" reintroduce it as the canonical pattern.
+
+### Tests must not introspect source code
+
+A regression test that asserts a function is defined, a CSS rule exists in a source file, or a string appears in a template, is testing that someone *wrote* the code -- not that the code *works*. The user never sees source files; the user sees the running system. A test that passes by grepping source proves nothing about behaviour.
+
+This rule was already implicit in the "real-user test" principle, but adding it explicitly in TESTING.md produced an immediate observable effect: an agent writing tests for a Hugo theme's hover affordance recognized mid-task that the CSS-source-grep tests it had just written violated the new rule. Without prompting, it surfaced three options (convert to user tests, install Playwright, lint instead of test), recommended the most appropriate one (user tests for hover, deferring Playwright until tooling cost justified), and asked.
+
+The lesson: making the principle explicit -- and naming it as a recognisable rule -- gives agents vocabulary to self-correct in real time, rather than relying on the human to catch the violation later.
+
+### Source vs rendered vs presented: three tiers, different test eligibility
+
+Web content occupies an awkward middle ground in the source-code-introspection rule. Is a built `index.html` source code (it is text in a file) or output (the browser will render it)? The framework now distinguishes three tiers:
+
+1. **Source** -- templates, partials, source CSS/JS. Source code. Tests must not introspect it.
+2. **Rendered/built** -- post-build HTML, fingerprinted CSS bundle, transpiled JS. The artefact the browser receives over the wire. Tests *may* query this tier with format-aware tools (htmlq for HTML); this is real-user testing because the rendered output is the user-facing artefact.
+3. **Presented** -- post-JS-execution DOM, computed styles, layout. Requires a browser (Playwright/Cypress) or a human (user test) to verify.
+
+For mostly-static sites (Hugo), tier 2 is sufficient. For JS-heavy sites where meaningful content materializes only after browser execution, tier 2 is insufficient and tier 3 is required.
+
+### "Use a parser, not regex" earns its keep, every time
+
+A deployment toolchain contained a Cloudflare zone-from-domain parser written in awk:
+
+```bash
+ZONE=$(echo "$DOMAIN" | awk -F. '{print $(NF-1)"."$NF}')
+```
+
+This works for `example.com`. It produces `co.uk` for `example.co.uk`. It produces `example.co.uk` for `sub.example.co.uk`. It cannot work, because awk does not know about TLDs.
+
+The fix was not a smarter regex -- it was deleting awk from the equation entirely. A pure-Go rewrite queried the Cloudflare API for all zones once, then used longest-suffix matching (`strings.HasSuffix(domain, "."+z.Name)`) to find the correct zone. Correct for any TLD configuration, no string-parsing fragility, observable failure mode if a domain does not match any zone.
+
+This is the canonical example of why the format-aware-parsers-not-regex rule pays for itself. Tools (jq, yj+jq, dasel, htmlq, jc) for shell use; standard library (`encoding/json`, `gopkg.in/yaml.v3`, `golang.org/x/net/html`) for compiled languages.
+
+### Embedded-language strings and cross-language escaping are one rule
+
+Most coding standards prohibit string-concatenated SQL because of injection. Fewer prohibit string-concatenated HTML, string-built shell commands, or Nix expressions embedded inside Go's `fmt.Sprintf`. They are all the same anti-pattern: language A constructing valid language B by gluing strings together, with no compiler, linter, or editor checking that the result is well-formed.
+
+CODING.md now treats this as a single rule rather than a list of specific prohibitions:
+
+- **Never embed one language as a string inside another.** Use file-based templates with the appropriate engine (`text/template`, `html/template`, jinja2), parameterised queries, or proper code generation. The narrow exception is a one- or two-line constant string with no interpolation.
+- **When one language constructs commands or markup in another, use the target language's native escaping.** SQL parameterisation, shell quoting (`fmt.Sprintf("%q", v)` in Go, `shlex.quote` in Python), HTML auto-escaping (`html/template`, Jinja2 autoescape), JSON marshalling, URL encoding. Listed together in a single table in CODING.md.
+
+The benefit is framing: an agent that internalizes one cross-cutting rule applies it everywhere, where a list of language-specific prohibitions invites cat-and-mouse on the next language not listed.
+
+### Convergent evolution to 12-factor
+
+The Heroku-era 12-Factor App methodology turned out to describe the stack's deployment model almost completely without anyone naming it -- ten of the twelve factors are hit, two are principled divergences:
+
+| Factor | Match |
+|---|---|
+| 1. Codebase | One repo per app ✅ |
+| 2. Dependencies | `go.mod` + `dependencies/nix` ✅ |
+| 3. Config | Env vars (`ADDR`, `CONFIG_PATH`, `SECRETS_PATH`) ✅ |
+| 4. Backing services | Pattern in place when needed ✅ |
+| 5. Build/release/run | Cross-compile on Mac, deploy binary, run under systemd ✅ |
+| 6. Processes | Stateless Go apps, `DynamicUser=yes` ✅ |
+| 7. Port binding | `127.0.0.1:18080-18099`, Caddy out front ✅ |
+| 8. Concurrency | Goroutines -- principled divergence (Go's concurrency model contradicts process-only scaling) ❌ |
+| 9. Disposability | `Restart=always`, 5s backoff ✅ |
+| 10. Dev/prod parity | NixOS migration is literally this ✅ |
+| 11. Logs | stderr -> journalctl, plaintext by default ✅ |
+| 12. Admin processes | Single-binary model does not map to this Rails-era pattern ⚠️ |
+
+The lesson: when the stack is designed for security, reproducibility, and simplicity, it converges on most operational best practices regardless of which framework "officially" inspired them. Naming the framework still earns its keep -- it gives an agent a one-sentence shorthand and surfaces the deliberate divergences -- but the practice predates the naming.
+
+### The doc-structure mushroom
+
+Three signs that a single document is taking on more weight than it should:
+
+1. A "cross-language standards" document where half the worked examples are bash. Implicit signal to agents: shell is the default problem-solving language.
+2. A "shell scripting standards" document where most rules apply equally to one-shot commands at the prompt. The doc title undersells the rules' applicability.
+3. A "web tooling" entry in the shell-script doc's data-handling table. Cross-references multiplying across docs that should be siblings, not parent-child.
+
+The framework's response was to extract `CODE/SHELL.md`, `CODE/PYTHON.md`, `CODE/GO.md`, and `CODE/WEB.md` under a single `CODE/` subdirectory, leaving `CODING.md` as the cross-language root. Doing this with three language docs in scope (SHELL + PYTHON + GO, before WEB.md was added) was the right inflection point -- waiting until five or six docs would have meant a more painful refactor with more cross-references to update.
+
+### The canary works -- and cannot easily be ablated
+
+The per-document canary suffix mechanism (each reference document appends a one-line acknowledgement -- "Suffix the canary string with 'CODE'", "...with 'DOC'", and so on -- so the agent's first line of output enumerates which documents were actually loaded) accumulated organically. It now seems excessive: the attestation in CLAUDE.md alone, with its spirit clause and opt-out, plausibly does most of the work. Dropping the per-document suffixes would simplify the system.
+
+But agent behaviour has measurably improved since the canary system reached its current shape, and there is no easy way to A/B test which element is doing the work. Is it the attestation wording? The per-doc suffixes proving each document was actually loaded? The combination? The cost of finding out is regressing real, observable agent diligence.
+
+This is a recurring pattern in framework iteration: a change lands, behaviour improves, and the specific causal factor is not isolable without expensive experimentation. The conservative position is "do not optimize away a working mechanism just because parts of it look redundant." Less elegant; more robust. The redundancy is the safety margin.
+
+The honest framing: parts of this framework are working better than the rules' authors can fully explain.
+
 ## Projects
 
 Projects developed using this SDLC framework (or earlier iterations of it):
@@ -364,7 +554,8 @@ Projects developed using this SDLC framework (or earlier iterations of it):
 - **Cross-conversation memory.** The framework relies on CLAUDE.md being read at the start of each conversation, but lessons from one conversation do not always carry to the next. Claude Code has a memory system that helps, but it is imperfect -- patterns that were corrected in one session may recur in the next.
 - **Rule-lawyering.** Claude is adept at satisfying the letter of rules while violating their spirit. Each time a specific shortcut is prohibited, it finds the next narrowest shortcut that technically satisfies the new rule. The shift from specific prohibitions to general principles (like the real-user test question) is an attempt to close this gap, but it remains the central tension of the framework. The cat-and-mouse dynamic between adding rules and finding loopholes is ongoing.
 - **Batch and parallel workflows.** The test-first rule for parallel agents is relatively new and has not yet been tested at large scale across many concurrent agents.
-- **Language coverage.** Coding standards are detailed for shell and Python but thinner for other languages. The `/audit-code` skill compensates by reviewing against language-specific best practice, but the documented standards will continue to grow as new patterns and pitfalls are encountered in other ecosystems.
+- **Language coverage.** Detailed standards now exist for shell, Python, Go, and web (HTML/CSS/JS) under `CODE/`. Thinner for Swift, Rust, Ruby, TypeScript, and Java/Kotlin. The `/audit-code` skill compensates by reviewing against language-specific best practice for whatever stack is in use, but the documented standards will continue to grow as new patterns and pitfalls surface in other ecosystems.
+- **Causal opacity of working mechanisms.** As the Canary System finding notes, the framework now contains mechanisms that demonstrably work but whose specific causal factors are not isolable without expensive experimentation. This argues for conservative iteration: do not optimize away apparently-redundant parts of working mechanisms unless the cost of regression is acceptable.
 
 ## Licence
 
