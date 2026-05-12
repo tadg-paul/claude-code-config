@@ -190,6 +190,7 @@ Read these before beginning work on any project. They contain craft guidance - h
 - Shell standards: @~/.claude/docs/CODE/SHELL.md
 - Python standards: @~/.claude/docs/CODE/PYTHON.md
 - Go standards: @~/.claude/docs/CODE/GO.md
+- Web standards (HTML, CSS, JS): @~/.claude/docs/CODE/WEB.md
 - Git standards: @~/.claude/docs/GIT.md
 - Documentation standards: @~/.claude/docs/DOCUMENTATION.md
 

@@ -2,6 +2,8 @@
 
 Go-specific standards. The general coding standards in @~/.claude/docs/CODING.md apply on top of these.
 
+For Go applications that serve HTML/CSS/JavaScript (lean web apps, Hugo-adjacent services), the patterns here cover the server side; the response payload itself follows @~/.claude/docs/CODE/WEB.md.
+
 ## Project Layout
 
 Standard module layout for an application:

@@ -86,6 +86,8 @@ These are the languages most commonly used across our projects. For any language
 | Shell/Bash | Google Shell Style Guide + safety rules in CODE/SHELL.md | ShellCheck | shfmt |
 | Python | PEP 8, PEP 20 | Ruff | Ruff |
 | Swift | Swift API Design Guidelines | SwiftLint | swift-format |
+| HTML | Semantic markup + WCAG AA (see CODE/WEB.md) | htmltest | -- |
+| CSS | rem units, mobile-first (see CODE/WEB.md) | stylelint | stylelint --fix |
 | JavaScript | Airbnb or project-existing standard | ESLint | Prettier |
 | TypeScript | Airbnb or project-existing standard | ESLint + typescript-eslint | Prettier |
 | Ruby | Ruby Style Guide | RuboCop | RuboCop |
@@ -102,8 +104,10 @@ All linting must pass for changed files regardless of language.
 
 Language-specific standards live in their own documents and are loaded alongside this one:
 
-- Shell scripting: @~/.claude/docs/CODE/SHELL.md
+- Shell: @~/.claude/docs/CODE/SHELL.md
 - Python: @~/.claude/docs/CODE/PYTHON.md
+- Go: @~/.claude/docs/CODE/GO.md
+- Web (HTML, CSS, JavaScript): @~/.claude/docs/CODE/WEB.md
 
 When a language-specific document exists, its rules take precedence over the general guidance here for that language. The general guidance still applies for cross-cutting concerns (security, dependencies, error handling principles, etc.).
 
@@ -255,11 +259,6 @@ Core principle: **fail fast, fail loud, fail safe.**
 - Never convert errors to success silently
 - Log sufficient context to diagnose failures
 - Clean up resources on failure (use language-appropriate constructs: `defer` in Go, context managers in Python, `try/finally`, shell traps -- see CODE/SHELL.md)
-
-## Web Design
-
-- Use responsive design unless there is a very good reason not to
-- Responsiveness should be defined in terms of rems never px, as this affects browser zoom/resizing etc.
 
 ## Code Structure
 

@@ -88,11 +88,12 @@ Tests must never pass by grepping or otherwise introspecting source code -- see 
 | YAML (in-place edit preserving comments) | `yq` (Mike Farah) | `yq` | Reserved for cases where comments and anchors must survive the edit. v4+. Verify install: `yq --version 2>&1 \| grep -q mikefarah`. |
 | TOML | `dasel` | `dasel` | |
 | XML | `xmlstarlet` | `xmlstarlet` | For edit/validate. `dasel` acceptable for simple reads. |
-| HTML | `htmlq` | `htmlq` | CSS selectors. Useful in tests scraping rendered output. |
 | HTTP / API content | `curl \| jq` | `curl` + `jq` | Standard pattern for fetching and processing API responses, including in tests. |
 | Format conversion | `yj` | `yj` | YAML ↔ TOML ↔ JSON ↔ HCL |
 | CLI output -> JSON | `jc` | `jc` | Wrap `ps`/`df`/`mount`/`netstat`/etc. before parsing. |
 | Multi-format | `dasel` | `dasel` | One selector syntax across JSON/YAML/TOML/XML/CSV. |
+
+For HTML, CSS, and JavaScript tooling (htmlq, htmltest, stylelint, eslint) see @~/.claude/docs/CODE/WEB.md.
 
 ### yq pitfall
 
