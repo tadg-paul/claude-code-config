@@ -114,7 +114,8 @@
       "Bash(xmlstarlet:*)",
       "Bash(eslint:*)",
       "Bash(prettier:*)",
-      "Bash(golangci-lint:*)"
+      "Bash(golangci-lint:*)",
+      "Bash(sanitize:*)"
     ],
     "deny": [
       "Bash(rm:*)",
