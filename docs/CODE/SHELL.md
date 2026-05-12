@@ -15,10 +15,11 @@ If a script genuinely must run on stock macOS bash 3.2 (rare: a Homebrew bootstr
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-IFS=$'\n\t'
 ```
 
 Omit only with documented reason. Does not apply to one-shot commands at the prompt.
+
+**`IFS=$'\n\t'` is forbidden.** The third leg of "Bash Strict Mode" is actively harmful in a codebase that already mandates quoted variables and array-based command construction (see Required Practices below). It introduces bugs into correctly-written shell -- `read A B C < <(cmd)` against space-separated tool output, `read -ra arr <<< "$line"` for intentional word-splitting, parsing of `stty size` / `wc -l` / `df` / version strings, and most interop with CLI tools that emit space-separated values. The only thing it defends against is the unquoted-variable anti-pattern this document already prohibits. Do not add it to the safety header; if a script needs different word-splitting in a specific block, set `IFS` locally for that block and restore it afterwards.
 
 ## Required Practices
 
