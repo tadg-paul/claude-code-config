@@ -73,7 +73,15 @@ count+=1
 
 **Use format-aware tools to read or modify structured data.** Parsing JSON, YAML, TOML, XML, HTML, or program output with grep/sed/awk/perl is brittle and prone to corrupting structure.
 
-**Never modify data using sed, awk, perl, or any line-based stream editor.** `perl -pi -e` and `perl -ne` are sed with extra steps and fall under the same prohibition. For source code, use direct editing or `ast-grep` (`sg`) for cross-file structural refactors. For structured data, use the tools in the table below. For plaintext, use direct editing.
+**sed, awk, and perl are forbidden in shell scripts and one-shot commands.** Not just for data modification -- entirely. The harness backs this with a permission-layer deny (settings.json) so direct invocations surface as a flag. Substitutes:
+
+- File editing: the Edit tool
+- Plaintext reading or filtering of newline-delimited streams or files: `grep`
+- Structured data: the format-aware tools in the table below
+- Source code refactors: `ast-grep` (`sg`) for cross-file structural changes, direct editing for single-file
+- Streaming substitution in pipelines (log redaction, fixture normalization): a purpose-built tool (`detect-secrets`, `gitleaks`) or a small program in Go or Python
+
+If a case comes up that none of the substitutes solve, surface it -- the deny is itself a canary, and a triggered case is either misbehaviour worth catching or a legitimate edge case worth feeding back into the SDLC.
 
 **`grep` is for plaintext streams or files where a newline character is the delimiter** -- logs, command output, single-file pattern matches. **`ripgrep` (`rg`) is for finding files**, not for extracting content. In shell scripts, the only routine use of `rg` is `rg -l` to enumerate files for further processing by a format-aware tool. Reaching for `rg` to pull content out of a file is usually a sign the wrong tool is being used downstream.
 
