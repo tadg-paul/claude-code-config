@@ -50,6 +50,8 @@
       "Bash(find:*)",
       "Bash(chmod:*)",
       "Bash(echo:*)",
+      "Bash(sed:*)",
+      "Bash(awk:*)",
       "Bash(jq:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
@@ -78,6 +80,7 @@
       "Bash(export:*)",
       "Bash(ps:*)",
       "Bash(kill:*)",
+      "Bash(which:*)",
       "Bash(command:*)",
       "Bash(magick:*)",
       "Bash(hugo:*)",
@@ -103,33 +106,11 @@
       "Bash(ruff:*)",
       "Bash(swiftc:*)",
       "Bash(xcrun:*)",
-      "Bash(xcodebuild:*)",
-      "Bash(yj:*)",
-      "Bash(yq:*)",
-      "Bash(dasel:*)",
-      "Bash(htmlq:*)",
-      "Bash(htmltest:*)",
-      "Bash(stylelint:*)",
-      "Bash(jc:*)",
-      "Bash(xmlstarlet:*)",
-      "Bash(eslint:*)",
-      "Bash(prettier:*)",
-      "Bash(golangci-lint:*)",
-      "Bash(sanitize:*)"
+      "Bash(xcodebuild:*)"
     ],
     "deny": [
       "Bash(rm:*)",
-      "Bash(convert:*)",
-      "Bash(sed:*)",
-      "Bash(gsed:*)",
-      "Bash(awk:*)",
-      "Bash(gawk:*)",
-      "Bash(nawk:*)",
-      "Bash(mawk:*)",
-      "Bash(goawk:*)",
-      "Bash(perl:*)",
-      "Bash(which:*)",
-      "Bash(gwhich:*)"
+      "Bash(convert:*)"
     ],
     "ask": [
       "Bash(sudo:*)",
@@ -142,8 +123,6 @@
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
   },
-  "fastMode": true,
   "skipDangerousModePermissionPrompt": true,
-  "editorMode": "normal",
-  "verbose": false
+  "effortLevel": "low"
 }
