@@ -139,6 +139,8 @@ And each other document appends a one-line suffix. For example, in `DOCUMENTATIO
 
 The change from "start every interaction with this string" to a commitment-based attestation -- spirit clause and opt-out included -- correlates with observably more diligent agent behaviour. The dryness of the wording is the contract.
 
+Two mechanisms doing two jobs. The CLAUDE.md attestation is the recent change and the likely driver of the behaviour shift -- it converts saying "EHLO" from acknowledgement to commitment. The per-document suffixes are unchanged from earlier iterations and serve a separate purpose: a one-line read receipt at the start of every response, telling the human immediately which reference documents were loaded. If a suffix is missing, that document's rules were not in scope -- a regression signal otherwise invisible. Each mechanism solves a different problem; both are kept.
+
 ## Where It Landed
 
 ### Architecture
@@ -518,15 +520,18 @@ Three signs that a single document is taking on more weight than it should:
 
 The framework's response was to extract `CODE/SHELL.md`, `CODE/PYTHON.md`, `CODE/GO.md`, and `CODE/WEB.md` under a single `CODE/` subdirectory, leaving `CODING.md` as the cross-language root. Doing this with three language docs in scope (SHELL + PYTHON + GO, before WEB.md was added) was the right inflection point -- waiting until five or six docs would have meant a more painful refactor with more cross-references to update.
 
-### The canary works -- and cannot easily be ablated
+### The canary works -- and the redundancy earns its keep
 
-The per-document canary suffix mechanism (each reference document appends a one-line acknowledgement -- "Suffix the canary string with 'CODE'", "...with 'DOC'", and so on -- so the agent's first line of output enumerates which documents were actually loaded) accumulated organically. It now seems excessive: the attestation in CLAUDE.md alone, with its spirit clause and opt-out, plausibly does most of the work. Dropping the per-document suffixes would simplify the system.
+The canary system has two distinct mechanisms doing two different jobs:
 
-But agent behaviour has measurably improved since the canary system reached its current shape, and there is no easy way to A/B test which element is doing the work. Is it the attestation wording? The per-doc suffixes proving each document was actually loaded? The combination? The cost of finding out is regressing real, observable agent diligence.
+1. **The CLAUDE.md attestation.** A commitment statement at the end of CLAUDE.md. Saying "EHLO" attests to having read the SDLC, agreeing with the spirit, not gaming it, flagging contradictions, and opting out if not prepared to comply.
+2. **Per-document suffixes.** Each other reference document appends a one-line acknowledgement ("Suffix the canary string with 'CODE'", "...with 'DOC'", and so on), producing a chain that enumerates which documents were actually loaded into the agent's context.
 
-This is a recurring pattern in framework iteration: a change lands, behaviour improves, and the specific causal factor is not isolable without expensive experimentation. The conservative position is "do not optimize away a working mechanism just because parts of it look redundant." Less elegant; more robust. The redundancy is the safety margin.
+The recent change that correlates with observably improved diligence was specifically the CLAUDE.md attestation wording -- moving from "Start every interaction with this string" to a commitment-based contract with spirit clause and opt-out. The per-document suffixes were not recently changed; they have done the same job throughout.
 
-The honest framing: parts of this framework are working better than the rules' authors can fully explain.
+So the causal factor for the behaviour shift is identifiable, contrary to a tempting "we cannot tell what is working" framing. The per-document suffixes are kept anyway because they earn their keep on a separate axis: a one-line read receipt at the start of every interaction tells the human immediately whether each reference document loaded into context. If one is missing, that document's rules were not in scope for the interaction -- a regression signal otherwise invisible.
+
+The system looks more elaborate than it strictly needs to be, but each mechanism solves a different problem. Working systems get left alone.
 
 ## Projects
 
