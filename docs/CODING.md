@@ -83,7 +83,7 @@ These are the languages most commonly used across our projects. For any language
 
 | Language | Style Standard | Linter | Formatter |
 |----------|---------------|--------|-----------|
-| Shell/Bash | Google Shell Style Guide + safety rules in SHELL_SCRIPTING.md | ShellCheck | shfmt |
+| Shell/Bash | Google Shell Style Guide + safety rules in CODE/SHELL.md | ShellCheck | shfmt |
 | Python | PEP 8, PEP 20 | Ruff | Ruff |
 | Swift | Swift API Design Guidelines | SwiftLint | swift-format |
 | JavaScript | Airbnb or project-existing standard | ESLint | Prettier |
@@ -102,8 +102,8 @@ All linting must pass for changed files regardless of language.
 
 Language-specific standards live in their own documents and are loaded alongside this one:
 
-- Shell scripting: @~/.claude/docs/SHELL_SCRIPTING.md
-- Python: @~/.claude/docs/PYTHON.md
+- Shell scripting: @~/.claude/docs/CODE/SHELL.md
+- Python: @~/.claude/docs/CODE/PYTHON.md
 
 When a language-specific document exists, its rules take precedence over the general guidance here for that language. The general guidance still applies for cross-cutting concerns (security, dependencies, error handling principles, etc.).
 
@@ -116,7 +116,7 @@ When a language-specific document exists, its rules take precedence over the gen
 
 ## Data Handling
 
-**Use format-aware parsers, not regex or line-oriented tools, to read structured data** (JSON, YAML, TOML, XML, HTML, CSV, or any nested format). In compiled or interpreted languages use the standard library or established parsing libraries. In shell scripts use the format-aware CLI tools listed in @~/.claude/docs/SHELL_SCRIPTING.md.
+**Use format-aware parsers, not regex or line-oriented tools, to read structured data** (JSON, YAML, TOML, XML, HTML, CSV, or any nested format). In compiled or interpreted languages use the standard library or established parsing libraries. In shell scripts use the format-aware CLI tools listed in @~/.claude/docs/CODE/SHELL.md.
 
 **Never use sed, awk, perl, or any line-based stream editor to modify data of any kind.** `perl -pi -e` and `perl -ne` are sed with extra steps and fall under the same prohibition. For source code, use direct editing or `ast-grep` (`sg`) for cross-file structural refactors. For structured data, use a parser. For plaintext, use direct editing.
 
@@ -254,7 +254,7 @@ Core principle: **fail fast, fail loud, fail safe.**
 - Validate inputs early; reject bad data at the boundary
 - Never convert errors to success silently
 - Log sufficient context to diagnose failures
-- Clean up resources on failure (use language-appropriate constructs: `defer` in Go, context managers in Python, `try/finally`, shell traps -- see SHELL_SCRIPTING.md)
+- Clean up resources on failure (use language-appropriate constructs: `defer` in Go, context managers in Python, `try/finally`, shell traps -- see CODE/SHELL.md)
 
 ## Web Design
 
@@ -265,7 +265,7 @@ Core principle: **fail fast, fail loud, fail safe.**
 
 - One function per task, <50 lines
 - Separate configuration from logic
-- No inline templates. File content intended for output (scaffolding, generated configs, boilerplate) belongs in package resource files, not string constants
+- **Never embed one language as a string inside another.** A Nix expression inside a Go `fmt.Sprintf`, an HTML template assembled with string concatenation, SQL built by appending strings, or YAML constructed via heredoc -- all share the same anti-pattern. The embedded language is unparseable at compile time, missed by linters and editors, and breaks subtly when escaping is needed. Use file-based templates with the appropriate engine (`text/template`, `html/template`, jinja2), parameterised queries, or proper code generation. The narrow exception is a 1-2 line constant string that contains no interpolation.
 - Prefer pure functions
 - Maximum 3 levels of nesting; refactor deeper logic into functions
 
@@ -290,6 +290,21 @@ Validate all external input at system boundaries:
 - **Validate encoding** -- reject or sanitize non-UTF-8 where unexpected
 - **Prevent path traversal** -- reject `../` in user-supplied filenames
 - **Parameterised queries always** -- never concatenate SQL
+
+### Cross-Language Escaping
+
+When code in one language constructs commands, queries, or markup in another (shell, SQL, HTML, JSON, URLs), use language-native escaping. Concatenation and unbounded interpolation are the source of injection vulnerabilities and subtle bugs.
+
+| Target | Use | Avoid |
+|---|---|---|
+| Shell | Argument arrays; language-native quoting (Go `fmt.Sprintf("%q", v)`, Python `shlex.quote`, Ruby `Shellwords.escape`) | `"cmd " + arg` or `f"cmd {arg}"` |
+| SQL | Parameterised queries with driver placeholders | String concatenation, format-string SQL |
+| HTML | Template engine with auto-escaping (`html/template`, Jinja2 autoescape, React JSX) | Manual `<` -> `&lt;` substitution |
+| JSON | Marshalling library (`encoding/json`, `json.dumps`) | String building |
+| URLs | Library URL builder / query encoder | f-string assembly |
+| YAML | YAML library | String concatenation |
+
+This applies whether the input is "trusted" or not. Treat the rule as unconditional -- trust assessments rot.
 
 ### Permissions
 
@@ -329,7 +344,7 @@ When using containers:
 
 - Atomic writes: write to temp, then `mv` (rename is atomic on POSIX)
 - Use file locking when multiple processes may write
-- Shell-specific tooling (`trash`, `flock`) is covered in @~/.claude/docs/SHELL_SCRIPTING.md
+- Shell-specific tooling (`trash`, `flock`) is covered in @~/.claude/docs/CODE/SHELL.md
 
 ## Network Operations
 

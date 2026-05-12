@@ -1,6 +1,8 @@
-# Shell Scripting Standards
+# Shell Standards
 
-Shell-specific standards. The general coding standards in @~/.claude/docs/CODING.md apply on top of these; this document does not repeat cross-language rules.
+Shell-specific standards covering both interactive shell commands and scripts. The general coding standards in @~/.claude/docs/CODING.md apply on top of these; this document does not repeat cross-language rules.
+
+Most rules apply equally to one-shot commands typed at the prompt and to scripts. The Mandatory Safety Header, Portability, Error Handling traps, and Schedulers sections are script-specific and noted as such; everything else applies universally.
 
 ## Version Targeting
 
@@ -8,7 +10,7 @@ bash 5+ for all projects. Associative arrays, `[[ =~ ]]` regex with `BASH_REMATC
 
 If a script genuinely must run on stock macOS bash 3.2 (rare: a Homebrew bootstrap script or similar), declare the requirement explicitly with a comment at the top of the file. Otherwise, scripts may rely on bash 5+ features freely. Public Homebrew formulae should `depends_on "bash"`.
 
-## Mandatory Safety Header
+## Mandatory Safety Header (scripts)
 
 ```bash
 #!/usr/bin/env bash
@@ -16,7 +18,7 @@ set -euo pipefail
 IFS=$'\n\t'
 ```
 
-Omit only with documented reason.
+Omit only with documented reason. Does not apply to one-shot commands at the prompt.
 
 ## Required Practices
 

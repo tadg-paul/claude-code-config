@@ -187,8 +187,9 @@ Read these before beginning work on any project. They contain craft guidance - h
 - Issue standards: @~/.claude/docs/ISSUES.md
 - Testing standards: @~/.claude/docs/TESTING.md
 - Coding standards: @~/.claude/docs/CODING.md
-- Shell scripting standards: @~/.claude/docs/SHELL_SCRIPTING.md
-- Python standards: @~/.claude/docs/PYTHON.md
+- Shell standards: @~/.claude/docs/CODE/SHELL.md
+- Python standards: @~/.claude/docs/CODE/PYTHON.md
+- Go standards: @~/.claude/docs/CODE/GO.md
 - Git standards: @~/.claude/docs/GIT.md
 - Documentation standards: @~/.claude/docs/DOCUMENTATION.md
 
