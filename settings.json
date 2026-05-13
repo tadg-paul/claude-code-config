@@ -118,11 +118,12 @@
       "Bash(gh gist create:*)",
       "Bash(gh workflow run:*)"
     ],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "auto"
   },
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true
   },
+  "effortLevel": "low",
   "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "low"
+  "skipAutoPermissionPrompt": true
 }
