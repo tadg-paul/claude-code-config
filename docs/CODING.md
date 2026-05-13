@@ -50,21 +50,6 @@ This principle applies to all languages. One-liners, chained ternaries, nested c
 - **Approach:** CLI-first, scriptable, FOSS preferred
 - **Required tools:** GNU coreutils, ast-grep (`sg`), ShellCheck, shfmt -- plus the linter/formatter appropriate to the project language (see Style Baselines)
 
-## Reference Standards
-
-These external standards inform our practices:
-
-- **Shell:** [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html), [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls), [ShellCheck Wiki](https://github.com/koalaman/shellcheck/wiki)
-- **Python:** [PEP 8](https://peps.python.org/pep-0008/), [PEP 20](https://peps.python.org/pep-0020/) (Zen of Python), [CERT Python](https://wiki.sei.cmu.edu/confluence/display/python)
-- **Swift:** [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)
-- **JavaScript/TypeScript:** [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript), [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/)
-- **Ruby:** [Ruby Style Guide](https://rubystyle.guide/)
-- **Rust:** [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/), [Rust Book](https://doc.rust-lang.org/book/)
-- **Go:** [Effective Go](https://go.dev/doc/effective_go), [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
-- **Java/Kotlin:** [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html), [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
-- **C/C++:** [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
-- **Security:** [OWASP Top 10](https://owasp.org/www-project-top-ten/), [CERT Secure Coding](https://wiki.sei.cmu.edu/confluence/display/seccode)
-
 ## Language and Tool Selection
 
 Use the best tool for the job. Do not bias towards any particular language, framework, or technology out of habit or personal preference.
@@ -77,28 +62,36 @@ Decision hierarchy:
 
 Do not introduce new languages, frameworks, or dependencies for marginal convenience. Do not default to a language because it is familiar -- justify the choice on merit. In particular, do not reach for shell scripting when a compiled language (Go, Rust) would produce a less brittle result.
 
+LLMs exhibit a strong bias toward Python regardless of fit; resist it. Python is appropriate when the problem genuinely lives in its ecosystem (ML, scientific computing, data analysis, well-supported scientific libraries) but is not a default for general-purpose code. Compared to Go, Rust, or Swift:
+
+- **Runtime cost.** Slower execution; cold-start overhead; harder to ship as a single self-contained binary.
+- **Environment friction.** Constant venv/system-Python confusion; agents routinely violate the "never `pip install` outside a venv" rule despite explicit instructions.
+- **Supply-chain attack surface.** PyPI has a documented history of typosquatting and dependency-confusion incidents; the transitive dependency graphs of common Python packages are wider than typical Go or Rust equivalents.
+
+For new projects, evaluate **Go** (general-purpose), **Rust** (performance-critical or systems), or **Swift** (Apple-targeted) before defaulting to Python.
+
 ## Style Baselines
 
 These are the languages most commonly used across our projects. For any language not listed, apply that language's dominant community standard and the general principles in this document.
 
 | Language | Style Standard | Linter | Formatter |
 |----------|---------------|--------|-----------|
-| Shell/Bash | Google Shell Style Guide + safety rules in CODE/SHELL.md | ShellCheck | shfmt |
-| Python | PEP 8, PEP 20 | Ruff | Ruff |
-| Swift | Swift API Design Guidelines | SwiftLint | swift-format |
+| Shell/Bash | [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html) + safety rules in CODE/SHELL.md | ShellCheck | shfmt |
+| Python | [PEP 8](https://peps.python.org/pep-0008/), [PEP 20](https://peps.python.org/pep-0020/) | Ruff | Ruff |
+| Swift | [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/) | SwiftLint | swift-format |
 | HTML | Semantic markup + WCAG AA (see CODE/WEB.md) | htmltest | -- |
 | CSS | rem units, mobile-first (see CODE/WEB.md) | stylelint | stylelint --fix |
-| JavaScript | Airbnb or project-existing standard | ESLint | Prettier |
-| TypeScript | Airbnb or project-existing standard | ESLint + typescript-eslint | Prettier |
-| Ruby | Ruby Style Guide | RuboCop | RuboCop |
-| Rust | Rust API Guidelines | Clippy | rustfmt |
-| Go | Effective Go | golangci-lint | gofmt |
-| Java | Google Java Style Guide | Checkstyle / SpotBugs | google-java-format |
-| Kotlin | Kotlin Coding Conventions | ktlint | ktlint |
-| C/C++ | Google C++ Style Guide | clang-tidy | clang-format |
+| JavaScript | [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) or project-existing standard | ESLint | Prettier |
+| TypeScript | [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/) + Airbnb or project-existing standard | ESLint + typescript-eslint | Prettier |
+| Ruby | [Ruby Style Guide](https://rubystyle.guide/) | RuboCop | RuboCop |
+| Rust | [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/) | Clippy | rustfmt |
+| Go | [Effective Go](https://go.dev/doc/effective_go) | golangci-lint | gofmt |
+| Java | [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) | Checkstyle / SpotBugs | google-java-format |
+| Kotlin | [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html) | ktlint | ktlint |
+| C/C++ | [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) | clang-tidy | clang-format |
 | Any other | Dominant community standard for that language | Community standard linter | Community standard formatter |
 
-All linting must pass for changed files regardless of language.
+All linting must pass for changed files regardless of language. Secondary references: [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls) and [ShellCheck Wiki](https://github.com/koalaman/shellcheck/wiki) for shell; [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments) for Go; [Rust Book](https://doc.rust-lang.org/book/) for Rust; [CERT Python](https://wiki.sei.cmu.edu/confluence/display/python) for secure Python.
 
 ## Language-Specific Standards
 
@@ -269,6 +262,8 @@ Core principle: **fail fast, fail loud, fail safe.**
 - Maximum 3 levels of nesting; refactor deeper logic into functions
 
 ## Security
+
+External references that inform this section: [OWASP Top 10](https://owasp.org/www-project-top-ten/), [CERT Secure Coding](https://wiki.sei.cmu.edu/confluence/display/seccode).
 
 ### Secrets Management
 

@@ -2,7 +2,10 @@
 
 Python-specific standards. The general coding standards in @~/.claude/docs/CODING.md apply on top of these.
 
+**Python is not the default.** Before reaching for Python, confirm it is the genuinely best fit -- see CODING.md "Language and Tool Selection". The Python-bias in LLM training data is strong; resist it. Python earns its keep in ML and scientific computing; for general-purpose code, Go or Rust is typically the better starting point.
+
 **Never use system Python on macOS.**
+**Never invoke python outside of a venv.**
 
 ## Version Management
 
