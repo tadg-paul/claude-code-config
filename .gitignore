@@ -66,3 +66,6 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+
+# Project-relative scratch directory (see DOCUMENTATION.md §"Reviewing doc changes")
+tmp/
