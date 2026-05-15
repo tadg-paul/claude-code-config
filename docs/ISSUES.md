@@ -246,21 +246,21 @@ Discovery (sketching / exploratory UX work) is a first-class workflow, distinct 
 - A discovery issue has the title prefix `[DISCOVERY]` to keep it visually distinct from feature issues.
 - It carries the `discovery` label (created if absent).
 - It has **no AC table**. ACs presuppose a known spec; discovery is the work of finding one.
-- Code may be written freely during discovery, but commits must be marked `wip(discovery): ...` so they are visibly throwaway.
+- Code may be written freely during discovery. Commits are marked `wip(discovery): ...` to make their provenance visible. They stay in master history regardless of outcome.
 
 ### Lifecycle
 
 - `/start-discovery` opens (or re-uses) a discovery issue.
 - During discovery, sketches accumulate. The issue is the running record of what was tried.
-- `/end-discovery` exits in one of two ways:
-   - **Promote:** the discovery has produced enough clarity to draft a real issue. The discovery issue is closed with a link to the new feature issue. Sketches may be discarded, cherry-picked, or kept as a reference branch.
-   - **Discard:** the discovery did not produce a viable direction. The issue is closed; sketches are trashed.
+- `/end-discovery` exits in one of two ways - both non-destructive:
+   - **Promote:** the discovery has produced enough clarity to draft a real issue. The discovery issue is closed with a pointer to the forthcoming feature issue. Sketch commits remain in history as the record of the explored path.
+   - **Rule out:** the discovery did not produce a viable direction. The discovery issue is closed with a summary explaining why. Sketch commits remain in history as the record of the path that was ruled out - useful if the question comes back.
 
 Both outcomes are valid - sometimes discovery's job is to rule things out.
 
 ### Not a long-term parking spot
 
-Discovery issues should be short-lived (hours to days). A discovery issue that has been open for weeks is a signal to either promote, discard, or split off a specific bounded question.
+Discovery issues should be short-lived (hours to days). A discovery issue that has been open for weeks is a signal to either promote, rule out, or split off a specific bounded question.
 
 ---
 

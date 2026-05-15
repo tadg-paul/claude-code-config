@@ -93,7 +93,7 @@ I drive the workflow by invoking skills. Each skill contains its own quality che
 | `/draft-design-issue` | Draft issue + solution design in one pass (no code) | AWAITING PROCEED |
 | `/draft-bug-fix` | Draft a bug-fix issue referencing existing ACs (no new AC table) | AWAITING SATISFACTION |
 | `/start-discovery` | Open a discovery (sketch) session in a tagged issue | None (sketches only) |
-| `/end-discovery` | Close out discovery: draft a real issue from sketches, or discard | None |
+| `/end-discovery` | Close a discovery session non-destructively: promote to a real issue, or rule the direction out. Sketch commits remain in history. | None |
 | `/migrate-acs` | Migrate ACs from a legacy issue into `./docs/ACs.md` | None |
 | `/audit-acs` | Challenge AC coverage (advisory, no code) | None |
 | `/audit-tests` | Challenge test coverage (advisory, no code) | None |

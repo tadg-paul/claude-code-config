@@ -19,6 +19,6 @@ Open a discovery session for the current task. Read and follow @~/.claude/docs/I
    - Code may be written freely during discovery.
    - Commits during discovery must be prefixed `wip(discovery): ...`.
    - Sketches are throwaway by default; nothing is canonical until promoted.
-   - The session ends with `/end-discovery` (promote or discard) - the user calls that, not you.
+   - The session ends with `/end-discovery` (promote or rule out) - the user calls that, not you. Discovery is non-destructive: sketch commits stay in history either way.
 
 **End with:** `DISCOVERY ACTIVE - issue #NNN`. **Wait for the user to drive the session.**
