@@ -252,11 +252,11 @@ Discovery (sketching / exploratory UX work) is a first-class workflow, distinct 
 
 - `/start-discovery` opens (or re-uses) a discovery issue.
 - During discovery, sketches accumulate. The issue is the running record of what was tried.
-- `/end-discovery` exits in one of two ways - both non-destructive:
-   - **Promote:** the discovery has produced enough clarity to draft a real issue. The discovery issue is closed with a pointer to the forthcoming feature issue. Sketch commits remain in history as the record of the explored path.
-   - **Rule out:** the discovery did not produce a viable direction. The discovery issue is closed with a summary explaining why. Sketch commits remain in history as the record of the path that was ruled out - useful if the question comes back.
+- `/end-discovery` exits in one of two ways, both non-destructive:
+   - **Promote (default):** discovery iterations are real implementation. The discovery issue is the issue - no separate feature issue is drafted. Work is formalized into `./docs/ACs.md` with covering tests, then the issue is closed.
+   - **Rule out:** the direction is a dead end. The `wip(discovery):` commits are reverted via `git revert`, then the issue is closed with a summary.
 
-Both outcomes are valid - sometimes discovery's job is to rule things out.
+See `/end-discovery` for the mechanics. Both outcomes are valid - sometimes discovery's job is to rule things out.
 
 ### Not a long-term parking spot
 
