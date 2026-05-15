@@ -75,6 +75,8 @@ If you find yourself typing code, a diff, or a file path before seeing **PROCEED
 
 BYPASS-GATE-7 is **not** for open-ended exploration, UX sketching, or "I'll know it when I see it" design work. For that, use `/start-discovery`. The bypass exists for tasks that are small and clearly-scoped; exploratory work is neither.
 
+**Bypass work must still be tracked.** If BYPASS-GATE-7 is used, ensure the activity is recorded in a GitHub issue so it can be wrapped up later. If no existing issue covers the work, create one. The bypass skips the gates; it does not skip the audit trail.
+
 Everything else requires all three gates.
 
 ---

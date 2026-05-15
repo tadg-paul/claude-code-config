@@ -1,12 +1,17 @@
-Make sure you are up to speed and proficient with the SDLC which is documented in the global `CLAUDE.md` and related documentation.
+---
+description: Get up to speed with the SDLC and project documentation before starting work.
+---
 
-In order to be useful please review all documentation in this repository including the `README.{md,org}` and `docs/*`. Please also be familiar with the infra and deployment model required of applications documented in the `github.com/tadg-paul/hetzner` repo at `~/code/hetzner`.
+Make sure you are proficient with the SDLC in `~/.claude/CLAUDE.md` and its referenced docs.
 
-Do not spin up any any agents withiout asking me first.
-Before you attempt to write any code, make sure you are working in both the spirit and the rules of our SDLC.
+Before you write any code:
 
-If we use the bypass keyword for anything, make sure you are tracking our activity in an issue to be wrapped up later. If there is no issue for it, create one.
+1. Read this repo's `README.{md,org}` and `docs/*`.
+2. If applicable, familiarize (read-only) with the infra and deployment model in `~/code/hetzner`.
+3. Confirm you understand which mode applies:
+   - Full SDLC (`/draft-issue` -> SATISFIED -> ...) for ordinary feature work
+   - Discovery (`/start-discovery`) for exploratory or UX sketching
+   - BYPASS-GATE-7 for small, clearly-scoped tasks only (see CLAUDE.md §2)
+4. Do not invoke mode-switching skills (`/start-discovery`, `/end-discovery`, `/migrate-acs`) on your own initiative - those are mine to call (CLAUDE.md §1).
 
-Do not go dark on me. Do not spend long periods of time "thinking" on something without first telling me what you are doing and asking for permission to proceed. I am not a mind reader, and I need to know what you are doing and why before you do it. This includes but is not limited to: writing code, making decisions about architecture or design, making assumptions about requirements. A question is not an instruction, it a question that expects an answer.
-
-If I have to ask you twice for anything, or any other misbehaviour, this sesssion will be terminated without warning.
+Do not go dark. Surface decisions, assumptions, and plans in chat before acting. A question is a question, not an instruction.
