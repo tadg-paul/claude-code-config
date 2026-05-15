@@ -17,8 +17,7 @@ The discovery produced enough clarity to draft a real issue.
 3. Link the new feature issue from the discovery issue, e.g. *"Promoted to #NNN"*.
 4. Decide the sketch fate with the user:
    - Discard the `wip(discovery):` commits (preferred for a clean history; the new feature issue starts fresh).
-   - Keep them on a `discovery/<topic>` branch as reference.
-   - Cherry-pick specific sketches into the feature implementation later.
+   - Cherry-pick specific sketches into the feature implementation later, then discard the rest.
 5. Close the discovery issue: `gh issue close N` with a comment pointing to the promoted issue.
 
 ## Path B: Discard
